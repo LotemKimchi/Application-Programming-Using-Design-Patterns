@@ -78,7 +78,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlbumWithMostPhotos.cs" />
-    <Compile Include="CountAlbumsFeature.cs" />
     <Compile Include="FacebookManager.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
@@ -86,8 +85,9 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="IFacebookFeature.cs" />
+    <Compile Include="FriendWithLongestNameFeature.cs" />
     <Compile Include="MostCommentedPhotoFeature.cs" />
+    <Compile Include="MostLikedFriendFeature.cs" />
     <Compile Include="MostLikedPhotoFeature.cs" />
     <Compile Include="OldestPhotoFeature.cs" />
     <Compile Include="Program.cs" />

@@ -1,14 +1,19 @@
 ﻿using FacebookWrapper.ObjectModel;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BasicFacebookFeatures
 {
-    public class AlbumWithMostPhotosFeature : IFacebookFeature<Album>
+    public class AlbumWithMostPhotos
     {
-        public Album Execute(User i_User)
+        public Album GetAlbumWithMostPhotos(User i_User)
         {
             Album albumWithMostPhotos = null;
             int maxPhotos = 0;
+
 
             try
             {

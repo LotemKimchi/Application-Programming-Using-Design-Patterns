@@ -124,6 +124,16 @@ namespace BasicFacebookFeatures
             pictureBoxProfile.ImageLocation = null;
         }
 
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelBoxFriends_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void buttonConnectAsDesig_Click_1(object sender, EventArgs e)
         {
             try
@@ -144,6 +154,61 @@ namespace BasicFacebookFeatures
             }
         }
 
+        private void buttonMostLikedFriend_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void buttonMostLikedPhoto_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonOldestPhoto_Click(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void buttonMostCommentedPhoto_Click(object sender, EventArgs e)
+        {
+           
+
+        }
+
+        private void buttonMostPhotosAlbum_Click_1(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void buttonFriendWithLongestName_Click(object sender, EventArgs e)
+        {
+            User user = m_FacebookManager.LoggedInUser;
+
+            if (user == null)
+            {
+                MessageBox.Show("Please login first");
+                return;
+            }
+
+            FriendWithLongestNameFeature feature = new FriendWithLongestNameFeature();
+
+            User friend = feature.GetFriendWithLongestName(user);
+
+            if (friend != null)
+            {
+                MessageBox.Show($"Friend with longest name: {friend.Name}");
+            }
+            else
+            {
+                MessageBox.Show("No friends found");
+            }
+        }
+
         private void buttonMostPhotosAlbum_Click(object sender, EventArgs e)
         {
             User user = m_FacebookManager.LoggedInUser;
@@ -154,18 +219,30 @@ namespace BasicFacebookFeatures
                 return;
             }
 
-            IFacebookFeature<Album> feature = new AlbumWithMostPhotosFeature();
+            AlbumWithMostPhotos feature = new AlbumWithMostPhotos();
 
-            Album album = feature.Execute(user);
+            Album album = feature.GetAlbumWithMostPhotos(m_FacebookManager.LoggedInUser);
 
             if (album != null)
             {
+                //MessageBox.Show($"Album with most photos: {album.Name}");
                 labelAlbumName.Text = album.Name;
             }
             else
             {
+                //MessageBox.Show("No albums found");
                 labelAlbumName.Text = "No albums found";
             }
+        }
+
+        private void labelAlbumName_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click_1(object sender, EventArgs e)
+        {
+
         }
 
         private void buttonOldestPhoto_Click_1(object sender, EventArgs e)
@@ -178,19 +255,37 @@ namespace BasicFacebookFeatures
                 return;
             }
 
-            IFacebookFeature<Photo> feature = new OldestPhotoFeature();
+            OldestPhotoFeature feature = new OldestPhotoFeature();
 
-            Photo photo = feature.Execute(user);
+            Photo photo = feature.GetOldestPhoto(m_FacebookManager.LoggedInUser);
 
             if (photo != null)
             {
                 pictureBoxOldestPhoto.ImageLocation = photo.PictureNormalURL;
+
+                //MessageBox.Show($"Oldest photo created at {photo.CreatedTime}");
                 labelOldestPhotoDate.Text = $"Oldest photo created at {photo.CreatedTime}";
             }
             else
             {
+                //MessageBox.Show("No photos found");
                 labelOldestPhotoDate.Text = "No photos found";
             }
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBoxMostLikePhoto_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void buttonMostLikedPhoto_Click_1(object sender, EventArgs e)
@@ -203,9 +298,9 @@ namespace BasicFacebookFeatures
                 return;
             }
 
-            IFacebookFeature<Photo> feature = new MostLikedPhotoFeature();
+            MostLikedPhotoFeature feature = new MostLikedPhotoFeature();
 
-            Photo photo = feature.Execute(user);
+            Photo photo = feature.GetMostLikedPhotoFeature(m_FacebookManager.LoggedInUser);
 
             if (photo != null)
             {
@@ -214,6 +309,7 @@ namespace BasicFacebookFeatures
             else
             {
                 MessageBox.Show("No photo found");
+
             }
         }
 
@@ -227,10 +323,8 @@ namespace BasicFacebookFeatures
                 return;
             }
 
-            IFacebookFeature<Photo> feature = new MostCommentedPhotoFeature();
-
-            Photo photo = feature.Execute(user);
-
+            MostCommentedPhotoFeature feature = new MostCommentedPhotoFeature();
+            Photo photo = feature.GetMostCommentedPhotoFeature(m_FacebookManager.LoggedInUser);
             if (photo != null)
             {
                 pictureBoxMostCommentedPhoto.ImageLocation = photo.PictureNormalURL;
@@ -242,7 +336,7 @@ namespace BasicFacebookFeatures
             }
         }
 
-        private void buttonCountAlbums_Click(object sender, EventArgs e)
+        private void buttonMostLikedFriend_Click_1(object sender, EventArgs e)
         {
             User user = m_FacebookManager.LoggedInUser;
 
@@ -252,11 +346,12 @@ namespace BasicFacebookFeatures
                 return;
             }
 
-            IFacebookFeature<int> feature = new CountAlbumsFeature();
+            MostLikedFriendFeature feature = new MostLikedFriendFeature();
 
-            int albumsCount = feature.Execute(user);
+            string result = feature.GetMostLikedFriendFeature(m_FacebookManager.LoggedInUser);
 
-            labelAlbumsCount.Text = $"Albums Count: {albumsCount}";
+            //MessageBox.Show("Most liked friend: " + result);
+            labelMostLikedFriend.Text = "Most liked friend: " + result;
         }
     }
 }

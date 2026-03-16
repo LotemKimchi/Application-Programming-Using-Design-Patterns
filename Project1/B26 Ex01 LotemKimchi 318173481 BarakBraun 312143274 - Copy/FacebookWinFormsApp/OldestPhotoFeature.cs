@@ -1,11 +1,15 @@
 ﻿using FacebookWrapper.ObjectModel;
 using System;
-
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 namespace BasicFacebookFeatures
 {
-    public class OldestPhotoFeature : IFacebookFeature<Photo>
+    public class OldestPhotoFeature
     {
-        public Photo Execute(User i_User)
+        public Photo GetOldestPhoto(User i_User)
         {
             Photo oldestPhoto = null;
 
@@ -16,14 +20,15 @@ namespace BasicFacebookFeatures
                     foreach (Photo photo in album.Photos)
                     {
                         if (oldestPhoto == null ||
-                            photo.CreatedTime < oldestPhoto.CreatedTime)
+                               photo.CreatedTime < oldestPhoto.CreatedTime)
                         {
                             oldestPhoto = photo;
+
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception i_Exception)
             {
             }
 

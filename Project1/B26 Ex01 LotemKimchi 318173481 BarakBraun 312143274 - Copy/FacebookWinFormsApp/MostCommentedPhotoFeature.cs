@@ -1,24 +1,29 @@
 ﻿using FacebookWrapper.ObjectModel;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BasicFacebookFeatures
 {
-    public class MostCommentedPhotoFeature : IFacebookFeature<Photo>
+    public class MostCommentedPhotoFeature
     {
-        public Photo Execute(User i_User)
+        public Photo GetMostCommentedPhotoFeature(User i_User)
         {
             Photo mostCommentedPhoto = null;
             int maxComment = 0;
 
             try
             {
-                foreach (Album album in i_User.Albums)
+                foreach(Album album in i_User.Albums)
                 {
                     foreach (Photo photo in album.Photos)
                     {
                         int commentCount = photo.Comments.Count;
 
-                        if (commentCount > maxComment)
+                        if(commentCount > maxComment)
                         {
                             mostCommentedPhoto = photo;
                             maxComment = commentCount;
@@ -26,7 +31,7 @@ namespace BasicFacebookFeatures
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception i_Exception)
             {
             }
 

@@ -1,11 +1,16 @@
 ﻿using FacebookWrapper.ObjectModel;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BasicFacebookFeatures
 {
-    public class MostLikedPhotoFeature : IFacebookFeature<Photo>
+    public class MostLikedPhotoFeature
     {
-        public Photo Execute(User i_User)
+        public Photo GetMostLikedPhotoFeature(User i_User)
         {
             Photo mostLiked = null;
             int maxLikes = 0;
@@ -17,7 +22,6 @@ namespace BasicFacebookFeatures
                     foreach (Photo photo in album.Photos)
                     {
                         int liked = photo.LikedBy.Count;
-
                         if (liked > maxLikes)
                         {
                             mostLiked = photo;
@@ -26,7 +30,7 @@ namespace BasicFacebookFeatures
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception i_Exception)
             {
             }
 
