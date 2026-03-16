@@ -77,12 +77,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlbumWithMostPhotos.cs" />
+    <Compile Include="FacebookManager.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="FriendWithLongestNameFeature.cs" />
+    <Compile Include="MostCommentedPhotoFeature.cs" />
+    <Compile Include="MostLikedFriendFeature.cs" />
+    <Compile Include="MostLikedPhotoFeature.cs" />
+    <Compile Include="OldestPhotoFeature.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormMain.resx">
@@ -113,7 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CefSharp.WinForms">
-      <Version>87.1.132</Version>
+      <Version>141.0.110</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
