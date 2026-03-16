@@ -3,16 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|c:\\users\\tot\\studies\\application-programming-using-design-patterns\\project1\\b26 ex01 lotemkimchi 318173481 barakbraun 312143274\\facebookwinformsapp\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\facebookwinformsapp\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\facebookwinformsapp\\formmain.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\formmain.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\facebookwinformsapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|c:\\users\\tot\\studies\\application-programming-using-design-patterns\\project1\\b26 ex01 lotemkimchi 318173481 barakbraun 312143274\\facebookwinformsapp\\oldestphotofeature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -31,24 +23,32 @@
       "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\ifacebookfeature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|c:\\users\\tot\\studies\\application-programming-using-design-patterns\\project1\\b26 ex01 lotemkimchi 318173481 barakbraun 312143274\\facebookwinformsapp\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|c:\\users\\tot\\studies\\application-programming-using-design-patterns\\project1\\b26 ex01 lotemkimchi 318173481 barakbraun 312143274\\facebookwinformsapp\\countalbumsfeature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\countalbumsfeature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|c:\\users\\tot\\studies\\application-programming-using-design-patterns\\project1\\b26 ex01 lotemkimchi 318173481 barakbraun 312143274\\facebookwinformsapp\\albumwithmostphotos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\albumwithmostphotos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\facebookwinformsapp\\formmain.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}",
-      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\formmain.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\facebookwinformsapp\\facebookmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\facebookmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\facebookwinformsapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|c:\\users\\tot\\studies\\application-programming-using-design-patterns\\project1\\b26 ex01 lotemkimchi 318173481 barakbraun 312143274\\facebookwinformsapp\\albumwithmostphotos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\albumwithmostphotos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\facebookwinformsapp\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\facebookwinformsapp\\formmain.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\formmain.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\facebookwinformsapp\\formmain.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}",
+      "RelativeMoniker": "D:0:0:{905D5BF1-A7E4-4440-85E8-84772F5312D5}|FacebookWinFormsApp\\FacebookWinFormsApp.csproj|solutionrelative:facebookwinformsapp\\formmain.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Tot\\.nuget\\packages\\cefsharp.winforms\\87.1.132\\Readme.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
@@ -64,7 +64,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 13,
+          "SelectedChildIndex": 11,
           "Children": [
             {
               "$type": "Bookmark",
@@ -73,19 +73,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "IFacebookFeature.cs",
-              "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\IFacebookFeature.cs",
-              "RelativeDocumentMoniker": "FacebookWinFormsApp\\IFacebookFeature.cs",
-              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\IFacebookFeature.cs*",
-              "RelativeToolTip": "FacebookWinFormsApp\\IFacebookFeature.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-16T11:53:39.217Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
@@ -97,13 +84,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 4,
+              "Title": "IFacebookFeature.cs",
+              "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\IFacebookFeature.cs",
+              "RelativeDocumentMoniker": "FacebookWinFormsApp\\IFacebookFeature.cs",
+              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\IFacebookFeature.cs",
+              "RelativeToolTip": "FacebookWinFormsApp\\IFacebookFeature.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-16T11:53:39.217Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "CountAlbumsFeature.cs",
               "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\CountAlbumsFeature.cs",
               "RelativeDocumentMoniker": "FacebookWinFormsApp\\CountAlbumsFeature.cs",
-              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\CountAlbumsFeature.cs*",
-              "RelativeToolTip": "FacebookWinFormsApp\\CountAlbumsFeature.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAcAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\CountAlbumsFeature.cs",
+              "RelativeToolTip": "FacebookWinFormsApp\\CountAlbumsFeature.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-16T11:37:20.587Z",
               "EditorCaption": ""
@@ -114,81 +114,81 @@
               "Title": "AlbumWithMostPhotos.cs",
               "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\AlbumWithMostPhotos.cs",
               "RelativeDocumentMoniker": "FacebookWinFormsApp\\AlbumWithMostPhotos.cs",
-              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\AlbumWithMostPhotos.cs*",
-              "RelativeToolTip": "FacebookWinFormsApp\\AlbumWithMostPhotos.cs*",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAQwAQAAAABAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\AlbumWithMostPhotos.cs",
+              "RelativeToolTip": "FacebookWinFormsApp\\AlbumWithMostPhotos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-15T20:23:12.319Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "OldestPhotoFeature.cs",
               "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\OldestPhotoFeature.cs",
               "RelativeDocumentMoniker": "FacebookWinFormsApp\\OldestPhotoFeature.cs",
-              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\OldestPhotoFeature.cs*",
-              "RelativeToolTip": "FacebookWinFormsApp\\OldestPhotoFeature.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAFAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\OldestPhotoFeature.cs",
+              "RelativeToolTip": "FacebookWinFormsApp\\OldestPhotoFeature.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAmwCAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-15T19:36:47.618Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "MostCommentedPhotoFeature.cs",
               "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\MostCommentedPhotoFeature.cs",
               "RelativeDocumentMoniker": "FacebookWinFormsApp\\MostCommentedPhotoFeature.cs",
-              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\MostCommentedPhotoFeature.cs*",
-              "RelativeToolTip": "FacebookWinFormsApp\\MostCommentedPhotoFeature.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAABAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\MostCommentedPhotoFeature.cs",
+              "RelativeToolTip": "FacebookWinFormsApp\\MostCommentedPhotoFeature.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAQwCMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-15T19:20:32.987Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "MostLikedPhotoFeature.cs",
               "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\MostLikedPhotoFeature.cs",
               "RelativeDocumentMoniker": "FacebookWinFormsApp\\MostLikedPhotoFeature.cs",
-              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\MostLikedPhotoFeature.cs*",
-              "RelativeToolTip": "FacebookWinFormsApp\\MostLikedPhotoFeature.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAABAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\MostLikedPhotoFeature.cs",
+              "RelativeToolTip": "FacebookWinFormsApp\\MostLikedPhotoFeature.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAA8wCMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-15T17:10:13.965Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 7,
               "Title": "FacebookManager.cs",
               "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\FacebookManager.cs",
               "RelativeDocumentMoniker": "FacebookWinFormsApp\\FacebookManager.cs",
               "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\FacebookManager.cs",
               "RelativeToolTip": "FacebookWinFormsApp\\FacebookManager.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAcwEEAAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAACkAAAAAAAAAAAAiwEUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-14T19:47:35.403Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\Program.cs",
               "RelativeDocumentMoniker": "FacebookWinFormsApp\\Program.cs",
               "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\Program.cs",
               "RelativeToolTip": "FacebookWinFormsApp\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAYwBcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-14T17:24:20.95Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 9,
               "Title": "FormMain.cs [Design]",
               "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\FormMain.cs",
               "RelativeDocumentMoniker": "FacebookWinFormsApp\\FormMain.cs",
@@ -200,33 +200,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
               "Title": "FormMain.cs",
               "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\FormMain.cs",
               "RelativeDocumentMoniker": "FacebookWinFormsApp\\FormMain.cs",
               "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\FormMain.cs",
               "RelativeToolTip": "FacebookWinFormsApp\\FormMain.cs",
-              "ViewState": "AgIAAPAAAAAAAAAAAAAmwP4AAAAsAAAAAAAAAA==",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABoAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-13T14:55:54.918Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 10,
               "Title": "FormMain.Designer.cs",
               "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\FormMain.Designer.cs",
               "RelativeDocumentMoniker": "FacebookWinFormsApp\\FormMain.Designer.cs",
               "ToolTip": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\FormMain.Designer.cs",
               "RelativeToolTip": "FacebookWinFormsApp\\FormMain.Designer.cs",
-              "ViewState": "AgIAAIYBAAAAAAAAAAAqwJQBAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAANkAAAAAAAAAAAAlwMgCAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-14T10:21:44.776Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "FormMain.resx",
               "DocumentMoniker": "C:\\Users\\Tot\\Studies\\Application-Programming-Using-Design-Patterns\\Project1\\B26 Ex01 LotemKimchi 318173481 BarakBraun 312143274\\FacebookWinFormsApp\\FormMain.resx",
               "RelativeDocumentMoniker": "FacebookWinFormsApp\\FormMain.resx",

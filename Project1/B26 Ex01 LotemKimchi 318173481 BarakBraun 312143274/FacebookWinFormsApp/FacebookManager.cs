@@ -14,10 +14,10 @@ namespace BasicFacebookFeatures
     {
         private LoginResult m_LoginResult;
 
-        public LoginResult Login(string appId)
+        public LoginResult Login(string i_AppId)
         {
             m_LoginResult = FacebookService.Login(
-                appId,
+                i_AppId,
                 "email",
                 "public_profile",
                 "user_friends",

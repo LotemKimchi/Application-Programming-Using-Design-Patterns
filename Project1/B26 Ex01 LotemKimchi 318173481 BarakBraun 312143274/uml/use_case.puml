@@ -1,0 +1,74 @@
+@startuml UseCaseDiagram
+left to right direction
+scale 2200 width
+
+skinparam backgroundColor White
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam nodesep 50
+skinparam ranksep 150
+
+skinparam actor {
+    BackgroundColor White
+    BorderColor Black
+    FontSize 13
+    FontStyle bold
+}
+
+skinparam usecase {
+    BackgroundColor White
+    BorderColor Black
+    FontSize 13
+    BorderThickness 1.5
+}
+
+skinparam rectangle {
+    BackgroundColor #EEEEEE
+    BorderColor Black
+    BorderThickness 2
+    FontSize 12
+    FontColor #333333
+    FontStyle bold
+}
+
+skinparam ArrowColor Black
+skinparam ArrowThickness 1
+skinparam ArrowFontSize 12
+skinparam ArrowFontStyle plain
+
+actor "User" as user
+
+rectangle "Facebook WinForms App" {
+
+    usecase "Login with Facebook"               as UC1
+    usecase "Login as Design Patterns"          as UC2
+    usecase "Logout"                            as UC3
+    usecase "View Profile Info"                 as UC4
+    usecase "View Albums List"                  as UC5
+    usecase "Find Album with Most Photos"       as UC6
+    usecase "Find Oldest Photo"                 as UC7
+    usecase "Find Most Liked Photo"             as UC8
+    usecase "Find Most Commented Photo  [NEW]"  as UC9
+    usecase "Count Albums  [NEW]"               as UC10
+}
+
+user -- UC1
+user -- UC2
+user -- UC3
+user -- UC4
+user -- UC5
+user -- UC6
+user -- UC7
+user -- UC8
+user -- UC9
+user -- UC10
+
+UC4  .> UC1 : <<include>>
+UC5  .> UC1 : <<include>>
+UC6  .> UC1 : <<include>>
+UC7  .> UC1 : <<include>>
+UC8  .> UC1 : <<include>>
+UC9  .> UC1 : <<include>>
+UC10 .> UC1 : <<include>>
+
+@enduml
