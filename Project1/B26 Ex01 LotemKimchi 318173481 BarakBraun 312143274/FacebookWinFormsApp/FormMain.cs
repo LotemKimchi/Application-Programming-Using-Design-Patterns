@@ -156,43 +156,12 @@ namespace BasicFacebookFeatures
 
         private void buttonMostLikedFriend_Click(object sender, EventArgs e)
         {
-            User user = m_FacebookManager.LoggedInUser;
-
-            if (user == null)
-            {
-                MessageBox.Show("Please login first");
-                return;
-            }
-
-            MostLikedFriendFeature feature = new MostLikedFriendFeature();
-
-            string result = feature.GetMostLikedFriendFeature(m_FacebookManager.LoggedInUser);
-
-            MessageBox.Show("Most liked friend: " + result);
+            
         }
 
         private void buttonMostLikedPhoto_Click(object sender, EventArgs e)
         {
-            User user = m_FacebookManager.LoggedInUser;
-
-            if (user == null)
-            {
-                MessageBox.Show("Please login first");
-                return;
-            }
-
-            MostLikedPhotoFeature feature = new MostLikedPhotoFeature();
-
-            Photo photo = feature.GetMostLikedPhotoFeature(m_FacebookManager.LoggedInUser);
-
-            if (photo != null)
-            {
-                pictureBoxMostLikePhoto.ImageLocation = photo.PictureNormalURL;
-            }
-            else
-            {
-                MessageBox.Show("No photo found");
-            }
+            
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
@@ -202,76 +171,18 @@ namespace BasicFacebookFeatures
 
         private void buttonOldestPhoto_Click(object sender, EventArgs e)
         {
-            User user = m_FacebookManager.LoggedInUser;
-
-            if (user == null)
-            {
-                MessageBox.Show("Please login first");
-                return;
-            }
-
-            OldestPhotoFeature feature = new OldestPhotoFeature();
-
-            Photo photo = feature.GetOldestPhoto(m_FacebookManager.LoggedInUser);
-
-            if (photo != null)
-            {
-                pictureBoxOldestPhoto.ImageLocation = photo.PictureNormalURL;
-
-                MessageBox.Show($"Oldest photo created at {photo.CreatedTime}");
-            }
-            else
-            {
-                MessageBox.Show("No photos found");
-            }
+           
         }
 
         private void buttonMostCommentedPhoto_Click(object sender, EventArgs e)
         {
-            User user = m_FacebookManager.LoggedInUser;
-
-            if (user == null)
-            {
-                MessageBox.Show("Please login first");
-                return;
-            }
-
-            MostCommentedPhotoFeature feature = new MostCommentedPhotoFeature();
-            Photo photo = feature.GetMostCommentedPhotoFeature(m_FacebookManager.LoggedInUser);
-            if (photo != null)
-            {
-                pictureBoxMostCommentedPhoto.ImageLocation = photo.PictureNormalURL;
-                MessageBox.Show($"Most commented photo has {photo.Comments.Count} comments");
-            }
-            else
-            {
-                MessageBox.Show("No photos found");
-            }
+           
 
         }
 
         private void buttonMostPhotosAlbum_Click_1(object sender, EventArgs e)
         {
-            User user = m_FacebookManager.LoggedInUser;
-
-            if (user == null)
-            {
-                MessageBox.Show("Please login first");
-                return;
-            }
-
-            AlbumWithMostPhotos feature = new AlbumWithMostPhotos();
-
-            Album album = feature.GetAlbumWithMostPhotos(m_FacebookManager.LoggedInUser);
-
-            if (album != null)
-            {
-                MessageBox.Show($"Album with most photos: {album.Name}");
-            }
-            else
-            {
-                MessageBox.Show("No albums found");
-            }
+            
         }
 
         private void buttonFriendWithLongestName_Click(object sender, EventArgs e)
@@ -296,6 +207,151 @@ namespace BasicFacebookFeatures
             {
                 MessageBox.Show("No friends found");
             }
+        }
+
+        private void buttonMostPhotosAlbum_Click(object sender, EventArgs e)
+        {
+            User user = m_FacebookManager.LoggedInUser;
+
+            if (user == null)
+            {
+                MessageBox.Show("Please login first");
+                return;
+            }
+
+            AlbumWithMostPhotos feature = new AlbumWithMostPhotos();
+
+            Album album = feature.GetAlbumWithMostPhotos(m_FacebookManager.LoggedInUser);
+
+            if (album != null)
+            {
+                //MessageBox.Show($"Album with most photos: {album.Name}");
+                labelAlbumName.Text = album.Name;
+            }
+            else
+            {
+                //MessageBox.Show("No albums found");
+                labelAlbumName.Text = "No albums found";
+            }
+        }
+
+        private void labelAlbumName_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonOldestPhoto_Click_1(object sender, EventArgs e)
+        {
+            User user = m_FacebookManager.LoggedInUser;
+
+            if (user == null)
+            {
+                MessageBox.Show("Please login first");
+                return;
+            }
+
+            OldestPhotoFeature feature = new OldestPhotoFeature();
+
+            Photo photo = feature.GetOldestPhoto(m_FacebookManager.LoggedInUser);
+
+            if (photo != null)
+            {
+                pictureBoxOldestPhoto.ImageLocation = photo.PictureNormalURL;
+
+                //MessageBox.Show($"Oldest photo created at {photo.CreatedTime}");
+                labelOldestPhotoDate.Text = $"Oldest photo created at {photo.CreatedTime}";
+            }
+            else
+            {
+                //MessageBox.Show("No photos found");
+                labelOldestPhotoDate.Text = "No photos found";
+            }
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBoxMostLikePhoto_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonMostLikedPhoto_Click_1(object sender, EventArgs e)
+        {
+            User user = m_FacebookManager.LoggedInUser;
+
+            if (user == null)
+            {
+                MessageBox.Show("Please login first");
+                return;
+            }
+
+            MostLikedPhotoFeature feature = new MostLikedPhotoFeature();
+
+            Photo photo = feature.GetMostLikedPhotoFeature(m_FacebookManager.LoggedInUser);
+
+            if (photo != null)
+            {
+                pictureBoxMostLikePhoto.ImageLocation = photo.PictureNormalURL;
+            }
+            else
+            {
+                MessageBox.Show("No photo found");
+
+            }
+        }
+
+        private void buttonMostCommentedPhoto_Click_1(object sender, EventArgs e)
+        {
+            User user = m_FacebookManager.LoggedInUser;
+
+            if (user == null)
+            {
+                MessageBox.Show("Please login first");
+                return;
+            }
+
+            MostCommentedPhotoFeature feature = new MostCommentedPhotoFeature();
+            Photo photo = feature.GetMostCommentedPhotoFeature(m_FacebookManager.LoggedInUser);
+            if (photo != null)
+            {
+                pictureBoxMostCommentedPhoto.ImageLocation = photo.PictureNormalURL;
+                MessageBox.Show($"Most commented photo has {photo.Comments.Count} comments");
+            }
+            else
+            {
+                MessageBox.Show("No photos found");
+            }
+        }
+
+        private void buttonMostLikedFriend_Click_1(object sender, EventArgs e)
+        {
+            User user = m_FacebookManager.LoggedInUser;
+
+            if (user == null)
+            {
+                MessageBox.Show("Please login first");
+                return;
+            }
+
+            MostLikedFriendFeature feature = new MostLikedFriendFeature();
+
+            string result = feature.GetMostLikedFriendFeature(m_FacebookManager.LoggedInUser);
+
+            //MessageBox.Show("Most liked friend: " + result);
+            labelMostLikedFriend.Text = "Most liked friend: " + result;
         }
     }
 }
