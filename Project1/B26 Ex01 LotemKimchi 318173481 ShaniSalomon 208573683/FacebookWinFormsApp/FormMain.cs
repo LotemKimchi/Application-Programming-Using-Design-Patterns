@@ -22,7 +22,7 @@ namespace BasicFacebookFeatures
         }
 
         private const string k_AppId = "1783124789311728";
-        private const string k_DesignPatternsToken = "EAAUm6cZC4eUEBQTAa3rRgO39UZCIJLeD9OpF5SYAevqSaFI16sfjT6JznpAUbyX5Soyj4Uv2ZBRkesoHO9omNcJ3KSYPZCExgaKrIprACUMIVnhiHzT5a46zbdC2VkvZC04n1ZARj8WmvOCYyuIdmRZBNjtWZCFJrbjFoms5t3sU8G9dO1xDCYH7kkfU67heIUZCFDIuTtL0CzF2JUHBpRpwPdXYilOJW811z3C5fY9TOyBiUwZAqx4ZAV6YS5ZBBtYKdsb7";
+        private const string k_DesignPatternsToken = "EAAUm6cZC4eUEBQ89SIPgqvUNRPYwshVbzNFtykREi0CbEUsssHsY0ceBnLKHx9uOtmH5ClGksE6EzWZBRylGglQToWaaqV2QWsOcus79byyncz93TDesQvzX2pv2kllZA8mEg5iDMiYktoptWXySLSrS4Y2ATeDyEEFsJLZBmyshcy464jImETOhjyGYYKxJDZBWhxzRWLsRZApkMmJiEG742LGjEq486o9RgdhFrkuTLT0xup5efuMsJNL8ENsJqZC";
 
         private FacebookManager m_FacebookManager = new FacebookManager();
 
@@ -119,19 +119,8 @@ namespace BasicFacebookFeatures
             }
         }
 
-        private void buttonLogout_Click(object sender, EventArgs e)
+        private void clearUserData()
         {
-            m_FacebookManager.Logout();
-
-            buttonLogin.Text = "\u25B6  Login with Facebook";
-            buttonLogin.BackColor = Color.FromArgb(24, 119, 242);
-
-            toolStripStatusLabel1.Text = "\u26AA  Not logged in";
-            toolStripStatusLabel1.ForeColor = Color.FromArgb(101, 103, 107);
-
-            buttonLogin.Enabled = true;
-            buttonLogout.Enabled = false;
-
             listBoxAlbums.Items.Clear();
 
             // Profile
@@ -152,6 +141,22 @@ namespace BasicFacebookFeatures
             labelAlbumsCount.Text = "";
         }
 
+        private void buttonLogout_Click(object sender, EventArgs e)
+        {
+            m_FacebookManager.Logout();
+
+            buttonLogin.Text = "\u25B6  Login with Facebook";
+            buttonLogin.BackColor = Color.FromArgb(24, 119, 242);
+
+            toolStripStatusLabel1.Text = "\u26AA  Not logged in";
+            toolStripStatusLabel1.ForeColor = Color.FromArgb(101, 103, 107);
+
+            buttonLogin.Enabled = true;
+            buttonLogout.Enabled = false;
+
+            clearUserData();
+        }
+
         private void buttonConnectAsDesig_Click_1(object sender, EventArgs e)
         {
             try
@@ -160,6 +165,7 @@ namespace BasicFacebookFeatures
 
                 if (loginResult != null && !string.IsNullOrEmpty(loginResult.AccessToken))
                 {
+                    clearUserData();
                     afterLogin();
                     displayUserInfo();
                 }
@@ -289,7 +295,14 @@ namespace BasicFacebookFeatures
 
             int albumsCount = feature.Execute(user);
 
-            labelAlbumsCount.Text = $"Albums Count: {albumsCount}";
+            if (albumsCount == -1)
+            {
+                labelAlbumsCount.Text = "No permission to access albums";
+            }
+            else
+            {
+                labelAlbumsCount.Text = $"Albums Count: {albumsCount}";
+            }
         }
     }
 }

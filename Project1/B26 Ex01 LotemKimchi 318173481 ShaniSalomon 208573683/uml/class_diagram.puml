@@ -29,6 +29,7 @@ class FormMain {
     - buttonMostLikedPhoto_Click_1(sender : object, e : EventArgs) : void
     - buttonMostCommentedPhoto_Click_1(sender : object, e : EventArgs) : void
     - buttonCountAlbums_Click(sender : object, e : EventArgs) : void
+    - clearUserData() : void
 }
 
 class FacebookManager {
