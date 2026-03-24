@@ -21,24 +21,25 @@ namespace BasicFacebookFeatures
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panelHeader1 = new System.Windows.Forms.Panel();
             this.labelHeader1 = new System.Windows.Forms.Label();
-            this.panelProfile = new System.Windows.Forms.Panel();
-            this.pictureBoxProfile = new System.Windows.Forms.PictureBox();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.labelName = new System.Windows.Forms.Label();
-            this.labelPersonalInfo = new System.Windows.Forms.Label();
-            this.panelSepProfile = new System.Windows.Forms.Panel();
+            this.pictureBoxProfile = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.labelBirthday = new System.Windows.Forms.Label();
             this.buttonConnectAsDesig = new System.Windows.Forms.Button();
+            this.textBoxAppID = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.buttonLogout = new System.Windows.Forms.Button();
             this.buttonLogin = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panelHeader2 = new System.Windows.Forms.Panel();
             this.labelHeader2 = new System.Windows.Forms.Label();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.buttonCountAlbums = new System.Windows.Forms.Button();
-            this.labelAlbumsCount = new System.Windows.Forms.Label();
-            this.panelSep3 = new System.Windows.Forms.Panel();
-            this.buttonMostPhotosAlbum = new System.Windows.Forms.Button();
+            this.buttonOldestPhoto = new System.Windows.Forms.Button();
+            this.pictureBoxOldestPhoto = new System.Windows.Forms.PictureBox();
             this.labelAlbumName = new System.Windows.Forms.Label();
+            this.labelOldestPhotoDate = new System.Windows.Forms.Label();
+            this.buttonMostPhotosAlbum = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.listBoxAlbums = new System.Windows.Forms.ListBox();
             this.labelAlbumList = new System.Windows.Forms.Label();
@@ -46,31 +47,31 @@ namespace BasicFacebookFeatures
             this.panelHeader3 = new System.Windows.Forms.Panel();
             this.labelHeader3 = new System.Windows.Forms.Label();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.label2 = new System.Windows.Forms.Label();
             this.buttonMostLikedPhoto = new System.Windows.Forms.Button();
             this.panelMostLikedPhoto = new System.Windows.Forms.Panel();
             this.pictureBoxMostLikePhoto = new System.Windows.Forms.PictureBox();
             this.labelMostLikedStatus = new System.Windows.Forms.Label();
-            this.panelSep1 = new System.Windows.Forms.Panel();
             this.buttonMostCommentedPhoto = new System.Windows.Forms.Button();
             this.panelMostCommentedPhoto = new System.Windows.Forms.Panel();
             this.pictureBoxMostCommentedPhoto = new System.Windows.Forms.PictureBox();
             this.labelMostCommentedStatus = new System.Windows.Forms.Label();
-            this.panelSep2 = new System.Windows.Forms.Panel();
-            this.buttonOldestPhoto = new System.Windows.Forms.Button();
-            this.panelOldestPhoto = new System.Windows.Forms.Panel();
-            this.pictureBoxOldestPhoto = new System.Windows.Forms.PictureBox();
-            this.labelOldestPhotoDate = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.buttonCountAlbums = new System.Windows.Forms.Button();
+            this.labelAlbumsCount = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabPageAnalytics.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panelHeader1.SuspendLayout();
-            this.panelProfile.SuspendLayout();
+            this.tableLayoutPanel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProfile)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.panelHeader2.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOldestPhoto)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.panelHeader3.SuspendLayout();
@@ -79,8 +80,6 @@ namespace BasicFacebookFeatures
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMostLikePhoto)).BeginInit();
             this.panelMostCommentedPhoto.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMostCommentedPhoto)).BeginInit();
-            this.panelOldestPhoto.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOldestPhoto)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -94,20 +93,22 @@ namespace BasicFacebookFeatures
             this.tabPageAnalytics.Location = new System.Drawing.Point(0, 0);
             this.tabPageAnalytics.Name = "tabPageAnalytics";
             this.tabPageAnalytics.SelectedIndex = 0;
-            this.tabPageAnalytics.Size = new System.Drawing.Size(920, 697);
+            this.tabPageAnalytics.Size = new System.Drawing.Size(920, 620);
             this.tabPageAnalytics.TabIndex = 54;
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.White;
             this.tabPage1.Controls.Add(this.panelHeader1);
-            this.tabPage1.Controls.Add(this.panelProfile);
+            this.tabPage1.Controls.Add(this.tableLayoutPanel4);
             this.tabPage1.Controls.Add(this.buttonConnectAsDesig);
+            this.tabPage1.Controls.Add(this.textBoxAppID);
+            this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.buttonLogout);
             this.tabPage1.Controls.Add(this.buttonLogin);
             this.tabPage1.Location = new System.Drawing.Point(4, 32);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(912, 661);
+            this.tabPage1.Size = new System.Drawing.Size(912, 584);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "  👤  Profile";
             // 
@@ -134,65 +135,64 @@ namespace BasicFacebookFeatures
             this.labelHeader1.Text = "👤  Profile";
             this.labelHeader1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // panelProfile
+            // tableLayoutPanel4
             // 
-            this.panelProfile.BackColor = System.Drawing.Color.White;
-            this.panelProfile.Controls.Add(this.pictureBoxProfile);
-            this.panelProfile.Controls.Add(this.labelName);
-            this.panelProfile.Controls.Add(this.labelPersonalInfo);
-            this.panelProfile.Controls.Add(this.panelSepProfile);
-            this.panelProfile.Controls.Add(this.labelBirthday);
-            this.panelProfile.Location = new System.Drawing.Point(410, 74);
-            this.panelProfile.Name = "panelProfile";
-            this.panelProfile.Size = new System.Drawing.Size(378, 560);
-            this.panelProfile.TabIndex = 74;
+            this.tableLayoutPanel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(242)))), ((int)(((byte)(245)))));
+            this.tableLayoutPanel4.ColumnCount = 2;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.Controls.Add(this.labelName, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.pictureBoxProfile, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.pictureBox1, 1, 1);
+            this.tableLayoutPanel4.Controls.Add(this.labelBirthday, 1, 0);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(25, 278);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.Padding = new System.Windows.Forms.Padding(10);
+            this.tableLayoutPanel4.RowCount = 2;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(860, 210);
+            this.tableLayoutPanel4.TabIndex = 74;
+            // 
+            // labelName
+            // 
+            this.labelName.AutoSize = true;
+            this.labelName.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.labelName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(30)))), ((int)(((byte)(33)))));
+            this.labelName.Location = new System.Drawing.Point(13, 10);
+            this.labelName.Name = "labelName";
+            this.labelName.Size = new System.Drawing.Size(136, 32);
+            this.labelName.TabIndex = 57;
+            this.labelName.Text = "";
             // 
             // pictureBoxProfile
             // 
-            this.pictureBoxProfile.Location = new System.Drawing.Point(198, 20);
+            this.pictureBoxProfile.Location = new System.Drawing.Point(13, 55);
             this.pictureBoxProfile.Name = "pictureBoxProfile";
-            this.pictureBoxProfile.Size = new System.Drawing.Size(141, 141);
+            this.pictureBoxProfile.Size = new System.Drawing.Size(130, 130);
             this.pictureBoxProfile.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxProfile.TabIndex = 55;
             this.pictureBoxProfile.TabStop = false;
             // 
-            // labelName
+            // pictureBox1
             // 
-            this.labelName.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.labelName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(30)))), ((int)(((byte)(33)))));
-            this.labelName.Location = new System.Drawing.Point(0, 172);
-            this.labelName.Name = "labelName";
-            this.labelName.Size = new System.Drawing.Size(537, 40);
-            this.labelName.TabIndex = 57;
-            this.labelName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // labelPersonalInfo
-            // 
-            this.labelPersonalInfo.AutoSize = true;
-            this.labelPersonalInfo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.labelPersonalInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(103)))), ((int)(((byte)(107)))));
-            this.labelPersonalInfo.Location = new System.Drawing.Point(20, 228);
-            this.labelPersonalInfo.Name = "labelPersonalInfo";
-            this.labelPersonalInfo.Size = new System.Drawing.Size(130, 25);
-            this.labelPersonalInfo.TabIndex = 60;
-            this.labelPersonalInfo.Text = "Personal Info";
-            // 
-            // panelSepProfile
-            // 
-            this.panelSepProfile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(220)))), ((int)(((byte)(224)))));
-            this.panelSepProfile.Location = new System.Drawing.Point(0, 260);
-            this.panelSepProfile.Name = "panelSepProfile";
-            this.panelSepProfile.Size = new System.Drawing.Size(537, 1);
-            this.panelSepProfile.TabIndex = 61;
+            this.pictureBox1.Location = new System.Drawing.Point(163, 55);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(330, 130);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 58;
+            this.pictureBox1.TabStop = false;
             // 
             // labelBirthday
             // 
+            this.labelBirthday.AutoSize = true;
             this.labelBirthday.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.labelBirthday.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(30)))), ((int)(((byte)(33)))));
-            this.labelBirthday.Location = new System.Drawing.Point(20, 272);
+            this.labelBirthday.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(103)))), ((int)(((byte)(107)))));
+            this.labelBirthday.Location = new System.Drawing.Point(163, 10);
             this.labelBirthday.Name = "labelBirthday";
-            this.labelBirthday.Size = new System.Drawing.Size(497, 28);
+            this.labelBirthday.Size = new System.Drawing.Size(109, 23);
             this.labelBirthday.TabIndex = 59;
+            this.labelBirthday.Text = "";
             // 
             // buttonConnectAsDesig
             // 
@@ -210,6 +210,28 @@ namespace BasicFacebookFeatures
             this.buttonConnectAsDesig.Text = "⊞  Design Patterns Account";
             this.buttonConnectAsDesig.UseVisualStyleBackColor = false;
             this.buttonConnectAsDesig.Click += new System.EventHandler(this.buttonConnectAsDesig_Click_1);
+            // 
+            // textBoxAppID
+            // 
+            this.textBoxAppID.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxAppID.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.textBoxAppID.Location = new System.Drawing.Point(345, 175);
+            this.textBoxAppID.Name = "textBoxAppID";
+            this.textBoxAppID.Size = new System.Drawing.Size(460, 30);
+            this.textBoxAppID.TabIndex = 54;
+            this.textBoxAppID.Text = "1450160541956417";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(103)))), ((int)(((byte)(107)))));
+            this.label1.Location = new System.Drawing.Point(345, 74);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(328, 63);
+            this.label1.TabIndex = 53;
+            this.label1.Text = "This is the AppID of \"Design Patterns App 2.4\".\r\nThe grader will use it to test y" +
+    "our app.\r\nType here your own AppID to test it:\r\n";
             // 
             // buttonLogout
             // 
@@ -252,9 +274,9 @@ namespace BasicFacebookFeatures
             this.tabPage2.Controls.Add(this.tableLayoutPanel1);
             this.tabPage2.Location = new System.Drawing.Point(4, 32);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(912, 661);
+            this.tabPage2.Size = new System.Drawing.Size(192, 64);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "  📷  Album Analyst";
+            this.tabPage2.Text = "  📷  Albums & Photos";
             // 
             // panelHeader2
             // 
@@ -264,7 +286,7 @@ namespace BasicFacebookFeatures
             this.panelHeader2.Location = new System.Drawing.Point(0, 0);
             this.panelHeader2.Name = "panelHeader2";
             this.panelHeader2.Padding = new System.Windows.Forms.Padding(18, 0, 0, 0);
-            this.panelHeader2.Size = new System.Drawing.Size(912, 56);
+            this.panelHeader2.Size = new System.Drawing.Size(192, 56);
             this.panelHeader2.TabIndex = 101;
             // 
             // labelHeader2
@@ -274,97 +296,92 @@ namespace BasicFacebookFeatures
             this.labelHeader2.ForeColor = System.Drawing.Color.White;
             this.labelHeader2.Location = new System.Drawing.Point(18, 0);
             this.labelHeader2.Name = "labelHeader2";
-            this.labelHeader2.Size = new System.Drawing.Size(894, 56);
+            this.labelHeader2.Size = new System.Drawing.Size(174, 56);
             this.labelHeader2.TabIndex = 0;
-            this.labelHeader2.Text = "📷  Album Analyst";
+            this.labelHeader2.Text = "📷  Albums & Photos";
             this.labelHeader2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tableLayoutPanel2
             // 
-            this.tableLayoutPanel2.BackColor = System.Drawing.Color.White;
+            this.tableLayoutPanel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(242)))), ((int)(((byte)(245)))));
             this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 56.64336F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 43.35664F));
-            this.tableLayoutPanel2.Controls.Add(this.buttonCountAlbums, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.labelAlbumsCount, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.panelSep3, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.buttonMostPhotosAlbum, 0, 2);
-            this.tableLayoutPanel2.Controls.Add(this.labelAlbumName, 1, 2);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(20, 299);
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.buttonOldestPhoto, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.pictureBoxOldestPhoto, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.labelAlbumName, 1, 1);
+            this.tableLayoutPanel2.Controls.Add(this.labelOldestPhotoDate, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.buttonMostPhotosAlbum, 1, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(20, 282);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.Padding = new System.Windows.Forms.Padding(8);
             this.tableLayoutPanel2.RowCount = 3;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 2F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(870, 164);
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(870, 258);
             this.tableLayoutPanel2.TabIndex = 80;
             // 
-            // buttonCountAlbums
+            // buttonOldestPhoto
             // 
-            this.buttonCountAlbums.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.buttonCountAlbums.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
-            this.buttonCountAlbums.FlatAppearance.BorderSize = 0;
-            this.buttonCountAlbums.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(102)))), ((int)(((byte)(214)))));
-            this.buttonCountAlbums.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonCountAlbums.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.buttonCountAlbums.ForeColor = System.Drawing.Color.White;
-            this.buttonCountAlbums.Location = new System.Drawing.Point(11, 17);
-            this.buttonCountAlbums.Name = "buttonCountAlbums";
-            this.buttonCountAlbums.Size = new System.Drawing.Size(250, 52);
-            this.buttonCountAlbums.TabIndex = 73;
-            this.buttonCountAlbums.Text = "∑  Count Albums";
-            this.buttonCountAlbums.UseVisualStyleBackColor = false;
-            this.buttonCountAlbums.Click += new System.EventHandler(this.buttonCountAlbums_Click);
+            this.buttonOldestPhoto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
+            this.buttonOldestPhoto.FlatAppearance.BorderSize = 0;
+            this.buttonOldestPhoto.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(102)))), ((int)(((byte)(214)))));
+            this.buttonOldestPhoto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonOldestPhoto.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.buttonOldestPhoto.ForeColor = System.Drawing.Color.White;
+            this.buttonOldestPhoto.Location = new System.Drawing.Point(11, 11);
+            this.buttonOldestPhoto.Name = "buttonOldestPhoto";
+            this.buttonOldestPhoto.Size = new System.Drawing.Size(250, 52);
+            this.buttonOldestPhoto.TabIndex = 74;
+            this.buttonOldestPhoto.Text = "⏱  Oldest Photo";
+            this.buttonOldestPhoto.UseVisualStyleBackColor = false;
+            this.buttonOldestPhoto.Click += new System.EventHandler(this.buttonOldestPhoto_Click_1);
             // 
-            // labelAlbumsCount
+            // pictureBoxOldestPhoto
             // 
-            this.labelAlbumsCount.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.labelAlbumsCount.AutoSize = true;
-            this.labelAlbumsCount.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
-            this.labelAlbumsCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(30)))), ((int)(((byte)(33)))));
-            this.labelAlbumsCount.Location = new System.Drawing.Point(859, 28);
-            this.labelAlbumsCount.Name = "labelAlbumsCount";
-            this.labelAlbumsCount.Size = new System.Drawing.Size(0, 30);
-            this.labelAlbumsCount.TabIndex = 74;
+            this.pictureBoxOldestPhoto.Location = new System.Drawing.Point(11, 119);
+            this.pictureBoxOldestPhoto.Name = "pictureBoxOldestPhoto";
+            this.pictureBoxOldestPhoto.Size = new System.Drawing.Size(210, 128);
+            this.pictureBoxOldestPhoto.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxOldestPhoto.TabIndex = 75;
+            this.pictureBoxOldestPhoto.TabStop = false;
             // 
-            // panelSep3
+            // labelAlbumName
             // 
-            this.panelSep3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
-            this.tableLayoutPanel2.SetColumnSpan(this.panelSep3, 2);
-            this.panelSep3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelSep3.Location = new System.Drawing.Point(11, 81);
-            this.panelSep3.Name = "panelSep3";
-            this.panelSep3.Size = new System.Drawing.Size(848, 1);
-            this.panelSep3.TabIndex = 212;
+            this.labelAlbumName.AutoSize = true;
+            this.labelAlbumName.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.labelAlbumName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(30)))), ((int)(((byte)(33)))));
+            this.labelAlbumName.Location = new System.Drawing.Point(438, 78);
+            this.labelAlbumName.Name = "labelAlbumName";
+            this.labelAlbumName.Size = new System.Drawing.Size(0, 25);
+            this.labelAlbumName.TabIndex = 77;
+            // 
+            // labelOldestPhotoDate
+            // 
+            this.labelOldestPhotoDate.AutoSize = true;
+            this.labelOldestPhotoDate.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.labelOldestPhotoDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(103)))), ((int)(((byte)(107)))));
+            this.labelOldestPhotoDate.Location = new System.Drawing.Point(11, 78);
+            this.labelOldestPhotoDate.Name = "labelOldestPhotoDate";
+            this.labelOldestPhotoDate.Size = new System.Drawing.Size(0, 23);
+            this.labelOldestPhotoDate.TabIndex = 78;
             // 
             // buttonMostPhotosAlbum
             // 
-            this.buttonMostPhotosAlbum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.buttonMostPhotosAlbum.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.buttonMostPhotosAlbum.FlatAppearance.BorderSize = 0;
             this.buttonMostPhotosAlbum.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(102)))), ((int)(((byte)(214)))));
             this.buttonMostPhotosAlbum.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonMostPhotosAlbum.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.buttonMostPhotosAlbum.ForeColor = System.Drawing.Color.White;
-            this.buttonMostPhotosAlbum.Location = new System.Drawing.Point(11, 92);
+            this.buttonMostPhotosAlbum.Location = new System.Drawing.Point(438, 11);
             this.buttonMostPhotosAlbum.Name = "buttonMostPhotosAlbum";
             this.buttonMostPhotosAlbum.Size = new System.Drawing.Size(250, 52);
             this.buttonMostPhotosAlbum.TabIndex = 76;
             this.buttonMostPhotosAlbum.Text = "★  Album With Most Photos";
             this.buttonMostPhotosAlbum.UseVisualStyleBackColor = false;
             this.buttonMostPhotosAlbum.Click += new System.EventHandler(this.buttonMostPhotosAlbum_Click);
-            // 
-            // labelAlbumName
-            // 
-            this.labelAlbumName.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.labelAlbumName.AutoSize = true;
-            this.labelAlbumName.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
-            this.labelAlbumName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(30)))), ((int)(((byte)(33)))));
-            this.labelAlbumName.Location = new System.Drawing.Point(859, 103);
-            this.labelAlbumName.Name = "labelAlbumName";
-            this.labelAlbumName.Size = new System.Drawing.Size(0, 30);
-            this.labelAlbumName.TabIndex = 77;
             // 
             // tableLayoutPanel1
             // 
@@ -413,9 +430,9 @@ namespace BasicFacebookFeatures
             this.tabPage3.Controls.Add(this.label4);
             this.tabPage3.Location = new System.Drawing.Point(4, 32);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(912, 661);
+            this.tabPage3.Size = new System.Drawing.Size(912, 584);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "  📸  Photos Analyst";
+            this.tabPage3.Text = "  📊  Analytics";
             // 
             // panelHeader3
             // 
@@ -437,7 +454,7 @@ namespace BasicFacebookFeatures
             this.labelHeader3.Name = "labelHeader3";
             this.labelHeader3.Size = new System.Drawing.Size(894, 56);
             this.labelHeader3.TabIndex = 0;
-            this.labelHeader3.Text = "📸  Photos Analyst";
+            this.labelHeader3.Text = "📊  Analytics";
             this.labelHeader3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tableLayoutPanel3
@@ -446,35 +463,46 @@ namespace BasicFacebookFeatures
             this.tableLayoutPanel3.ColumnCount = 2;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tableLayoutPanel3.Controls.Add(this.buttonMostLikedPhoto, 0, 0);
-            this.tableLayoutPanel3.Controls.Add(this.panelMostLikedPhoto, 1, 0);
-            this.tableLayoutPanel3.Controls.Add(this.panelSep1, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.label2, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.buttonMostLikedPhoto, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.panelMostLikedPhoto, 1, 1);
             this.tableLayoutPanel3.Controls.Add(this.buttonMostCommentedPhoto, 0, 2);
             this.tableLayoutPanel3.Controls.Add(this.panelMostCommentedPhoto, 1, 2);
-            this.tableLayoutPanel3.Controls.Add(this.panelSep2, 0, 3);
-            this.tableLayoutPanel3.Controls.Add(this.buttonOldestPhoto, 0, 4);
-            this.tableLayoutPanel3.Controls.Add(this.panelOldestPhoto, 1, 4);
+            this.tableLayoutPanel3.Controls.Add(this.label3, 0, 3);
+            this.tableLayoutPanel3.Controls.Add(this.buttonCountAlbums, 0, 4);
+            this.tableLayoutPanel3.Controls.Add(this.labelAlbumsCount, 1, 4);
             this.tableLayoutPanel3.Location = new System.Drawing.Point(20, 72);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 5;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 175F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 2F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 175F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 2F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 148F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(870, 532);
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 165F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 165F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 68F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(870, 472);
             this.tableLayoutPanel3.TabIndex = 0;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.tableLayoutPanel3.SetColumnSpan(this.label2, 2);
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(30)))), ((int)(((byte)(33)))));
+            this.label2.Location = new System.Drawing.Point(3, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(218, 30);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "🖼  Photo Analytics";
             // 
             // buttonMostLikedPhoto
             // 
-            this.buttonMostLikedPhoto.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.buttonMostLikedPhoto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.buttonMostLikedPhoto.FlatAppearance.BorderSize = 0;
             this.buttonMostLikedPhoto.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(102)))), ((int)(((byte)(214)))));
             this.buttonMostLikedPhoto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonMostLikedPhoto.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.buttonMostLikedPhoto.ForeColor = System.Drawing.Color.White;
-            this.buttonMostLikedPhoto.Location = new System.Drawing.Point(3, 60);
+            this.buttonMostLikedPhoto.Location = new System.Drawing.Point(3, 49);
             this.buttonMostLikedPhoto.Name = "buttonMostLikedPhoto";
             this.buttonMostLikedPhoto.Size = new System.Drawing.Size(240, 55);
             this.buttonMostLikedPhoto.TabIndex = 68;
@@ -484,58 +512,46 @@ namespace BasicFacebookFeatures
             // 
             // panelMostLikedPhoto
             // 
-            this.panelMostLikedPhoto.BackColor = System.Drawing.Color.White;
+            this.panelMostLikedPhoto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(242)))), ((int)(((byte)(245)))));
             this.panelMostLikedPhoto.Controls.Add(this.pictureBoxMostLikePhoto);
             this.panelMostLikedPhoto.Controls.Add(this.labelMostLikedStatus);
             this.panelMostLikedPhoto.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelMostLikedPhoto.Location = new System.Drawing.Point(351, 3);
+            this.panelMostLikedPhoto.Location = new System.Drawing.Point(351, 49);
             this.panelMostLikedPhoto.Name = "panelMostLikedPhoto";
             this.panelMostLikedPhoto.Padding = new System.Windows.Forms.Padding(4, 4, 4, 2);
-            this.panelMostLikedPhoto.Size = new System.Drawing.Size(516, 169);
+            this.panelMostLikedPhoto.Size = new System.Drawing.Size(516, 159);
             this.panelMostLikedPhoto.TabIndex = 200;
             // 
             // pictureBoxMostLikePhoto
             // 
-            this.pictureBoxMostLikePhoto.BackColor = System.Drawing.Color.White;
+            this.pictureBoxMostLikePhoto.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxMostLikePhoto.Location = new System.Drawing.Point(4, 4);
             this.pictureBoxMostLikePhoto.Name = "pictureBoxMostLikePhoto";
-            this.pictureBoxMostLikePhoto.Size = new System.Drawing.Size(210, 140);
+            this.pictureBoxMostLikePhoto.Size = new System.Drawing.Size(508, 131);
             this.pictureBoxMostLikePhoto.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxMostLikePhoto.TabIndex = 0;
             this.pictureBoxMostLikePhoto.TabStop = false;
             // 
             // labelMostLikedStatus
             // 
-            this.labelMostLikedStatus.BackColor = System.Drawing.Color.White;
             this.labelMostLikedStatus.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.labelMostLikedStatus.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Italic);
             this.labelMostLikedStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(103)))), ((int)(((byte)(107)))));
-            this.labelMostLikedStatus.Location = new System.Drawing.Point(4, 145);
+            this.labelMostLikedStatus.Location = new System.Drawing.Point(4, 135);
             this.labelMostLikedStatus.Name = "labelMostLikedStatus";
             this.labelMostLikedStatus.Size = new System.Drawing.Size(508, 22);
             this.labelMostLikedStatus.TabIndex = 1;
             this.labelMostLikedStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // panelSep1
-            // 
-            this.panelSep1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
-            this.tableLayoutPanel3.SetColumnSpan(this.panelSep1, 2);
-            this.panelSep1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelSep1.Location = new System.Drawing.Point(3, 178);
-            this.panelSep1.Name = "panelSep1";
-            this.panelSep1.Size = new System.Drawing.Size(864, 1);
-            this.panelSep1.TabIndex = 210;
-            // 
             // buttonMostCommentedPhoto
             // 
-            this.buttonMostCommentedPhoto.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.buttonMostCommentedPhoto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
             this.buttonMostCommentedPhoto.FlatAppearance.BorderSize = 0;
             this.buttonMostCommentedPhoto.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(102)))), ((int)(((byte)(214)))));
             this.buttonMostCommentedPhoto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonMostCommentedPhoto.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.buttonMostCommentedPhoto.ForeColor = System.Drawing.Color.White;
-            this.buttonMostCommentedPhoto.Location = new System.Drawing.Point(3, 237);
+            this.buttonMostCommentedPhoto.Location = new System.Drawing.Point(3, 214);
             this.buttonMostCommentedPhoto.Name = "buttonMostCommentedPhoto";
             this.buttonMostCommentedPhoto.Size = new System.Drawing.Size(240, 55);
             this.buttonMostCommentedPhoto.TabIndex = 70;
@@ -545,98 +561,74 @@ namespace BasicFacebookFeatures
             // 
             // panelMostCommentedPhoto
             // 
-            this.panelMostCommentedPhoto.BackColor = System.Drawing.Color.White;
+            this.panelMostCommentedPhoto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(242)))), ((int)(((byte)(245)))));
             this.panelMostCommentedPhoto.Controls.Add(this.pictureBoxMostCommentedPhoto);
             this.panelMostCommentedPhoto.Controls.Add(this.labelMostCommentedStatus);
             this.panelMostCommentedPhoto.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelMostCommentedPhoto.Location = new System.Drawing.Point(351, 180);
+            this.panelMostCommentedPhoto.Location = new System.Drawing.Point(351, 214);
             this.panelMostCommentedPhoto.Name = "panelMostCommentedPhoto";
             this.panelMostCommentedPhoto.Padding = new System.Windows.Forms.Padding(4, 4, 4, 2);
-            this.panelMostCommentedPhoto.Size = new System.Drawing.Size(516, 169);
+            this.panelMostCommentedPhoto.Size = new System.Drawing.Size(516, 159);
             this.panelMostCommentedPhoto.TabIndex = 201;
             // 
             // pictureBoxMostCommentedPhoto
             // 
-            this.pictureBoxMostCommentedPhoto.BackColor = System.Drawing.Color.White;
+            this.pictureBoxMostCommentedPhoto.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxMostCommentedPhoto.Location = new System.Drawing.Point(4, 4);
             this.pictureBoxMostCommentedPhoto.Name = "pictureBoxMostCommentedPhoto";
-            this.pictureBoxMostCommentedPhoto.Size = new System.Drawing.Size(210, 140);
+            this.pictureBoxMostCommentedPhoto.Size = new System.Drawing.Size(508, 131);
             this.pictureBoxMostCommentedPhoto.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxMostCommentedPhoto.TabIndex = 0;
             this.pictureBoxMostCommentedPhoto.TabStop = false;
             // 
             // labelMostCommentedStatus
             // 
-            this.labelMostCommentedStatus.BackColor = System.Drawing.Color.White;
             this.labelMostCommentedStatus.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.labelMostCommentedStatus.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Italic);
             this.labelMostCommentedStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(103)))), ((int)(((byte)(107)))));
-            this.labelMostCommentedStatus.Location = new System.Drawing.Point(4, 145);
+            this.labelMostCommentedStatus.Location = new System.Drawing.Point(4, 135);
             this.labelMostCommentedStatus.Name = "labelMostCommentedStatus";
             this.labelMostCommentedStatus.Size = new System.Drawing.Size(508, 22);
             this.labelMostCommentedStatus.TabIndex = 1;
             this.labelMostCommentedStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // panelSep2
+            // label3
             // 
-            this.panelSep2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
-            this.tableLayoutPanel3.SetColumnSpan(this.panelSep2, 2);
-            this.panelSep2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelSep2.Location = new System.Drawing.Point(3, 355);
-            this.panelSep2.Name = "panelSep2";
-            this.panelSep2.Size = new System.Drawing.Size(864, 1);
-            this.panelSep2.TabIndex = 211;
+            this.label3.AutoSize = true;
+            this.tableLayoutPanel3.SetColumnSpan(this.label3, 2);
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(30)))), ((int)(((byte)(33)))));
+            this.label3.Location = new System.Drawing.Point(3, 376);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(222, 30);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "📚  Album Analytics";
             // 
-            // buttonOldestPhoto
+            // buttonCountAlbums
             // 
-            this.buttonOldestPhoto.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.buttonOldestPhoto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
-            this.buttonOldestPhoto.FlatAppearance.BorderSize = 0;
-            this.buttonOldestPhoto.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(102)))), ((int)(((byte)(214)))));
-            this.buttonOldestPhoto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonOldestPhoto.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.buttonOldestPhoto.ForeColor = System.Drawing.Color.White;
-            this.buttonOldestPhoto.Location = new System.Drawing.Point(3, 417);
-            this.buttonOldestPhoto.Name = "buttonOldestPhoto";
-            this.buttonOldestPhoto.Size = new System.Drawing.Size(250, 52);
-            this.buttonOldestPhoto.TabIndex = 74;
-            this.buttonOldestPhoto.Text = "⏱  Oldest Photo";
-            this.buttonOldestPhoto.UseVisualStyleBackColor = false;
-            this.buttonOldestPhoto.Click += new System.EventHandler(this.buttonOldestPhoto_Click_1);
+            this.buttonCountAlbums.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(119)))), ((int)(((byte)(242)))));
+            this.buttonCountAlbums.FlatAppearance.BorderSize = 0;
+            this.buttonCountAlbums.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(102)))), ((int)(((byte)(214)))));
+            this.buttonCountAlbums.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonCountAlbums.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.buttonCountAlbums.ForeColor = System.Drawing.Color.White;
+            this.buttonCountAlbums.Location = new System.Drawing.Point(3, 421);
+            this.buttonCountAlbums.Name = "buttonCountAlbums";
+            this.buttonCountAlbums.Size = new System.Drawing.Size(200, 52);
+            this.buttonCountAlbums.TabIndex = 73;
+            this.buttonCountAlbums.Text = "∑  Count Albums";
+            this.buttonCountAlbums.UseVisualStyleBackColor = false;
+            this.buttonCountAlbums.Click += new System.EventHandler(this.buttonCountAlbums_Click);
             // 
-            // panelOldestPhoto
+            // labelAlbumsCount
             // 
-            this.panelOldestPhoto.BackColor = System.Drawing.Color.White;
-            this.panelOldestPhoto.Controls.Add(this.pictureBoxOldestPhoto);
-            this.panelOldestPhoto.Controls.Add(this.labelOldestPhotoDate);
-            this.panelOldestPhoto.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelOldestPhoto.Location = new System.Drawing.Point(351, 357);
-            this.panelOldestPhoto.Name = "panelOldestPhoto";
-            this.panelOldestPhoto.Padding = new System.Windows.Forms.Padding(4, 4, 4, 2);
-            this.panelOldestPhoto.Size = new System.Drawing.Size(516, 172);
-            this.panelOldestPhoto.TabIndex = 202;
-            // 
-            // pictureBoxOldestPhoto
-            // 
-            this.pictureBoxOldestPhoto.Location = new System.Drawing.Point(4, 4);
-            this.pictureBoxOldestPhoto.Name = "pictureBoxOldestPhoto";
-            this.pictureBoxOldestPhoto.Size = new System.Drawing.Size(210, 140);
-            this.pictureBoxOldestPhoto.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBoxOldestPhoto.TabIndex = 75;
-            this.pictureBoxOldestPhoto.TabStop = false;
-            // 
-            // labelOldestPhotoDate
-            // 
-            this.labelOldestPhotoDate.AutoSize = true;
-            this.labelOldestPhotoDate.BackColor = System.Drawing.Color.White;
-            this.labelOldestPhotoDate.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.labelOldestPhotoDate.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Italic);
-            this.labelOldestPhotoDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(103)))), ((int)(((byte)(107)))));
-            this.labelOldestPhotoDate.Location = new System.Drawing.Point(4, 149);
-            this.labelOldestPhotoDate.Name = "labelOldestPhotoDate";
-            this.labelOldestPhotoDate.Size = new System.Drawing.Size(0, 21);
-            this.labelOldestPhotoDate.TabIndex = 78;
-            this.labelOldestPhotoDate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labelAlbumsCount.AutoSize = true;
+            this.labelAlbumsCount.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
+            this.labelAlbumsCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(30)))), ((int)(((byte)(33)))));
+            this.labelAlbumsCount.Location = new System.Drawing.Point(351, 418);
+            this.labelAlbumsCount.Name = "labelAlbumsCount";
+            this.labelAlbumsCount.Size = new System.Drawing.Size(0, 30);
+            this.labelAlbumsCount.TabIndex = 74;
             // 
             // label4
             // 
@@ -653,7 +645,7 @@ namespace BasicFacebookFeatures
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 671);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 594);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(920, 26);
             this.statusStrip1.TabIndex = 55;
@@ -670,7 +662,7 @@ namespace BasicFacebookFeatures
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 23F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(242)))), ((int)(((byte)(245)))));
-            this.ClientSize = new System.Drawing.Size(920, 697);
+            this.ClientSize = new System.Drawing.Size(920, 620);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tabPageAnalytics);
             this.Font = new System.Drawing.Font("Segoe UI", 10F);
@@ -681,27 +673,28 @@ namespace BasicFacebookFeatures
             this.Text = "Facebook Analytics";
             this.tabPageAnalytics.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.panelHeader1.ResumeLayout(false);
-            this.panelProfile.ResumeLayout(false);
-            this.panelProfile.PerformLayout();
+            this.tableLayoutPanel4.ResumeLayout(false);
+            this.tableLayoutPanel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProfile)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.panelHeader2.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOldestPhoto)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.panelHeader3.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
             this.panelMostLikedPhoto.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMostLikePhoto)).EndInit();
             this.panelMostCommentedPhoto.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMostCommentedPhoto)).EndInit();
-            this.panelOldestPhoto.ResumeLayout(false);
-            this.panelOldestPhoto.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOldestPhoto)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -713,13 +706,14 @@ namespace BasicFacebookFeatures
 
         private System.Windows.Forms.TabControl tabPageAnalytics;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Panel panelProfile;
-        private System.Windows.Forms.PictureBox pictureBoxProfile;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.Label labelName;
-        private System.Windows.Forms.Label labelPersonalInfo;
-        private System.Windows.Forms.Panel panelSepProfile;
         private System.Windows.Forms.Label labelBirthday;
+        private System.Windows.Forms.PictureBox pictureBoxProfile;
+        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button buttonConnectAsDesig;
+        private System.Windows.Forms.TextBox textBoxAppID;
+        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonLogout;
         private System.Windows.Forms.Button buttonLogin;
         private System.Windows.Forms.TabPage tabPage2;
@@ -734,6 +728,7 @@ namespace BasicFacebookFeatures
         private System.Windows.Forms.Label labelAlbumList;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button buttonMostLikedPhoto;
         private System.Windows.Forms.Panel panelMostLikedPhoto;
         private System.Windows.Forms.PictureBox pictureBoxMostLikePhoto;
@@ -742,10 +737,7 @@ namespace BasicFacebookFeatures
         private System.Windows.Forms.Panel panelMostCommentedPhoto;
         private System.Windows.Forms.PictureBox pictureBoxMostCommentedPhoto;
         private System.Windows.Forms.Label labelMostCommentedStatus;
-        private System.Windows.Forms.Panel panelOldestPhoto;
-        private System.Windows.Forms.Panel panelSep1;
-        private System.Windows.Forms.Panel panelSep2;
-        private System.Windows.Forms.Panel panelSep3;
+        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button buttonCountAlbums;
         private System.Windows.Forms.Label labelAlbumsCount;
         private System.Windows.Forms.Label label4;

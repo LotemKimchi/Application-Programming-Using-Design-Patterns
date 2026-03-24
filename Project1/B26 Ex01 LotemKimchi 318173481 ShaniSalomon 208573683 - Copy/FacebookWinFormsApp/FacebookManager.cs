@@ -51,12 +51,6 @@ namespace BasicFacebookFeatures
         public LoginResult ConnectWithToken(string i_Token)
         {
             m_LoginResult = FacebookService.Connect(i_Token);
-
-            if (m_LoginResult != null && !string.IsNullOrEmpty(m_LoginResult.AccessToken))
-            {
-                File.WriteAllText("token.txt", m_LoginResult.AccessToken);
-            }
-
             return m_LoginResult;
         }
 

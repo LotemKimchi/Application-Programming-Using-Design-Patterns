@@ -17,12 +17,7 @@ namespace BasicFacebookFeatures
         {
             InitializeComponent();
             FacebookWrapper.FacebookService.s_CollectionLimit = 25;
-
-            var clipPath = new System.Drawing.Drawing2D.GraphicsPath();
-
-            clipPath.AddEllipse(0, 0, pictureBoxProfile.Width, pictureBoxProfile.Height);
-            pictureBoxProfile.Region = new Region(clipPath);
-
+            
             connectWithSavedToken();
         }
 
@@ -72,7 +67,7 @@ namespace BasicFacebookFeatures
             if (user != null)
             {
                 labelName.Text = user.Name;
-                labelBirthday.Text = $"🎂  Born:   {user.Birthday}";
+                labelBirthday.Text = user.Birthday;
 
                 listBoxAlbums.Items.Clear();
                 try

@@ -18,7 +18,7 @@ namespace BasicFacebookFeatures
             }
             catch (Exception)
             {
-                albumsCount = -1;
+                return -1;
             }
 
             return albumsCount;

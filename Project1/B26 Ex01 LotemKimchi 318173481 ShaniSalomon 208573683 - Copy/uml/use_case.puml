@@ -48,8 +48,8 @@ rectangle "Facebook WinForms App" {
     usecase "Find Album with Most Photos"       as UC6
     usecase "Find Oldest Photo"                 as UC7
     usecase "Find Most Liked Photo"             as UC8
-    usecase "Find Most Commented Photo"         as UC9
-    usecase "Count Albums"                      as UC10
+    usecase "Find Most Commented Photo  [NEW]"  as UC9
+    usecase "Count Albums  [NEW]"               as UC10
 }
 
 user -- UC1
