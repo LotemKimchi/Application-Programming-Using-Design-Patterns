@@ -1,0 +1,151 @@
+@startuml ClassDiagram
+title Class Diagram — Facebook WinForms App
+
+skinparam classBackgroundColor White
+skinparam classBorderColor DarkBlue
+skinparam classArrowColor DarkBlue
+skinparam stereotypeCBackgroundColor LightYellow
+skinparam stereotypeIBackgroundColor LightBlue
+
+interface IFacebookFeature<T> {
+    + Execute(i_User : User) : T
+}
+
+class FormMain {
+    - k_AppId : string
+    - k_DesignPatternsToken : string
+    - m_FacebookManager : FacebookManager
+    --
+    + FormMain()
+    - ensureLoggedIn() : bool
+    - afterLogin() : void
+    - displayUserInfo() : void
+    - connectWithSavedToken() : void
+    - buttonLogin_Click(sender : object, e : EventArgs) : void
+    - buttonLogout_Click(sender : object, e : EventArgs) : void
+    - buttonConnectAsDesig_Click_1(sender : object, e : EventArgs) : void
+    - buttonMostPhotosAlbum_Click(sender : object, e : EventArgs) : void
+    - buttonOldestPhoto_Click_1(sender : object, e : EventArgs) : void
+    - buttonMostLikedPhoto_Click_1(sender : object, e : EventArgs) : void
+    - buttonMostCommentedPhoto_Click_1(sender : object, e : EventArgs) : void
+    - buttonCountAlbums_Click(sender : object, e : EventArgs) : void
+    - clearUserData() : void
+}
+
+class FacebookManager {
+    - m_LoginResult : LoginResult
+    --
+    + LoggedInUser : User <<get>>
+    + Login(i_AppId : string) : LoginResult
+    + ConnectWithSavedToken() : LoginResult
+    + ConnectWithToken(i_Token : string) : LoginResult
+    + Logout() : void
+}
+
+class AlbumWithMostPhotosFeature {
+    + Execute(i_User : User) : Album
+}
+
+class OldestPhotoFeature {
+    + Execute(i_User : User) : Photo
+}
+
+class MostLikedPhotoFeature {
+    + Execute(i_User : User) : Photo
+}
+
+class MostCommentedPhotoFeature {
+    + Execute(i_User : User) : Photo
+}
+
+class CountAlbumsFeature {
+    + Execute(i_User : User) : int
+}
+
+class FacebookService <<external>> {
+    + {static} s_CollectionLimit : int
+    --
+    + {static} Login(appId : string, permissions : string[]) : LoginResult
+    + {static} Connect(token : string) : LoginResult
+    + {static} LogoutWithUI() : void
+}
+
+class LoginResult <<external>> {
+    + AccessToken : string
+    + ErrorMessage : string
+    + LoggedInUser : User
+}
+
+class User <<external>> {
+    + Name : string
+    + Birthday : string
+    + PictureNormalURL : string
+    + Albums : FacebookObjectCollection<Album>
+}
+
+class Album <<external>> {
+    + Name : string
+    + Photos : FacebookObjectCollection<Photo>
+}
+
+class Photo <<external>> {
+    + PictureNormalURL : string
+    + CreatedTime : DateTime
+    + LikedBy : FacebookObjectCollection<Like>
+    + Comments : FacebookObjectCollection<Comment>
+}
+
+' ── Relationships ─────────────────────────────────────────────
+
+' FormMain owns FacebookManager (composition)
+FormMain *-- FacebookManager : composition
+
+' FormMain creates feature objects transiently (dependency)
+FormMain ..> AlbumWithMostPhotosFeature : <<creates>>
+FormMain ..> OldestPhotoFeature         : <<creates>>
+FormMain ..> MostLikedPhotoFeature      : <<creates>>
+FormMain ..> MostCommentedPhotoFeature  : <<creates>>
+FormMain ..> CountAlbumsFeature         : <<creates>>
+
+' FormMain programs to the interface (dependency)
+FormMain ..> IFacebookFeature : <<uses>>
+
+' Feature classes realize the interface (realization)
+AlbumWithMostPhotosFeature  ..|> IFacebookFeature
+OldestPhotoFeature          ..|> IFacebookFeature
+MostLikedPhotoFeature       ..|> IFacebookFeature
+MostCommentedPhotoFeature   ..|> IFacebookFeature
+CountAlbumsFeature          ..|> IFacebookFeature
+
+' FacebookManager uses FacebookService static methods (dependency)
+FacebookManager ..> FacebookService : <<uses>>
+
+' FacebookManager holds a LoginResult (aggregation — not its creator)
+FacebookManager o-- LoginResult : aggregates
+
+' LoginResult references User
+LoginResult --> User : contains
+
+' Domain model associations
+User    "1" --> "*" Album : has
+Album   "1" --> "*" Photo : contains
+
+' Features read domain objects (dependency)
+AlbumWithMostPhotosFeature ..> User  : <<reads>>
+AlbumWithMostPhotosFeature ..> Album : <<reads>>
+
+OldestPhotoFeature ..> User  : <<reads>>
+OldestPhotoFeature ..> Album : <<reads>>
+OldestPhotoFeature ..> Photo : <<reads>>
+
+MostLikedPhotoFeature ..> User  : <<reads>>
+MostLikedPhotoFeature ..> Album : <<reads>>
+MostLikedPhotoFeature ..> Photo : <<reads>>
+
+MostCommentedPhotoFeature ..> User  : <<reads>>
+MostCommentedPhotoFeature ..> Album : <<reads>>
+MostCommentedPhotoFeature ..> Photo : <<reads>>
+
+CountAlbumsFeature ..> User  : <<reads>>
+CountAlbumsFeature ..> Album : <<reads>>
+@enduml

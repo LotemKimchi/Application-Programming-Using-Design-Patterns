@@ -1,0 +1,55 @@
+@startuml SequenceDiagram_MostCommentedPhoto
+title Sequence Diagram — Most Commented Photo (New Use Case)\nMost Complex Scenario: User Logged In, Albums With Commented Photos
+
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipantBackgroundColor White
+
+actor       "User"                      as User
+participant "FormMain"                  as FM
+participant "FacebookManager"           as FBM
+participant "MostCommentedPhotoFeature" as MCPF
+participant "FacebookService"           as FBS
+
+User  ->  FM   : buttonMostCommentedPhoto_Click()
+
+FM    ->  FBM  : get LoggedInUser
+FBM  -->  FM   : user (not null)
+
+FM    ->  FM   : pictureBoxMostCommentedPhoto.ImageLocation = null
+FM    ->  FM   : labelMostCommentedStatus.Visible = false
+
+FM    ->  MCPF : new MostCommentedPhotoFeature()
+FM    ->  MCPF : Execute(user)
+
+    MCPF ->  FBS  : user.Albums  [API call]
+    FBS -->  MCPF : AlbumCollection
+
+    loop for each Album in AlbumCollection
+
+        MCPF ->  FBS  : album.Photos  [API call]
+        FBS -->  MCPF : PhotoCollection
+
+        loop for each Photo in PhotoCollection
+
+            MCPF ->  FBS  : photo.Comments  [API call]
+            FBS -->  MCPF : int commentCount
+
+            alt commentCount > maxComment
+                MCPF -> MCPF : mostCommentedPhoto = photo
+                MCPF -> MCPF : maxComment = commentCount
+            end
+
+        end
+    end
+
+MCPF --> FM   : Photo (mostCommentedPhoto)
+
+alt photo != null
+    FM -> FM : pictureBoxMostCommentedPhoto.ImageLocation = photo.PictureNormalURL
+    FM -> FM : labelMostCommentedStatus.Text = "N comments"
+    FM -> FM : labelMostCommentedStatus.Visible = true
+else photo == null
+    FM -> FM : labelMostCommentedStatus.Text = "No photo found"
+    FM -> FM : labelMostCommentedStatus.Visible = true
+end
+@enduml

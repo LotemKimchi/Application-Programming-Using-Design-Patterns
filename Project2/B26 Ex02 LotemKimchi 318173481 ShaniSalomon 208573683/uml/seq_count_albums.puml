@@ -1,0 +1,31 @@
+@startuml SequenceDiagram_CountAlbums
+title Sequence Diagram — Count Albums (New Use Case)\nMost Complex Scenario: User Logged In, Has Albums
+
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipantBackgroundColor White
+
+actor       "User"                  as User
+participant "FormMain"              as FM
+participant "FacebookManager"       as FBM
+participant "CountAlbumsFeature"    as CAF
+participant "FacebookService"       as FBS
+
+User  ->  FM  : buttonCountAlbums_Click()
+
+FM    ->  FBM : get LoggedInUser
+FBM  -->  FM  : user (not null)
+
+FM    ->  CAF : new CountAlbumsFeature()
+FM    ->  CAF : Execute(user)
+
+    CAF ->  FBS : user.Albums  [API call]
+    FBS --> CAF : AlbumCollection
+
+    loop for each Album in AlbumCollection
+        CAF -> CAF : albumsCount++
+    end
+
+CAF  --> FM  : int albumsCount
+
+FM    ->  FM  : labelAlbumsCount.Text = "Albums Count: N"
+@enduml
