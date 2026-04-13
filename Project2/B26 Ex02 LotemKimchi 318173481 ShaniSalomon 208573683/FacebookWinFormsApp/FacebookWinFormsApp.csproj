@@ -92,6 +92,8 @@
     <Compile Include="IFacebookFeature.cs" />
     <Compile Include="MostCommentedPhotoFeature.cs" />
     <Compile Include="MostLikedPhotoFeature.cs" />
+    <Compile Include="MostTaggedPhotoFeature.cs" />
+    <Compile Include="NewestPhotoFeature.cs" />
     <Compile Include="OldestPhotoFeature.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

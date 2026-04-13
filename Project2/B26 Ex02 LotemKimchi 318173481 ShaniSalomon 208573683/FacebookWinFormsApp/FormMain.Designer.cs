@@ -142,56 +142,56 @@ namespace BasicFacebookFeatures
             this.panelProfile.Controls.Add(this.labelPersonalInfo);
             this.panelProfile.Controls.Add(this.panelSepProfile);
             this.panelProfile.Controls.Add(this.labelBirthday);
-            this.panelProfile.Location = new System.Drawing.Point(267, 120);
+            this.panelProfile.Location = new System.Drawing.Point(20, 80);
             this.panelProfile.Name = "panelProfile";
-            this.panelProfile.Size = new System.Drawing.Size(378, 400);
+            this.panelProfile.Size = new System.Drawing.Size(300, 540);
             this.panelProfile.TabIndex = 74;
-            // 
+            //
             // pictureBoxProfile
-            // 
-            this.pictureBoxProfile.Location = new System.Drawing.Point(119, 20);
+            //
+            this.pictureBoxProfile.Location = new System.Drawing.Point(79, 30);
             this.pictureBoxProfile.Name = "pictureBoxProfile";
             this.pictureBoxProfile.Size = new System.Drawing.Size(141, 141);
             this.pictureBoxProfile.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxProfile.TabIndex = 55;
             this.pictureBoxProfile.TabStop = false;
-            // 
+            //
             // labelName
-            // 
-            this.labelName.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            //
+            this.labelName.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
             this.labelName.ForeColor = System.Drawing.Color.White;
-            this.labelName.Location = new System.Drawing.Point(0, 172);
+            this.labelName.Location = new System.Drawing.Point(0, 185);
             this.labelName.Name = "labelName";
-            this.labelName.Size = new System.Drawing.Size(378, 40);
+            this.labelName.Size = new System.Drawing.Size(300, 40);
             this.labelName.TabIndex = 57;
             this.labelName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
+            //
             // labelPersonalInfo
-            // 
+            //
             this.labelPersonalInfo.AutoSize = true;
             this.labelPersonalInfo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.labelPersonalInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(200)))), ((int)(((byte)(255)))));
-            this.labelPersonalInfo.Location = new System.Drawing.Point(20, 228);
+            this.labelPersonalInfo.Location = new System.Drawing.Point(20, 245);
             this.labelPersonalInfo.Name = "labelPersonalInfo";
             this.labelPersonalInfo.Size = new System.Drawing.Size(130, 25);
             this.labelPersonalInfo.TabIndex = 60;
             this.labelPersonalInfo.Text = "Personal Info";
-            // 
+            //
             // panelSepProfile
-            // 
+            //
             this.panelSepProfile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(90)))), ((int)(((byte)(150)))));
-            this.panelSepProfile.Location = new System.Drawing.Point(20, 260);
+            this.panelSepProfile.Location = new System.Drawing.Point(20, 277);
             this.panelSepProfile.Name = "panelSepProfile";
-            this.panelSepProfile.Size = new System.Drawing.Size(338, 1);
+            this.panelSepProfile.Size = new System.Drawing.Size(260, 1);
             this.panelSepProfile.TabIndex = 61;
-            // 
+            //
             // labelBirthday
-            // 
+            //
             this.labelBirthday.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.labelBirthday.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(220)))), ((int)(((byte)(255)))));
-            this.labelBirthday.Location = new System.Drawing.Point(20, 272);
+            this.labelBirthday.Location = new System.Drawing.Point(20, 290);
             this.labelBirthday.Name = "labelBirthday";
-            this.labelBirthday.Size = new System.Drawing.Size(338, 28);
+            this.labelBirthday.Size = new System.Drawing.Size(260, 28);
             this.labelBirthday.TabIndex = 59;
             // 
             // buttonConnectAsDesig
