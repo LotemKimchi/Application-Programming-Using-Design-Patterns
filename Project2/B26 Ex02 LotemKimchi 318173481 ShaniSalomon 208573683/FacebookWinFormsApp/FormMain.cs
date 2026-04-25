@@ -16,7 +16,20 @@ namespace BasicFacebookFeatures
         private const string k_AppId = "1783124789311728";
         private const string k_DesignPatternsToken = "EAAUm6cZC4eUEBQ89SIPgqvUNRPYwshVbzNFtykREi0CbEUsssHsY0ceBnLKHx9uOtmH5ClGksE6EzWZBRylGglQToWaaqV2QWsOcus79byyncz93TDesQvzX2pv2kllZA8mEg5iDMiYktoptWXySLSrS4Y2ATeDyEEFsJLZBmyshcy464jImETOhjyGYYKxJDZBWhxzRWLsRZApkMmJiEG742LGjEq486o9RgdhFrkuTLT0xup5efuMsJNL8ENsJqZC";
 
-        private readonly FacebookManager r_FacebookManager = new FacebookManager();
+        // UI → Proxy (cache) → Facade (FacebookManager) → FacebookWrapper
+        private readonly IFacebookService r_FacebookService =
+            new CachingFacebookProxy(new FacebookManager());
+
+        // Factory Method: maps ComboBox label → ConcreteCreator
+        private readonly Dictionary<string, PhotoFeatureCreator> r_PhotoCreators =
+            new Dictionary<string, PhotoFeatureCreator>
+            {
+                { "Most Liked Photo",     new MostLikedPhotoCreator()     },
+                { "Most Commented Photo", new MostCommentedPhotoCreator() },
+                { "Oldest Photo",         new OldestPhotoCreator()         },
+                { "Newest Photo",         new NewestPhotoCreator()         },
+                { "Most Tagged Photo",    new MostTaggedPhotoCreator()     }
+            };
 
         // Friends section
         private Label m_LabelFriendsHeader;
@@ -281,26 +294,27 @@ namespace BasicFacebookFeatures
         {
             if (ensureLoggedIn())
             {
-                // === Strategy Pattern: choose strategy at runtime based on user selection ===
-                IFacebookFeature<Photo> strategy = createPhotoStrategy(m_ComboPhotoStrategy.SelectedItem as string);
+                // === Factory Method Pattern: look up the ConcreteCreator for the selected name ===
+                string selectedName = m_ComboPhotoStrategy.SelectedItem as string;
+                PhotoFeatureCreator creator;
 
-                if (strategy != null)
+                if (r_PhotoCreators.TryGetValue(selectedName, out creator))
                 {
-                    runPhotoStrategy(strategy);
+                    runPhotoAnalysis(creator);
                 }
             }
         }
 
-        private void runPhotoStrategy(IFacebookFeature<Photo> i_Strategy)
+        // Uses the Factory Method pattern: creator.RunAnalysis() calls CreateFeature().Execute()
+        private void runPhotoAnalysis(PhotoFeatureCreator i_Creator)
         {
-            User user = r_FacebookManager.LoggedInUser;
-
             m_PictureBoxPhotoResult.ImageLocation = null;
             m_LabelPhotoResultDetails.Text = "Analyzing...";
             m_LabelPhotoResultTitle.Text = m_ComboPhotoStrategy.SelectedItem.ToString();
             Application.DoEvents();
 
-            Photo photo = i_Strategy.Execute(user);
+            User user = r_FacebookService.LoggedInUser;
+            Photo photo = i_Creator.RunAnalysis(user);
 
             if (photo == null)
             {
@@ -368,32 +382,6 @@ namespace BasicFacebookFeatures
             }
 
             return result;
-        }
-
-        private IFacebookFeature<Photo> createPhotoStrategy(string i_StrategyName)
-        {
-            IFacebookFeature<Photo> strategy = null;
-
-            switch (i_StrategyName)
-            {
-                case "Most Liked Photo":
-                    strategy = new MostLikedPhotoFeature();
-                    break;
-                case "Most Commented Photo":
-                    strategy = new MostCommentedPhotoFeature();
-                    break;
-                case "Oldest Photo":
-                    strategy = new OldestPhotoFeature();
-                    break;
-                case "Newest Photo":
-                    strategy = new NewestPhotoFeature();
-                    break;
-                case "Most Tagged Photo":
-                    strategy = new MostTaggedPhotoFeature();
-                    break;
-            }
-
-            return strategy;
         }
 
         private void setupPostTab()
@@ -553,9 +541,7 @@ namespace BasicFacebookFeatures
         {
             try
             {
-                User user = r_FacebookManager.LoggedInUser;
-                user.PostStatus(i_Content);
-
+                r_FacebookService.PostStatus(i_Content);
                 MessageBox.Show("Posted successfully!", "Success");
                 m_TextBoxPostContent.Clear();
                 loadRecentPosts();
@@ -572,32 +558,17 @@ namespace BasicFacebookFeatures
         {
             m_FlowRecentPosts.Controls.Clear();
 
-            User user = r_FacebookManager.LoggedInUser;
+            List<Post> posts = r_FacebookService.GetRecentPosts(15);
 
-            if (user != null)
+            if (posts.Count == 0)
             {
-                try
+                showEmptyPostsMessage("No posts to display");
+            }
+            else
+            {
+                foreach (Post post in posts)
                 {
-                    int shown = 0;
-                    foreach (Post post in user.Posts)
-                    {
-                        m_FlowRecentPosts.Controls.Add(createPostCard(post));
-                        shown++;
-
-                        if (shown >= 15)
-                        {
-                            break;
-                        }
-                    }
-
-                    if (shown == 0)
-                    {
-                        showEmptyPostsMessage("No posts to display");
-                    }
-                }
-                catch
-                {
-                    showEmptyPostsMessage("Cannot load posts (permission missing)");
+                    m_FlowRecentPosts.Controls.Add(createPostCard(post));
                 }
             }
         }
@@ -760,30 +731,22 @@ namespace BasicFacebookFeatures
             m_LabelSelectedAlbum.Text = "Loading...";
             Application.DoEvents();
 
-            User user = r_FacebookManager.LoggedInUser;
+            List<Album> albums = r_FacebookService.GetAlbums();
 
-            try
+            foreach (Album album in albums)
             {
-                foreach (Album album in user.Albums)
-                {
-                    r_LoadedAlbums.Add(album);
-                    int photoCount = 0;
-                    try { photoCount = album.Photos.Count; } catch { }
-                    m_DataGridAlbums.Rows.Add(album.Name, photoCount);
-                }
-
-                if (r_LoadedAlbums.Count == 0)
-                {
-                    m_LabelSelectedAlbum.Text = "No albums found";
-                }
-                else
-                {
-                    m_LabelSelectedAlbum.Text = $"Found {r_LoadedAlbums.Count} albums — click a row to inspect";
-                }
+                r_LoadedAlbums.Add(album);
+                int photoCount = r_FacebookService.GetPhotosFromAlbum(album).Count;
+                m_DataGridAlbums.Rows.Add(album.Name, photoCount);
             }
-            catch (Exception ex)
+
+            if (r_LoadedAlbums.Count == 0)
             {
-                m_LabelSelectedAlbum.Text = "Error loading albums: " + ex.Message;
+                m_LabelSelectedAlbum.Text = "No albums found";
+            }
+            else
+            {
+                m_LabelSelectedAlbum.Text = $"Found {r_LoadedAlbums.Count} albums — click a row to inspect";
             }
         }
 
@@ -806,37 +769,29 @@ namespace BasicFacebookFeatures
         {
             m_LabelSelectedAlbum.Text = i_Album.Name ?? "(unnamed)";
 
-            int photoCount = 0;
-            try { photoCount = i_Album.Photos.Count; } catch { }
-            m_LabelAlbumPhotoCount.Text = $"{photoCount} photos";
+            List<Photo> photos = r_FacebookService.GetPhotosFromAlbum(i_Album);
+            m_LabelAlbumPhotoCount.Text = $"{photos.Count} photos";
 
             m_FlowAlbumThumbnails.Controls.Clear();
             int shown = 0;
 
-            try
+            foreach (Photo photo in photos)
             {
-                foreach (Photo photo in i_Album.Photos)
+                if (shown >= 4)
                 {
-                    if (shown >= 4)
-                    {
-                        break;
-                    }
-
-                    var pic = new PictureBox
-                    {
-                        Size = new Size(60, 60),
-                        SizeMode = PictureBoxSizeMode.Zoom,
-                        ImageLocation = photo.PictureNormalURL,
-                        BackColor = Color.FromArgb(15, 32, 75),
-                        Margin = new Padding(2)
-                    };
-                    m_FlowAlbumThumbnails.Controls.Add(pic);
-                    shown++;
+                    break;
                 }
-            }
-            catch
-            {
-                // Cannot load thumbnails
+
+                var pic = new PictureBox
+                {
+                    Size = new Size(60, 60),
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    ImageLocation = photo.PictureNormalURL,
+                    BackColor = Color.FromArgb(15, 32, 75),
+                    Margin = new Padding(2)
+                };
+                m_FlowAlbumThumbnails.Controls.Add(pic);
+                shown++;
             }
 
             m_ButtonUploadPhoto.Enabled = true;
@@ -863,7 +818,7 @@ namespace BasicFacebookFeatures
                 {
                     try
                     {
-                        i_Album.UploadPhoto(dialog.FileName);
+                        r_FacebookService.UploadPhotoToAlbum(i_Album, dialog.FileName);
                         MessageBox.Show("Photo uploaded successfully!", "Upload Success");
                         loadAlbumsIntoGrid();
                     }
@@ -928,7 +883,7 @@ namespace BasicFacebookFeatures
 
         private bool ensureLoggedIn()
         {
-            bool isLoggedIn = r_FacebookManager.LoggedInUser != null;
+            bool isLoggedIn = r_FacebookService.LoggedInUser != null;
 
             if (!isLoggedIn)
             {
@@ -941,7 +896,7 @@ namespace BasicFacebookFeatures
         public bool LoginWithFacebook()
         {
             bool success = false;
-            LoginResult loginResult = r_FacebookManager.Login(k_AppId);
+            LoginResult loginResult = r_FacebookService.Login(k_AppId);
 
             if (!string.IsNullOrEmpty(loginResult.AccessToken))
             {
@@ -967,7 +922,7 @@ namespace BasicFacebookFeatures
 
             try
             {
-                LoginResult loginResult = r_FacebookManager.ConnectWithToken(k_DesignPatternsToken);
+                LoginResult loginResult = r_FacebookService.ConnectWithToken(k_DesignPatternsToken);
 
                 if (loginResult != null && !string.IsNullOrEmpty(loginResult.AccessToken))
                 {
@@ -986,7 +941,7 @@ namespace BasicFacebookFeatures
 
         private void buttonLogin_Click(object sender, EventArgs e)
         {
-            LoginResult loginResult = r_FacebookManager.Login(k_AppId);
+            LoginResult loginResult = r_FacebookService.Login(k_AppId);
 
             if (!string.IsNullOrEmpty(loginResult.AccessToken))
             {
@@ -1007,7 +962,7 @@ namespace BasicFacebookFeatures
 
         private void displayUserInfo()
         {
-            User user = r_FacebookManager.LoggedInUser;
+            User user = r_FacebookService.LoggedInUser;
 
             if (user != null)
             {
@@ -1015,21 +970,18 @@ namespace BasicFacebookFeatures
                 labelBirthday.Text = $"Born:   {user.Birthday}";
 
                 listBoxAlbums.Items.Clear();
-                try
+                List<Album> albums = r_FacebookService.GetAlbums();
+
+                if (albums.Count == 0)
                 {
-                    foreach (Album album in user.Albums)
+                    listBoxAlbums.Items.Add("No albums found");
+                }
+                else
+                {
+                    foreach (Album album in albums)
                     {
                         listBoxAlbums.Items.Add(album.Name);
                     }
-
-                    if (listBoxAlbums.Items.Count == 0)
-                    {
-                        listBoxAlbums.Items.Add("No albums found");
-                    }
-                }
-                catch
-                {
-                    listBoxAlbums.Items.Add("Cannot load albums (permission missing)");
                 }
 
                 loadFriends();
@@ -1042,33 +994,17 @@ namespace BasicFacebookFeatures
             m_FlowFriends.Controls.Clear();
             r_AllFriends.Clear();
 
-            User user = r_FacebookManager.LoggedInUser;
+            List<User> friends = r_FacebookService.GetFriends();
+            r_AllFriends.AddRange(friends);
+            m_LabelFriendsCount.Text = $"{r_AllFriends.Count} friends";
 
-            if (user != null)
+            if (r_AllFriends.Count == 0)
             {
-                try
-                {
-                    foreach (User friend in user.Friends)
-                    {
-                        r_AllFriends.Add(friend);
-                    }
-
-                    m_LabelFriendsCount.Text = $"{r_AllFriends.Count} friends";
-
-                    if (r_AllFriends.Count == 0)
-                    {
-                        showFlowMessage("No friends available (Facebook API restricts this)", Color.FromArgb(160, 200, 255));
-                    }
-                    else
-                    {
-                        renderFriendCards(r_AllFriends);
-                    }
-                }
-                catch
-                {
-                    m_LabelFriendsCount.Text = "";
-                    showFlowMessage("Cannot load friends (permission missing)", Color.FromArgb(220, 120, 120));
-                }
+                showFlowMessage("No friends available (Facebook API restricts this)", Color.FromArgb(160, 200, 255));
+            }
+            else
+            {
+                renderFriendCards(r_AllFriends);
             }
         }
 
@@ -1205,7 +1141,7 @@ namespace BasicFacebookFeatures
 
         private void afterLogin()
         {
-            User user = r_FacebookManager.LoggedInUser;
+            User user = r_FacebookService.LoggedInUser;
 
             if (user != null)
             {
@@ -1263,7 +1199,7 @@ namespace BasicFacebookFeatures
 
         private void buttonLogout_Click(object sender, EventArgs e)
         {
-            r_FacebookManager.Logout();
+            r_FacebookService.Logout();
             clearUserData();
 
             FormLogin loginForm = Application.OpenForms["FormLogin"] as FormLogin;
@@ -1296,7 +1232,7 @@ namespace BasicFacebookFeatures
         {
             if (ensureLoggedIn())
             {
-                User user = r_FacebookManager.LoggedInUser;
+                User user = r_FacebookService.LoggedInUser;
                 IFacebookFeature<Album> feature = new AlbumWithMostPhotosFeature();
                 Album album = feature.Execute(user);
 
@@ -1315,7 +1251,7 @@ namespace BasicFacebookFeatures
         {
             if (ensureLoggedIn())
             {
-                User user = r_FacebookManager.LoggedInUser;
+                User user = r_FacebookService.LoggedInUser;
                 IFacebookFeature<Photo> feature = new OldestPhotoFeature();
 
                 pictureBoxOldestPhoto.ImageLocation = null;
@@ -1339,7 +1275,7 @@ namespace BasicFacebookFeatures
         {
             if (ensureLoggedIn())
             {
-                User user = r_FacebookManager.LoggedInUser;
+                User user = r_FacebookService.LoggedInUser;
                 IFacebookFeature<Photo> feature = new MostLikedPhotoFeature();
 
                 labelMostLikedStatus.Visible = false;
@@ -1363,7 +1299,7 @@ namespace BasicFacebookFeatures
         {
             if (ensureLoggedIn())
             {
-                User user = r_FacebookManager.LoggedInUser;
+                User user = r_FacebookService.LoggedInUser;
                 IFacebookFeature<Photo> feature = new MostCommentedPhotoFeature();
 
                 labelMostCommentedStatus.Visible = false;
@@ -1389,7 +1325,7 @@ namespace BasicFacebookFeatures
         {
             if (ensureLoggedIn())
             {
-                User user = r_FacebookManager.LoggedInUser;
+                User user = r_FacebookService.LoggedInUser;
                 IFacebookFeature<int> feature = new CountAlbumsFeature();
                 int albumsCount = feature.Execute(user);
 

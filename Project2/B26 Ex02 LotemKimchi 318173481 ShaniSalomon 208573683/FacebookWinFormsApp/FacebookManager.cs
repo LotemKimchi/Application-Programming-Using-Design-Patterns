@@ -1,18 +1,23 @@
-﻿using FacebookWrapper;
+using FacebookWrapper;
 using FacebookWrapper.ObjectModel;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace BasicFacebookFeatures
 {
-    public class FacebookManager
+    // Facade Pattern
+    // Role: provides a single, simplified interface to the complex FacebookWrapper API.
+    // FormMain (and the Proxy) never call FacebookWrapper directly — they go through here.
+    public class FacebookManager : IFacebookService
     {
         private LoginResult m_LoginResult;
+
+        // ── Session ──────────────────────────────────────────────────────────────
+
+        public User LoggedInUser
+        {
+            get { return m_LoginResult?.LoggedInUser; }
+        }
 
         public LoginResult Login(string i_AppId)
         {
@@ -30,22 +35,6 @@ namespace BasicFacebookFeatures
             }
 
             return m_LoginResult;
-        }
-
-        public LoginResult ConnectWithSavedToken()
-        {
-            if (File.Exists("token.txt"))
-            {
-                string token = File.ReadAllText("token.txt");
-                m_LoginResult = FacebookService.Connect(token);
-            }
-
-            return m_LoginResult;
-        }
-
-        public User LoggedInUser
-        {
-            get { return m_LoginResult?.LoggedInUser; }
         }
 
         public LoginResult ConnectWithToken(string i_Token)
@@ -70,6 +59,125 @@ namespace BasicFacebookFeatures
             }
 
             m_LoginResult = null;
+        }
+
+        // ── Facade methods: hide the Facebook Graph API complexity ────────────
+
+        public List<User> GetFriends()
+        {
+            List<User> friends = new List<User>();
+            User user = LoggedInUser;
+
+            if (user != null)
+            {
+                try
+                {
+                    foreach (User friend in user.Friends)
+                    {
+                        friends.Add(friend);
+                    }
+                }
+                catch
+                {
+                    // Return empty list on permission failure
+                }
+            }
+
+            return friends;
+        }
+
+        public List<Album> GetAlbums()
+        {
+            List<Album> albums = new List<Album>();
+            User user = LoggedInUser;
+
+            if (user != null)
+            {
+                try
+                {
+                    foreach (Album album in user.Albums)
+                    {
+                        albums.Add(album);
+                    }
+                }
+                catch
+                {
+                    // Return empty list on permission failure
+                }
+            }
+
+            return albums;
+        }
+
+        public List<Post> GetRecentPosts(int i_MaxCount)
+        {
+            List<Post> posts = new List<Post>();
+            User user = LoggedInUser;
+
+            if (user != null)
+            {
+                try
+                {
+                    int count = 0;
+
+                    foreach (Post post in user.Posts)
+                    {
+                        posts.Add(post);
+                        count++;
+
+                        if (count >= i_MaxCount)
+                        {
+                            break;
+                        }
+                    }
+                }
+                catch
+                {
+                    // Return empty list on permission failure
+                }
+            }
+
+            return posts;
+        }
+
+        public List<Photo> GetPhotosFromAlbum(Album i_Album)
+        {
+            List<Photo> photos = new List<Photo>();
+
+            if (i_Album != null)
+            {
+                try
+                {
+                    foreach (Photo photo in i_Album.Photos)
+                    {
+                        photos.Add(photo);
+                    }
+                }
+                catch
+                {
+                    // Return empty list on permission failure
+                }
+            }
+
+            return photos;
+        }
+
+        public void PostStatus(string i_Content)
+        {
+            User user = LoggedInUser;
+
+            if (user != null)
+            {
+                user.PostStatus(i_Content);
+            }
+        }
+
+        public void UploadPhotoToAlbum(Album i_Album, string i_FilePath)
+        {
+            if (i_Album != null)
+            {
+                i_Album.UploadPhoto(i_FilePath);
+            }
         }
     }
 }

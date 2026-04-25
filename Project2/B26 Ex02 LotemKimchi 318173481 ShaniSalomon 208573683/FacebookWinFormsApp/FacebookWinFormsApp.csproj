@@ -78,6 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlbumWithMostPhotos.cs" />
+    <Compile Include="CachingFacebookProxy.cs" />
+    <Compile Include="IFacebookService.cs" />
+    <Compile Include="PhotoFeatureCreator.cs" />
     <Compile Include="CountAlbumsFeature.cs" />
     <Compile Include="FacebookManager.cs" />
     <Compile Include="FormLogin.cs">
