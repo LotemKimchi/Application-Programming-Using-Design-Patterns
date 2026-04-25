@@ -9,7 +9,7 @@ namespace BasicFacebookFeatures
     {
         private FormMain m_MainForm;
         private Timer m_StarTimer;
-        private Random m_Random = new Random();
+        private readonly Random r_Random = new Random();
         private float[] m_StarX;
         private float[] m_StarY;
         private float[] m_StarSize;
@@ -33,10 +33,10 @@ namespace BasicFacebookFeatures
 
             for (int i = 0; i < k_StarCount; i++)
             {
-                m_StarX[i] = m_Random.Next(0, 650);
-                m_StarY[i] = m_Random.Next(0, 500);
-                m_StarSize[i] = (float)(m_Random.NextDouble() * 3 + 1);
-                m_StarAlpha[i] = (float)(m_Random.NextDouble() * 200 + 55);
+                m_StarX[i] = r_Random.Next(0, 650);
+                m_StarY[i] = r_Random.Next(0, 500);
+                m_StarSize[i] = (float)(r_Random.NextDouble() * 3 + 1);
+                m_StarAlpha[i] = (float)(r_Random.NextDouble() * 200 + 55);
             }
         }
 
@@ -115,18 +115,18 @@ namespace BasicFacebookFeatures
             panelCenter.Controls.Add(buttonDesig);
         }
 
-        private void addRoundedCorners(Button button, int radius)
+        private void addRoundedCorners(Button i_Button, int i_Radius)
         {
-            var path = new GraphicsPath();
-            var rect = new Rectangle(0, 0, button.Width, button.Height);
+            GraphicsPath path = new GraphicsPath();
+            Rectangle rect = new Rectangle(0, 0, i_Button.Width, i_Button.Height);
 
-            path.AddArc(rect.X, rect.Y, radius * 2, radius * 2, 180, 90);
-            path.AddArc(rect.Right - radius * 2, rect.Y, radius * 2, radius * 2, 270, 90);
-            path.AddArc(rect.Right - radius * 2, rect.Bottom - radius * 2, radius * 2, radius * 2, 0, 90);
-            path.AddArc(rect.X, rect.Bottom - radius * 2, radius * 2, radius * 2, 90, 90);
+            path.AddArc(rect.X, rect.Y, i_Radius * 2, i_Radius * 2, 180, 90);
+            path.AddArc(rect.Right - i_Radius * 2, rect.Y, i_Radius * 2, i_Radius * 2, 270, 90);
+            path.AddArc(rect.Right - i_Radius * 2, rect.Bottom - i_Radius * 2, i_Radius * 2, i_Radius * 2, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - i_Radius * 2, i_Radius * 2, i_Radius * 2, 90, 90);
             path.CloseFigure();
 
-            button.Region = new Region(path);
+            i_Button.Region = new Region(path);
         }
 
         private void startStarAnimation()
@@ -137,7 +137,7 @@ namespace BasicFacebookFeatures
             {
                 for (int i = 0; i < k_StarCount; i++)
                 {
-                    m_StarAlpha[i] += (float)(m_Random.NextDouble() * 40 - 20);
+                    m_StarAlpha[i] += (float)(r_Random.NextDouble() * 40 - 20);
                     m_StarAlpha[i] = Math.Max(30, Math.Min(255, m_StarAlpha[i]));
                 }
 
@@ -176,22 +176,22 @@ namespace BasicFacebookFeatures
 
         private void buttonLogin_Click(object sender, EventArgs e)
         {
-            openMainForm(isDemoAccount: false);
+            openMainForm(i_IsDemoAccount: false);
         }
 
         private void buttonDesig_Click(object sender, EventArgs e)
         {
-            openMainForm(isDemoAccount: true);
+            openMainForm(i_IsDemoAccount: true);
         }
 
-        private void openMainForm(bool isDemoAccount)
+        private void openMainForm(bool i_IsDemoAccount)
         {
             if (m_MainForm == null || m_MainForm.IsDisposed)
             {
                 m_MainForm = new FormMain();
             }
 
-            bool loginSuccess = isDemoAccount
+            bool loginSuccess = i_IsDemoAccount
                 ? m_MainForm.LoginWithDesigAccount()
                 : m_MainForm.LoginWithFacebook();
 

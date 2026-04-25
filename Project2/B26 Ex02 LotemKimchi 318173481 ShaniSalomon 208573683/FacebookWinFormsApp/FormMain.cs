@@ -16,7 +16,7 @@ namespace BasicFacebookFeatures
         private const string k_AppId = "1783124789311728";
         private const string k_DesignPatternsToken = "EAAUm6cZC4eUEBQ89SIPgqvUNRPYwshVbzNFtykREi0CbEUsssHsY0ceBnLKHx9uOtmH5ClGksE6EzWZBRylGglQToWaaqV2QWsOcus79byyncz93TDesQvzX2pv2kllZA8mEg5iDMiYktoptWXySLSrS4Y2ATeDyEEFsJLZBmyshcy464jImETOhjyGYYKxJDZBWhxzRWLsRZApkMmJiEG742LGjEq486o9RgdhFrkuTLT0xup5efuMsJNL8ENsJqZC";
 
-        private FacebookManager m_FacebookManager = new FacebookManager();
+        private readonly FacebookManager r_FacebookManager = new FacebookManager();
 
         // Friends section
         private Label m_LabelFriendsHeader;
@@ -27,7 +27,7 @@ namespace BasicFacebookFeatures
         private Label m_LabelFriendDetailName;
         private Label m_LabelFriendDetailInfo;
         private Label m_LabelFriendsCount;
-        private List<User> m_AllFriends = new List<User>();
+        private readonly List<User> r_AllFriends = new List<User>();
 
         // Photos Analyst section (Strategy pattern via ComboBox)
         private ComboBox m_ComboPhotoStrategy;
@@ -45,28 +45,15 @@ namespace BasicFacebookFeatures
         private FlowLayoutPanel m_FlowRecentPosts;
         private const int k_MaxPostLength = 500;
 
-        // Smart Photo Gallery section
-        private TabPage m_TabPageGallery;
-        private ComboBox m_ComboGalleryAlbum;
-        private ComboBox m_ComboGalleryYear;
-        private NumericUpDown m_NumericMinLikes;
-        private ComboBox m_ComboGallerySort;
-        private Button m_ButtonApplyGallery;
-        private Button m_ButtonLoadGallery;
-        private Label m_LabelGalleryStats;
-        private FlowLayoutPanel m_FlowGallery;
-        private List<GalleryItem> m_GalleryItems = new List<GalleryItem>();
-        private bool m_GalleryLoaded;
-
-        private class GalleryItem
-        {
-            public Photo Photo;
-            public string AlbumName;
-            public DateTime? CreatedTime;
-            public int Year;
-            public int Likes;
-            public int Comments;
-        }
+        // Album Analyst section (enhanced)
+        private DataGridView m_DataGridAlbums;
+        private Label m_LabelSelectedAlbum;
+        private Label m_LabelAlbumPhotoCount;
+        private FlowLayoutPanel m_FlowAlbumThumbnails;
+        private Button m_ButtonUploadPhoto;
+        private Button m_ButtonLoadAlbums;
+        private Album m_CurrentSelectedAlbum;
+        private readonly List<Album> r_LoadedAlbums = new List<Album>();
 
         public FormMain()
         {
@@ -85,7 +72,7 @@ namespace BasicFacebookFeatures
             setupFriendsSection();
             setupPhotosAnalystTab();
             setupPostTab();
-            setupGalleryTab();
+            setupAlbumAnalystTab();
         }
 
         private void setupFriendsSection()
@@ -292,44 +279,51 @@ namespace BasicFacebookFeatures
 
         private void buttonAnalyzePhoto_Click(object sender, EventArgs e)
         {
-            if (!ensureLoggedIn())
+            if (ensureLoggedIn())
             {
-                return;
+                // === Strategy Pattern: choose strategy at runtime based on user selection ===
+                IFacebookFeature<Photo> strategy = createPhotoStrategy(m_ComboPhotoStrategy.SelectedItem as string);
+
+                if (strategy != null)
+                {
+                    runPhotoStrategy(strategy);
+                }
             }
+        }
 
-            User user = m_FacebookManager.LoggedInUser;
-
-            // === Strategy Pattern: choose strategy at runtime based on user selection ===
-            IFacebookFeature<Photo> strategy = createPhotoStrategy(m_ComboPhotoStrategy.SelectedItem as string);
-
-            if (strategy == null)
-            {
-                return;
-            }
+        private void runPhotoStrategy(IFacebookFeature<Photo> i_Strategy)
+        {
+            User user = r_FacebookManager.LoggedInUser;
 
             m_PictureBoxPhotoResult.ImageLocation = null;
             m_LabelPhotoResultDetails.Text = "Analyzing...";
             m_LabelPhotoResultTitle.Text = m_ComboPhotoStrategy.SelectedItem.ToString();
             Application.DoEvents();
 
-            Photo photo = strategy.Execute(user);
+            Photo photo = i_Strategy.Execute(user);
 
             if (photo == null)
             {
                 m_LabelPhotoResultDetails.Text = "No photo found for this strategy.";
-                return;
             }
+            else
+            {
+                displayPhotoResult(photo);
+            }
+        }
 
-            m_PictureBoxPhotoResult.ImageLocation = photo.PictureNormalURL;
+        private void displayPhotoResult(Photo i_Photo)
+        {
+            m_PictureBoxPhotoResult.ImageLocation = i_Photo.PictureNormalURL;
 
-            var details = new StringBuilder();
-            details.AppendLine($"Created: {photo.CreatedTime}");
+            StringBuilder details = new StringBuilder();
+            details.AppendLine($"Created: {i_Photo.CreatedTime}");
             details.AppendLine();
-            details.AppendLine($"Likes:    {safeCount(() => photo.LikedBy?.Count)}");
-            details.AppendLine($"Comments: {safeCount(() => photo.Comments?.Count)}");
-            details.AppendLine($"Tags:     {safeCount(() => photo.Tags?.Count)}");
+            details.AppendLine($"Likes:    {safeCount(() => i_Photo.LikedBy?.Count)}");
+            details.AppendLine($"Comments: {safeCount(() => i_Photo.Comments?.Count)}");
+            details.AppendLine($"Tags:     {safeCount(() => i_Photo.Tags?.Count)}");
 
-            string caption = safeGet(() => photo.Name);
+            string caption = safeGet(() => i_Photo.Name);
             if (!string.IsNullOrEmpty(caption))
             {
                 details.AppendLine();
@@ -342,46 +336,64 @@ namespace BasicFacebookFeatures
 
         private static string safeCount(Func<int?> i_Getter)
         {
+            string result = "N/A";
+
             try
             {
                 int? value = i_Getter();
-                return value.HasValue ? value.Value.ToString() : "N/A";
+                if (value.HasValue)
+                {
+                    result = value.Value.ToString();
+                }
             }
             catch
             {
-                return "N/A";
+                // Keep default "N/A"
             }
+
+            return result;
         }
 
         private static string safeGet(Func<string> i_Getter)
         {
+            string result = null;
+
             try
             {
-                return i_Getter();
+                result = i_Getter();
             }
             catch
             {
-                return null;
+                // Keep default null
             }
+
+            return result;
         }
 
         private IFacebookFeature<Photo> createPhotoStrategy(string i_StrategyName)
         {
+            IFacebookFeature<Photo> strategy = null;
+
             switch (i_StrategyName)
             {
                 case "Most Liked Photo":
-                    return new MostLikedPhotoFeature();
+                    strategy = new MostLikedPhotoFeature();
+                    break;
                 case "Most Commented Photo":
-                    return new MostCommentedPhotoFeature();
+                    strategy = new MostCommentedPhotoFeature();
+                    break;
                 case "Oldest Photo":
-                    return new OldestPhotoFeature();
+                    strategy = new OldestPhotoFeature();
+                    break;
                 case "Newest Photo":
-                    return new NewestPhotoFeature();
+                    strategy = new NewestPhotoFeature();
+                    break;
                 case "Most Tagged Photo":
-                    return new MostTaggedPhotoFeature();
-                default:
-                    return null;
+                    strategy = new MostTaggedPhotoFeature();
+                    break;
             }
+
+            return strategy;
         }
 
         private void setupPostTab()
@@ -522,23 +534,27 @@ namespace BasicFacebookFeatures
 
         private void buttonPost_Click(object sender, EventArgs e)
         {
-            if (!ensureLoggedIn())
+            if (ensureLoggedIn())
             {
-                return;
+                string content = m_TextBoxPostContent.Text.Trim();
+
+                if (string.IsNullOrEmpty(content))
+                {
+                    MessageBox.Show("Post cannot be empty.", "Empty Post");
+                }
+                else
+                {
+                    tryPostStatus(content);
+                }
             }
+        }
 
-            string content = m_TextBoxPostContent.Text.Trim();
-
-            if (string.IsNullOrEmpty(content))
-            {
-                MessageBox.Show("Post cannot be empty.", "Empty Post");
-                return;
-            }
-
+        private void tryPostStatus(string i_Content)
+        {
             try
             {
-                User user = m_FacebookManager.LoggedInUser;
-                user.PostStatus(content);
+                User user = r_FacebookManager.LoggedInUser;
+                user.PostStatus(i_Content);
 
                 MessageBox.Show("Posted successfully!", "Success");
                 m_TextBoxPostContent.Clear();
@@ -556,34 +572,33 @@ namespace BasicFacebookFeatures
         {
             m_FlowRecentPosts.Controls.Clear();
 
-            User user = m_FacebookManager.LoggedInUser;
-            if (user == null)
-            {
-                return;
-            }
+            User user = r_FacebookManager.LoggedInUser;
 
-            try
+            if (user != null)
             {
-                int shown = 0;
-                foreach (Post post in user.Posts)
+                try
                 {
-                    m_FlowRecentPosts.Controls.Add(createPostCard(post));
-                    shown++;
-
-                    if (shown >= 15)
+                    int shown = 0;
+                    foreach (Post post in user.Posts)
                     {
-                        break;
+                        m_FlowRecentPosts.Controls.Add(createPostCard(post));
+                        shown++;
+
+                        if (shown >= 15)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (shown == 0)
+                    {
+                        showEmptyPostsMessage("No posts to display");
                     }
                 }
-
-                if (shown == 0)
+                catch
                 {
-                    showEmptyPostsMessage("No posts to display");
+                    showEmptyPostsMessage("Cannot load posts (permission missing)");
                 }
-            }
-            catch
-            {
-                showEmptyPostsMessage("Cannot load posts (permission missing)");
             }
         }
 
@@ -600,602 +615,266 @@ namespace BasicFacebookFeatures
             m_FlowRecentPosts.Controls.Add(label);
         }
 
-        private void setupGalleryTab()
+        private void setupAlbumAnalystTab()
         {
             Color darkBg = Color.FromArgb(20, 40, 90);
-            Color tabBg = Color.FromArgb(15, 32, 75);
-            Color headerBg = Color.FromArgb(10, 25, 65);
-            Color blueBtn = Color.FromArgb(24, 119, 242);
             Color lightBlue = Color.FromArgb(160, 200, 255);
+            Color blueBtn = Color.FromArgb(24, 119, 242);
+            Color greenBtn = Color.FromArgb(66, 183, 42);
 
-            // --- Tab page ---
-            m_TabPageGallery = new TabPage
-            {
-                Text = "  Gallery",
-                BackColor = tabBg
-            };
+            // Hide old album list (replaced by DataGridView)
+            tableLayoutPanel1.Visible = false;
 
-            // --- Header bar ---
-            var panelHeader = new Panel
+            // Load Albums button
+            m_ButtonLoadAlbums = new Button
             {
-                Dock = DockStyle.Top,
-                Height = 56,
-                BackColor = headerBg,
-                Padding = new Padding(18, 0, 0, 0)
-            };
-            var labelHeader = new Label
-            {
-                Dock = DockStyle.Fill,
-                Text = "Smart Gallery",
-                Font = new Font("Segoe UI", 15, FontStyle.Bold),
-                ForeColor = Color.White,
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-            panelHeader.Controls.Add(labelHeader);
-            m_TabPageGallery.Controls.Add(panelHeader);
-
-            // --- Filter panel ---
-            var panelFilters = new Panel
-            {
-                Location = new Point(20, 75),
-                Size = new Size(870, 95),
-                BackColor = darkBg,
-                BorderStyle = BorderStyle.None
-            };
-            m_TabPageGallery.Controls.Add(panelFilters);
-
-            // Album filter
-            var labelAlbum = new Label
-            {
-                Text = "Album:",
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                ForeColor = lightBlue,
-                Location = new Point(15, 12),
-                Size = new Size(160, 18),
-                BackColor = Color.Transparent
-            };
-            panelFilters.Controls.Add(labelAlbum);
-            m_ComboGalleryAlbum = new ComboBox
-            {
-                Location = new Point(15, 32),
-                Size = new Size(180, 28),
-                Font = new Font("Segoe UI", 9),
-                BackColor = Color.FromArgb(25, 50, 110),
-                ForeColor = Color.White,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                FlatStyle = FlatStyle.Flat
-            };
-            m_ComboGalleryAlbum.Items.Add("All Albums");
-            m_ComboGalleryAlbum.SelectedIndex = 0;
-            panelFilters.Controls.Add(m_ComboGalleryAlbum);
-
-            // Year filter
-            var labelYear = new Label
-            {
-                Text = "Year:",
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                ForeColor = lightBlue,
-                Location = new Point(215, 12),
-                Size = new Size(100, 18),
-                BackColor = Color.Transparent
-            };
-            panelFilters.Controls.Add(labelYear);
-            m_ComboGalleryYear = new ComboBox
-            {
-                Location = new Point(215, 32),
-                Size = new Size(120, 28),
-                Font = new Font("Segoe UI", 9),
-                BackColor = Color.FromArgb(25, 50, 110),
-                ForeColor = Color.White,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                FlatStyle = FlatStyle.Flat
-            };
-            m_ComboGalleryYear.Items.Add("All Years");
-            m_ComboGalleryYear.SelectedIndex = 0;
-            panelFilters.Controls.Add(m_ComboGalleryYear);
-
-            // Min likes filter
-            var labelMinLikes = new Label
-            {
-                Text = "Min likes:",
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                ForeColor = lightBlue,
-                Location = new Point(355, 12),
-                Size = new Size(100, 18),
-                BackColor = Color.Transparent
-            };
-            panelFilters.Controls.Add(labelMinLikes);
-            m_NumericMinLikes = new NumericUpDown
-            {
-                Location = new Point(355, 32),
-                Size = new Size(90, 28),
-                Font = new Font("Segoe UI", 9),
-                BackColor = Color.FromArgb(25, 50, 110),
-                ForeColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle,
-                Minimum = 0,
-                Maximum = 10000
-            };
-            panelFilters.Controls.Add(m_NumericMinLikes);
-
-            // Sort by
-            var labelSort = new Label
-            {
-                Text = "Sort by:",
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                ForeColor = lightBlue,
-                Location = new Point(465, 12),
-                Size = new Size(150, 18),
-                BackColor = Color.Transparent
-            };
-            panelFilters.Controls.Add(labelSort);
-            m_ComboGallerySort = new ComboBox
-            {
-                Location = new Point(465, 32),
-                Size = new Size(180, 28),
-                Font = new Font("Segoe UI", 9),
-                BackColor = Color.FromArgb(25, 50, 110),
-                ForeColor = Color.White,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                FlatStyle = FlatStyle.Flat
-            };
-            m_ComboGallerySort.Items.AddRange(new object[]
-            {
-                "Newest first",
-                "Oldest first",
-                "Most liked",
-                "Most commented"
-            });
-            m_ComboGallerySort.SelectedIndex = 0;
-            panelFilters.Controls.Add(m_ComboGallerySort);
-
-            // Apply button
-            m_ButtonApplyGallery = new Button
-            {
-                Text = "Apply",
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                Text = "Load Albums",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
                 BackColor = blueBtn,
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Location = new Point(665, 32),
-                Size = new Size(90, 28),
+                Location = new Point(20, 68),
+                Size = new Size(160, 36),
                 Cursor = Cursors.Hand
             };
-            m_ButtonApplyGallery.FlatAppearance.BorderSize = 0;
-            m_ButtonApplyGallery.Click += buttonApplyGallery_Click;
-            panelFilters.Controls.Add(m_ButtonApplyGallery);
+            m_ButtonLoadAlbums.FlatAppearance.BorderSize = 0;
+            m_ButtonLoadAlbums.Click += buttonLoadAlbums_Click;
+            tabPage2.Controls.Add(m_ButtonLoadAlbums);
 
-            // Load/Refresh button
-            m_ButtonLoadGallery = new Button
+            // DataGridView for albums with photo count
+            m_DataGridAlbums = new DataGridView
             {
-                Text = "Load Photos",
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                BackColor = Color.FromArgb(66, 183, 42),
+                Location = new Point(20, 112),
+                Size = new Size(450, 175),
+                BackgroundColor = darkBg,
+                GridColor = Color.FromArgb(40, 70, 130),
+                BorderStyle = BorderStyle.None,
+                RowHeadersVisible = false,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                ReadOnly = true,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                MultiSelect = false,
+                Font = new Font("Segoe UI", 9),
                 ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Location = new Point(765, 32),
-                Size = new Size(95, 28),
-                Cursor = Cursors.Hand
+                ColumnHeadersHeight = 28,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
-            m_ButtonLoadGallery.FlatAppearance.BorderSize = 0;
-            m_ButtonLoadGallery.Click += buttonLoadGallery_Click;
-            panelFilters.Controls.Add(m_ButtonLoadGallery);
+            m_DataGridAlbums.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(10, 25, 65);
+            m_DataGridAlbums.ColumnHeadersDefaultCellStyle.ForeColor = lightBlue;
+            m_DataGridAlbums.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            m_DataGridAlbums.DefaultCellStyle.BackColor = darkBg;
+            m_DataGridAlbums.DefaultCellStyle.ForeColor = Color.White;
+            m_DataGridAlbums.DefaultCellStyle.SelectionBackColor = Color.FromArgb(24, 119, 242);
+            m_DataGridAlbums.DefaultCellStyle.SelectionForeColor = Color.White;
+            m_DataGridAlbums.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(25, 50, 110);
+            m_DataGridAlbums.Columns.Add("AlbumName", "Album Name");
+            m_DataGridAlbums.Columns.Add("PhotoCount", "Photos");
+            m_DataGridAlbums.Columns["PhotoCount"].Width = 70;
+            m_DataGridAlbums.Columns["PhotoCount"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            m_DataGridAlbums.SelectionChanged += dataGridAlbums_SelectionChanged;
+            tabPage2.Controls.Add(m_DataGridAlbums);
 
-            // Stats label
-            m_LabelGalleryStats = new Label
+            // Right panel - selected album details
+            var panelAlbumDetail = new Panel
             {
-                Location = new Point(15, 68),
-                Size = new Size(845, 22),
-                Font = new Font("Segoe UI", 9, FontStyle.Italic),
+                Location = new Point(490, 68),
+                Size = new Size(400, 222),
+                BackColor = darkBg
+            };
+            tabPage2.Controls.Add(panelAlbumDetail);
+
+            var labelDetailTitle = new Label
+            {
+                Text = "Selected Album",
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 ForeColor = lightBlue,
-                Text = "Click 'Load Photos' to fetch your photos from Facebook",
+                Location = new Point(12, 12),
+                Size = new Size(375, 25),
                 BackColor = Color.Transparent
             };
-            panelFilters.Controls.Add(m_LabelGalleryStats);
+            panelAlbumDetail.Controls.Add(labelDetailTitle);
 
-            // Gallery flow
-            m_FlowGallery = new FlowLayoutPanel
+            m_LabelSelectedAlbum = new Label
             {
-                Location = new Point(20, 180),
-                Size = new Size(870, 450),
-                BackColor = darkBg,
-                AutoScroll = true,
-                BorderStyle = BorderStyle.None,
-                Padding = new Padding(10),
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = true
+                Text = "Select an album from the list",
+                Font = new Font("Segoe UI", 10),
+                ForeColor = Color.White,
+                Location = new Point(12, 40),
+                Size = new Size(375, 25),
+                BackColor = Color.Transparent
             };
-            m_TabPageGallery.Controls.Add(m_FlowGallery);
+            panelAlbumDetail.Controls.Add(m_LabelSelectedAlbum);
 
-            tabPageAnalytics.TabPages.Add(m_TabPageGallery);
-        }
-
-        private void buttonLoadGallery_Click(object sender, EventArgs e)
-        {
-            if (!ensureLoggedIn())
+            m_LabelAlbumPhotoCount = new Label
             {
-                return;
-            }
+                Text = "",
+                Font = new Font("Segoe UI", 9),
+                ForeColor = lightBlue,
+                Location = new Point(12, 68),
+                Size = new Size(375, 22),
+                BackColor = Color.Transparent
+            };
+            panelAlbumDetail.Controls.Add(m_LabelAlbumPhotoCount);
 
-            loadAllGalleryItems();
+            m_FlowAlbumThumbnails = new FlowLayoutPanel
+            {
+                Location = new Point(12, 95),
+                Size = new Size(375, 70),
+                BackColor = Color.FromArgb(15, 32, 75),
+                AutoScroll = false,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false
+            };
+            panelAlbumDetail.Controls.Add(m_FlowAlbumThumbnails);
+
+            m_ButtonUploadPhoto = new Button
+            {
+                Text = "Upload Photo to Album",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                BackColor = greenBtn,
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Location = new Point(12, 174),
+                Size = new Size(220, 36),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            m_ButtonUploadPhoto.FlatAppearance.BorderSize = 0;
+            m_ButtonUploadPhoto.Click += buttonUploadPhoto_Click;
+            panelAlbumDetail.Controls.Add(m_ButtonUploadPhoto);
         }
 
-        private void loadAllGalleryItems()
+        private void buttonLoadAlbums_Click(object sender, EventArgs e)
         {
-            m_GalleryItems.Clear();
-            m_FlowGallery.Controls.Clear();
+            if (ensureLoggedIn())
+            {
+                loadAlbumsIntoGrid();
+            }
+        }
 
-            m_LabelGalleryStats.Text = "Loading photos...";
+        private void loadAlbumsIntoGrid()
+        {
+            r_LoadedAlbums.Clear();
+            m_DataGridAlbums.Rows.Clear();
+            m_LabelSelectedAlbum.Text = "Loading...";
             Application.DoEvents();
 
-            User user = m_FacebookManager.LoggedInUser;
-            if (user == null)
-            {
-                m_LabelGalleryStats.Text = "Not logged in";
-                return;
-            }
+            User user = r_FacebookManager.LoggedInUser;
 
             try
             {
                 foreach (Album album in user.Albums)
                 {
-                    foreach (Photo photo in album.Photos)
-                    {
-                        var item = new GalleryItem
-                        {
-                            Photo = photo,
-                            AlbumName = album.Name,
-                            CreatedTime = tryGetCreatedTime(photo),
-                            Likes = safeCountInt(() => photo.LikedBy?.Count),
-                            Comments = safeCountInt(() => photo.Comments?.Count)
-                        };
-                        item.Year = item.CreatedTime.HasValue ? item.CreatedTime.Value.Year : 0;
-                        m_GalleryItems.Add(item);
-                    }
+                    r_LoadedAlbums.Add(album);
+                    int photoCount = 0;
+                    try { photoCount = album.Photos.Count; } catch { }
+                    m_DataGridAlbums.Rows.Add(album.Name, photoCount);
                 }
 
-                m_GalleryLoaded = true;
-                populateAlbumFilter(user);
-                populateYearFilter();
-                applyGalleryFilters();
+                if (r_LoadedAlbums.Count == 0)
+                {
+                    m_LabelSelectedAlbum.Text = "No albums found";
+                }
+                else
+                {
+                    m_LabelSelectedAlbum.Text = $"Found {r_LoadedAlbums.Count} albums — click a row to inspect";
+                }
             }
             catch (Exception ex)
             {
-                m_LabelGalleryStats.Text = "Cannot load photos: " + ex.Message;
+                m_LabelSelectedAlbum.Text = "Error loading albums: " + ex.Message;
             }
         }
 
-        private static DateTime? tryGetCreatedTime(Photo i_Photo)
+        private void dataGridAlbums_SelectionChanged(object sender, EventArgs e)
         {
-            try
+            int index = -1;
+
+            if (m_DataGridAlbums.SelectedRows.Count > 0)
             {
-                return i_Photo.CreatedTime;
+                index = m_DataGridAlbums.SelectedRows[0].Index;
             }
-            catch
+
+            if (index >= 0 && index < r_LoadedAlbums.Count)
             {
-                return null;
+                showSelectedAlbum(r_LoadedAlbums[index]);
             }
         }
 
-        private static int safeCountInt(Func<int?> i_Getter)
+        private void showSelectedAlbum(Album i_Album)
         {
-            try
-            {
-                return i_Getter() ?? 0;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
+            m_LabelSelectedAlbum.Text = i_Album.Name ?? "(unnamed)";
 
-        private void populateAlbumFilter(User i_User)
-        {
-            m_ComboGalleryAlbum.Items.Clear();
-            m_ComboGalleryAlbum.Items.Add("All Albums");
+            int photoCount = 0;
+            try { photoCount = i_Album.Photos.Count; } catch { }
+            m_LabelAlbumPhotoCount.Text = $"{photoCount} photos";
+
+            m_FlowAlbumThumbnails.Controls.Clear();
+            int shown = 0;
 
             try
             {
-                foreach (Album album in i_User.Albums)
+                foreach (Photo photo in i_Album.Photos)
                 {
-                    m_ComboGalleryAlbum.Items.Add(album.Name);
+                    if (shown >= 4)
+                    {
+                        break;
+                    }
+
+                    var pic = new PictureBox
+                    {
+                        Size = new Size(60, 60),
+                        SizeMode = PictureBoxSizeMode.Zoom,
+                        ImageLocation = photo.PictureNormalURL,
+                        BackColor = Color.FromArgb(15, 32, 75),
+                        Margin = new Padding(2)
+                    };
+                    m_FlowAlbumThumbnails.Controls.Add(pic);
+                    shown++;
                 }
             }
             catch
             {
-                // ignore - at least "All Albums" will still be available
+                // Cannot load thumbnails
             }
 
-            m_ComboGalleryAlbum.SelectedIndex = 0;
+            m_ButtonUploadPhoto.Enabled = true;
+            m_CurrentSelectedAlbum = i_Album;
         }
 
-        private void populateYearFilter()
+        private void buttonUploadPhoto_Click(object sender, EventArgs e)
         {
-            m_ComboGalleryYear.Items.Clear();
-            m_ComboGalleryYear.Items.Add("All Years");
-
-            var years = m_GalleryItems
-                .Where(i => i.Year > 0)
-                .Select(i => i.Year)
-                .Distinct()
-                .OrderByDescending(y => y);
-
-            foreach (int year in years)
+            if (m_CurrentSelectedAlbum != null)
             {
-                m_ComboGalleryYear.Items.Add(year.ToString());
+                tryUploadPhotoToAlbum(m_CurrentSelectedAlbum);
             }
-
-            m_ComboGalleryYear.SelectedIndex = 0;
         }
 
-        private void buttonApplyGallery_Click(object sender, EventArgs e)
+        private void tryUploadPhotoToAlbum(Album i_Album)
         {
-            if (!m_GalleryLoaded)
+            using (OpenFileDialog dialog = new OpenFileDialog())
             {
-                MessageBox.Show("Please load photos first.", "Gallery empty");
-                return;
-            }
+                dialog.Title = "Select a photo to upload";
+                dialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All Files|*.*";
+                dialog.FilterIndex = 1;
 
-            applyGalleryFilters();
-        }
-
-        private void applyGalleryFilters()
-        {
-            // === Filtering (multi-criteria LINQ chain) ===
-            IEnumerable<GalleryItem> filtered = m_GalleryItems;
-
-            string albumFilter = m_ComboGalleryAlbum.SelectedItem as string;
-            if (!string.IsNullOrEmpty(albumFilter) && albumFilter != "All Albums")
-            {
-                filtered = filtered.Where(i => i.AlbumName == albumFilter);
-            }
-
-            string yearFilter = m_ComboGalleryYear.SelectedItem as string;
-            if (!string.IsNullOrEmpty(yearFilter) && yearFilter != "All Years")
-            {
-                int year = int.Parse(yearFilter);
-                filtered = filtered.Where(i => i.Year == year);
-            }
-
-            int minLikes = (int)m_NumericMinLikes.Value;
-            if (minLikes > 0)
-            {
-                filtered = filtered.Where(i => i.Likes >= minLikes);
-            }
-
-            // === Sorting ===
-            string sortBy = m_ComboGallerySort.SelectedItem as string;
-            switch (sortBy)
-            {
-                case "Newest first":
-                    filtered = filtered.OrderByDescending(i => i.CreatedTime ?? DateTime.MinValue);
-                    break;
-                case "Oldest first":
-                    filtered = filtered.OrderBy(i => i.CreatedTime ?? DateTime.MaxValue);
-                    break;
-                case "Most liked":
-                    filtered = filtered.OrderByDescending(i => i.Likes);
-                    break;
-                case "Most commented":
-                    filtered = filtered.OrderByDescending(i => i.Comments);
-                    break;
-            }
-
-            var result = filtered.ToList();
-            renderGallery(result);
-            updateGalleryStats(result);
-        }
-
-        private void renderGallery(List<GalleryItem> i_Items)
-        {
-            m_FlowGallery.SuspendLayout();
-            m_FlowGallery.Controls.Clear();
-
-            foreach (GalleryItem item in i_Items)
-            {
-                m_FlowGallery.Controls.Add(createGalleryCard(item));
-            }
-
-            if (i_Items.Count == 0)
-            {
-                var label = new Label
+                if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    Text = "No photos match your filters",
-                    ForeColor = Color.FromArgb(160, 200, 255),
-                    Font = new Font("Segoe UI", 10, FontStyle.Italic),
-                    AutoSize = true,
-                    Margin = new Padding(12, 20, 0, 0)
-                };
-                m_FlowGallery.Controls.Add(label);
+                    try
+                    {
+                        i_Album.UploadPhoto(dialog.FileName);
+                        MessageBox.Show("Photo uploaded successfully!", "Upload Success");
+                        loadAlbumsIntoGrid();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(
+                            $"Failed to upload photo.\n\nReason: {ex.Message}\n\n(Uploading via API may not be available for all accounts.)",
+                            "Upload Failed");
+                    }
+                }
             }
-
-            m_FlowGallery.ResumeLayout();
-        }
-
-        private void updateGalleryStats(List<GalleryItem> i_Items)
-        {
-            if (i_Items.Count == 0)
-            {
-                m_LabelGalleryStats.Text = $"Showing 0 of {m_GalleryItems.Count} photos";
-                return;
-            }
-
-            double avgLikes = i_Items.Average(i => i.Likes);
-            double avgComments = i_Items.Average(i => i.Comments);
-            int totalLikes = i_Items.Sum(i => i.Likes);
-
-            m_LabelGalleryStats.Text =
-                $"Showing {i_Items.Count} of {m_GalleryItems.Count} photos   |   " +
-                $"Avg likes: {avgLikes:F1}   |   " +
-                $"Avg comments: {avgComments:F1}   |   " +
-                $"Total likes: {totalLikes}";
-        }
-
-        private Panel createGalleryCard(GalleryItem i_Item)
-        {
-            var card = new Panel
-            {
-                Size = new Size(130, 165),
-                BackColor = Color.FromArgb(25, 50, 110),
-                Margin = new Padding(6),
-                Cursor = Cursors.Hand,
-                Tag = i_Item
-            };
-
-            var pic = new PictureBox
-            {
-                Size = new Size(118, 118),
-                Location = new Point(6, 6),
-                SizeMode = PictureBoxSizeMode.Zoom,
-                ImageLocation = i_Item.Photo.PictureNormalURL,
-                BackColor = Color.FromArgb(15, 32, 75),
-                Cursor = Cursors.Hand,
-                Tag = i_Item
-            };
-
-            var labelStats = new Label
-            {
-                Text = $"♥ {i_Item.Likes}   💬 {i_Item.Comments}",
-                Font = new Font("Segoe UI", 8, FontStyle.Bold),
-                ForeColor = Color.White,
-                Location = new Point(0, 128),
-                Size = new Size(130, 18),
-                TextAlign = ContentAlignment.TopCenter,
-                Cursor = Cursors.Hand,
-                Tag = i_Item
-            };
-
-            var labelAlbum = new Label
-            {
-                Text = truncate(i_Item.AlbumName, 18),
-                Font = new Font("Segoe UI", 7, FontStyle.Italic),
-                ForeColor = Color.FromArgb(160, 200, 255),
-                Location = new Point(0, 146),
-                Size = new Size(130, 16),
-                TextAlign = ContentAlignment.TopCenter,
-                Cursor = Cursors.Hand,
-                Tag = i_Item
-            };
-
-            card.Controls.Add(pic);
-            card.Controls.Add(labelStats);
-            card.Controls.Add(labelAlbum);
-
-            card.Click += galleryCard_Click;
-            pic.Click += galleryCard_Click;
-            labelStats.Click += galleryCard_Click;
-            labelAlbum.Click += galleryCard_Click;
-
-            return card;
-        }
-
-        private static string truncate(string i_Text, int i_MaxLen)
-        {
-            if (string.IsNullOrEmpty(i_Text))
-            {
-                return "";
-            }
-
-            return i_Text.Length <= i_MaxLen ? i_Text : i_Text.Substring(0, i_MaxLen - 1) + "…";
-        }
-
-        private void galleryCard_Click(object sender, EventArgs e)
-        {
-            Control ctrl = sender as Control;
-            if (ctrl == null)
-            {
-                return;
-            }
-
-            GalleryItem item = ctrl.Tag as GalleryItem;
-            if (item == null)
-            {
-                return;
-            }
-
-            showGalleryDetail(item);
-        }
-
-        private void showGalleryDetail(GalleryItem i_Item)
-        {
-            var dialog = new Form
-            {
-                Text = "Photo Details",
-                Size = new Size(780, 640),
-                StartPosition = FormStartPosition.CenterParent,
-                BackColor = Color.FromArgb(15, 32, 75),
-                FormBorderStyle = FormBorderStyle.FixedDialog,
-                MaximizeBox = false,
-                MinimizeBox = false
-            };
-
-            var pic = new PictureBox
-            {
-                Location = new Point(20, 20),
-                Size = new Size(500, 550),
-                SizeMode = PictureBoxSizeMode.Zoom,
-                ImageLocation = i_Item.Photo.PictureNormalURL,
-                BackColor = Color.FromArgb(20, 40, 90)
-            };
-            dialog.Controls.Add(pic);
-
-            var labelTitle = new Label
-            {
-                Text = "Photo Details",
-                Location = new Point(540, 20),
-                Size = new Size(210, 28),
-                Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.Transparent
-            };
-            dialog.Controls.Add(labelTitle);
-
-            var details = new StringBuilder();
-            details.AppendLine($"Album:");
-            details.AppendLine($"  {i_Item.AlbumName}");
-            details.AppendLine();
-            details.AppendLine($"Created:");
-            details.AppendLine($"  {(i_Item.CreatedTime?.ToString("MMM dd, yyyy HH:mm") ?? "Unknown")}");
-            details.AppendLine();
-            details.AppendLine($"Likes:    {i_Item.Likes}");
-            details.AppendLine($"Comments: {i_Item.Comments}");
-
-            string caption = safeGet(() => i_Item.Photo.Name);
-            if (!string.IsNullOrEmpty(caption))
-            {
-                details.AppendLine();
-                details.AppendLine("Caption:");
-                details.AppendLine($"  {(caption.Length > 100 ? caption.Substring(0, 100) + "..." : caption)}");
-            }
-
-            var labelDetails = new Label
-            {
-                Text = details.ToString(),
-                Location = new Point(540, 60),
-                Size = new Size(220, 480),
-                Font = new Font("Segoe UI", 10),
-                ForeColor = Color.FromArgb(200, 220, 255),
-                BackColor = Color.Transparent,
-                TextAlign = ContentAlignment.TopLeft
-            };
-            dialog.Controls.Add(labelDetails);
-
-            var closeBtn = new Button
-            {
-                Text = "Close",
-                Location = new Point(600, 560),
-                Size = new Size(100, 32),
-                BackColor = Color.FromArgb(24, 119, 242),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                DialogResult = DialogResult.OK
-            };
-            closeBtn.FlatAppearance.BorderSize = 0;
-            dialog.Controls.Add(closeBtn);
-            dialog.AcceptButton = closeBtn;
-
-            dialog.ShowDialog(this);
         }
 
         private Panel createPostCard(Post i_Post)
@@ -1249,7 +928,7 @@ namespace BasicFacebookFeatures
 
         private bool ensureLoggedIn()
         {
-            bool isLoggedIn = m_FacebookManager.LoggedInUser != null;
+            bool isLoggedIn = r_FacebookManager.LoggedInUser != null;
 
             if (!isLoggedIn)
             {
@@ -1261,34 +940,40 @@ namespace BasicFacebookFeatures
 
         public bool LoginWithFacebook()
         {
-            LoginResult loginResult = m_FacebookManager.Login(k_AppId);
+            bool success = false;
+            LoginResult loginResult = r_FacebookManager.Login(k_AppId);
 
             if (!string.IsNullOrEmpty(loginResult.AccessToken))
             {
                 afterLogin();
                 displayUserInfo();
-                return true;
+                success = true;
+            }
+            else
+            {
+                string errorMessage = string.IsNullOrEmpty(loginResult.ErrorMessage)
+                    ? "User cancelled login."
+                    : loginResult.ErrorMessage;
+
+                MessageBox.Show(errorMessage, "Login Failed");
             }
 
-            string errorMessage = string.IsNullOrEmpty(loginResult.ErrorMessage)
-                ? "User cancelled login."
-                : loginResult.ErrorMessage;
-
-            MessageBox.Show(errorMessage, "Login Failed");
-            return false;
+            return success;
         }
 
         public bool LoginWithDesigAccount()
         {
+            bool success = false;
+
             try
             {
-                LoginResult loginResult = m_FacebookManager.ConnectWithToken(k_DesignPatternsToken);
+                LoginResult loginResult = r_FacebookManager.ConnectWithToken(k_DesignPatternsToken);
 
                 if (loginResult != null && !string.IsNullOrEmpty(loginResult.AccessToken))
                 {
                     afterLogin();
                     displayUserInfo();
-                    return true;
+                    success = true;
                 }
             }
             catch (Exception ex)
@@ -1296,12 +981,12 @@ namespace BasicFacebookFeatures
                 MessageBox.Show(ex.Message, "Login Failed");
             }
 
-            return false;
+            return success;
         }
 
         private void buttonLogin_Click(object sender, EventArgs e)
         {
-            LoginResult loginResult = m_FacebookManager.Login(k_AppId);
+            LoginResult loginResult = r_FacebookManager.Login(k_AppId);
 
             if (!string.IsNullOrEmpty(loginResult.AccessToken))
             {
@@ -1322,7 +1007,7 @@ namespace BasicFacebookFeatures
 
         private void displayUserInfo()
         {
-            User user = m_FacebookManager.LoggedInUser;
+            User user = r_FacebookManager.LoggedInUser;
 
             if (user != null)
             {
@@ -1355,44 +1040,44 @@ namespace BasicFacebookFeatures
         private void loadFriends()
         {
             m_FlowFriends.Controls.Clear();
-            m_AllFriends.Clear();
+            r_AllFriends.Clear();
 
-            User user = m_FacebookManager.LoggedInUser;
-            if (user == null)
-            {
-                return;
-            }
+            User user = r_FacebookManager.LoggedInUser;
 
-            try
+            if (user != null)
             {
-                foreach (User friend in user.Friends)
+                try
                 {
-                    m_AllFriends.Add(friend);
+                    foreach (User friend in user.Friends)
+                    {
+                        r_AllFriends.Add(friend);
+                    }
+
+                    m_LabelFriendsCount.Text = $"{r_AllFriends.Count} friends";
+
+                    if (r_AllFriends.Count == 0)
+                    {
+                        showFlowMessage("No friends available (Facebook API restricts this)", Color.FromArgb(160, 200, 255));
+                    }
+                    else
+                    {
+                        renderFriendCards(r_AllFriends);
+                    }
                 }
-
-                m_LabelFriendsCount.Text = $"{m_AllFriends.Count} friends";
-
-                if (m_AllFriends.Count == 0)
+                catch
                 {
-                    showFlowMessage("No friends available (Facebook API restricts this)", Color.FromArgb(160, 200, 255));
-                    return;
+                    m_LabelFriendsCount.Text = "";
+                    showFlowMessage("Cannot load friends (permission missing)", Color.FromArgb(220, 120, 120));
                 }
-
-                renderFriendCards(m_AllFriends);
-            }
-            catch
-            {
-                m_LabelFriendsCount.Text = "";
-                showFlowMessage("Cannot load friends (permission missing)", Color.FromArgb(220, 120, 120));
             }
         }
 
-        private void showFlowMessage(string text, Color color)
+        private void showFlowMessage(string i_Text, Color i_Color)
         {
-            var label = new Label
+            Label label = new Label
             {
-                Text = text,
-                ForeColor = color,
+                Text = i_Text,
+                ForeColor = i_Color,
                 Font = new Font("Segoe UI", 10, FontStyle.Italic),
                 AutoSize = true,
                 Margin = new Padding(12, 20, 0, 0)
@@ -1468,19 +1153,12 @@ namespace BasicFacebookFeatures
         private void friendCard_Click(object sender, EventArgs e)
         {
             Control ctrl = sender as Control;
+            User friend = ctrl?.Tag as User;
 
-            if (ctrl == null)
+            if (friend != null)
             {
-                return;
+                showFriendDetails(friend);
             }
-
-            User friend = ctrl.Tag as User;
-            if (friend == null)
-            {
-                return;
-            }
-
-            showFriendDetails(friend);
         }
 
         private void showFriendDetails(User i_Friend)
@@ -1511,31 +1189,23 @@ namespace BasicFacebookFeatures
         private void textBoxSearchFriend_TextChanged(object sender, EventArgs e)
         {
             string query = m_TextBoxSearchFriend.Text.Trim().ToLower();
+            IEnumerable<User> filtered;
 
             if (string.IsNullOrEmpty(query))
             {
-                renderFriendCards(m_AllFriends);
-                return;
+                filtered = r_AllFriends;
             }
-
-            var filtered = m_AllFriends.Where(f => f.Name != null && f.Name.ToLower().Contains(query));
-            renderFriendCards(filtered);
-        }
-
-        private void connectWithSavedToken()
-        {
-            LoginResult loginResult = m_FacebookManager.ConnectWithSavedToken();
-
-            if (loginResult != null && !string.IsNullOrEmpty(loginResult.AccessToken))
+            else
             {
-                afterLogin();
-                displayUserInfo();
+                filtered = r_AllFriends.Where(f => f.Name != null && f.Name.ToLower().Contains(query));
             }
+
+            renderFriendCards(filtered);
         }
 
         private void afterLogin()
         {
-            User user = m_FacebookManager.LoggedInUser;
+            User user = r_FacebookManager.LoggedInUser;
 
             if (user != null)
             {
@@ -1558,7 +1228,7 @@ namespace BasicFacebookFeatures
 
             // Friends
             m_FlowFriends.Controls.Clear();
-            m_AllFriends.Clear();
+            r_AllFriends.Clear();
             m_LabelFriendsCount.Text = "";
             m_TextBoxSearchFriend.Text = "";
             m_PictureBoxFriendDetail.ImageLocation = null;
@@ -1581,24 +1251,19 @@ namespace BasicFacebookFeatures
             m_LabelCharCount.Text = $"0 / {k_MaxPostLength} characters";
             m_LabelCharCount.ForeColor = Color.FromArgb(160, 200, 255);
 
-            // Smart Gallery tab
-            m_GalleryItems.Clear();
-            m_GalleryLoaded = false;
-            m_FlowGallery.Controls.Clear();
-            m_ComboGalleryAlbum.Items.Clear();
-            m_ComboGalleryAlbum.Items.Add("All Albums");
-            m_ComboGalleryAlbum.SelectedIndex = 0;
-            m_ComboGalleryYear.Items.Clear();
-            m_ComboGalleryYear.Items.Add("All Years");
-            m_ComboGalleryYear.SelectedIndex = 0;
-            m_NumericMinLikes.Value = 0;
-            m_ComboGallerySort.SelectedIndex = 0;
-            m_LabelGalleryStats.Text = "Click 'Load Photos' to fetch your photos from Facebook";
+            // Album Analyst tab
+            r_LoadedAlbums.Clear();
+            m_DataGridAlbums.Rows.Clear();
+            m_LabelSelectedAlbum.Text = "Select an album from the list";
+            m_LabelAlbumPhotoCount.Text = "";
+            m_FlowAlbumThumbnails.Controls.Clear();
+            m_ButtonUploadPhoto.Enabled = false;
+            m_CurrentSelectedAlbum = null;
         }
 
         private void buttonLogout_Click(object sender, EventArgs e)
         {
-            m_FacebookManager.Logout();
+            r_FacebookManager.Logout();
             clearUserData();
 
             FormLogin loginForm = Application.OpenForms["FormLogin"] as FormLogin;
@@ -1613,136 +1278,129 @@ namespace BasicFacebookFeatures
             }
         }
 
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            base.OnFormClosed(e);
+
+            // When the user closes the main window (X button), exit the whole
+            // application. Logout path never reaches here because it Hide()s
+            // the form instead of closing it.
+            Application.Exit();
+        }
+
         private void buttonConnectAsDesig_Click_1(object sender, EventArgs e)
         {
         }
 
         private void buttonMostPhotosAlbum_Click(object sender, EventArgs e)
         {
-            if (!ensureLoggedIn())
+            if (ensureLoggedIn())
             {
-                return;
-            }
+                User user = r_FacebookManager.LoggedInUser;
+                IFacebookFeature<Album> feature = new AlbumWithMostPhotosFeature();
+                Album album = feature.Execute(user);
 
-            User user = m_FacebookManager.LoggedInUser;
-
-            IFacebookFeature<Album> feature = new AlbumWithMostPhotosFeature();
-
-            Album album = feature.Execute(user);
-
-            if (album != null)
-            {
-                labelAlbumName.Text = album.Name;
-            }
-            else
-            {
-                labelAlbumName.Text = "No albums found";
+                if (album != null)
+                {
+                    labelAlbumName.Text = album.Name;
+                }
+                else
+                {
+                    labelAlbumName.Text = "No albums found";
+                }
             }
         }
 
         private void buttonOldestPhoto_Click_1(object sender, EventArgs e)
         {
-            if (!ensureLoggedIn())
+            if (ensureLoggedIn())
             {
-                return;
-            }
+                User user = r_FacebookManager.LoggedInUser;
+                IFacebookFeature<Photo> feature = new OldestPhotoFeature();
 
-            User user = m_FacebookManager.LoggedInUser;
+                pictureBoxOldestPhoto.ImageLocation = null;
+                labelOldestPhotoDate.Text = "";
 
-            IFacebookFeature<Photo> feature = new OldestPhotoFeature();
+                Photo photo = feature.Execute(user);
 
-            pictureBoxOldestPhoto.ImageLocation = null;
-            labelOldestPhotoDate.Text = "";
-
-            Photo photo = feature.Execute(user);
-
-            if (photo != null)
-            {
-                pictureBoxOldestPhoto.ImageLocation = photo.PictureNormalURL;
-                labelOldestPhotoDate.Text = $"Oldest photo created at {photo.CreatedTime}";
-            }
-            else
-            {
-                labelOldestPhotoDate.Text = "No photos found";
+                if (photo != null)
+                {
+                    pictureBoxOldestPhoto.ImageLocation = photo.PictureNormalURL;
+                    labelOldestPhotoDate.Text = $"Oldest photo created at {photo.CreatedTime}";
+                }
+                else
+                {
+                    labelOldestPhotoDate.Text = "No photos found";
+                }
             }
         }
 
         private void buttonMostLikedPhoto_Click_1(object sender, EventArgs e)
         {
-            if (!ensureLoggedIn())
+            if (ensureLoggedIn())
             {
-                return;
-            }
+                User user = r_FacebookManager.LoggedInUser;
+                IFacebookFeature<Photo> feature = new MostLikedPhotoFeature();
 
-            User user = m_FacebookManager.LoggedInUser;
+                labelMostLikedStatus.Visible = false;
+                pictureBoxMostLikePhoto.ImageLocation = null;
 
-            IFacebookFeature<Photo> feature = new MostLikedPhotoFeature();
+                Photo photo = feature.Execute(user);
 
-            labelMostLikedStatus.Visible = false;
-            pictureBoxMostLikePhoto.ImageLocation = null;
-
-            Photo photo = feature.Execute(user);
-
-            if (photo != null)
-            {
-                pictureBoxMostLikePhoto.ImageLocation = photo.PictureNormalURL;
-            }
-            else
-            {
-                labelMostLikedStatus.Text = "No photo found";
-                labelMostLikedStatus.Visible = true;
+                if (photo != null)
+                {
+                    pictureBoxMostLikePhoto.ImageLocation = photo.PictureNormalURL;
+                }
+                else
+                {
+                    labelMostLikedStatus.Text = "No photo found";
+                    labelMostLikedStatus.Visible = true;
+                }
             }
         }
 
         private void buttonMostCommentedPhoto_Click_1(object sender, EventArgs e)
         {
-            if (!ensureLoggedIn())
+            if (ensureLoggedIn())
             {
-                return;
-            }
+                User user = r_FacebookManager.LoggedInUser;
+                IFacebookFeature<Photo> feature = new MostCommentedPhotoFeature();
 
-            User user = m_FacebookManager.LoggedInUser;
+                labelMostCommentedStatus.Visible = false;
+                pictureBoxMostCommentedPhoto.ImageLocation = null;
 
-            IFacebookFeature<Photo> feature = new MostCommentedPhotoFeature();
+                Photo photo = feature.Execute(user);
 
-            labelMostCommentedStatus.Visible = false;
-            pictureBoxMostCommentedPhoto.ImageLocation = null;
-
-            Photo photo = feature.Execute(user);
-
-            if (photo != null)
-            {
-                pictureBoxMostCommentedPhoto.ImageLocation = photo.PictureNormalURL;
-                labelMostCommentedStatus.Text = $"{photo.Comments.Count} comments";
-                labelMostCommentedStatus.Visible = true;
-            }
-            else
-            {
-                labelMostCommentedStatus.Text = "No photo found";
-                labelMostCommentedStatus.Visible = true;
+                if (photo != null)
+                {
+                    pictureBoxMostCommentedPhoto.ImageLocation = photo.PictureNormalURL;
+                    labelMostCommentedStatus.Text = $"{photo.Comments.Count} comments";
+                    labelMostCommentedStatus.Visible = true;
+                }
+                else
+                {
+                    labelMostCommentedStatus.Text = "No photo found";
+                    labelMostCommentedStatus.Visible = true;
+                }
             }
         }
 
         private void buttonCountAlbums_Click(object sender, EventArgs e)
         {
-            if (!ensureLoggedIn())
+            if (ensureLoggedIn())
             {
-                return;
-            }
+                User user = r_FacebookManager.LoggedInUser;
+                IFacebookFeature<int> feature = new CountAlbumsFeature();
+                int albumsCount = feature.Execute(user);
 
-            User user = m_FacebookManager.LoggedInUser;
-
-            IFacebookFeature<int> feature = new CountAlbumsFeature();
-
-            int albumsCount = feature.Execute(user);
-
-            if (albumsCount == -1)
-            {
-                labelAlbumsCount.Text = "No permission to access albums";
-            }
-            else
-            {
-                labelAlbumsCount.Text = $"Albums Count: {albumsCount}";
+                if (albumsCount == -1)
+                {
+                    labelAlbumsCount.Text = "No permission to access albums";
+                }
+                else
+                {
+                    labelAlbumsCount.Text = $"Albums Count: {albumsCount}";
+                }
             }
         }
     }

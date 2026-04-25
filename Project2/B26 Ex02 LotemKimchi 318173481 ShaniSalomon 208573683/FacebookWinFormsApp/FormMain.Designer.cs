@@ -146,18 +146,18 @@ namespace BasicFacebookFeatures
             this.panelProfile.Name = "panelProfile";
             this.panelProfile.Size = new System.Drawing.Size(300, 540);
             this.panelProfile.TabIndex = 74;
-            //
+            // 
             // pictureBoxProfile
-            //
+            // 
             this.pictureBoxProfile.Location = new System.Drawing.Point(79, 30);
             this.pictureBoxProfile.Name = "pictureBoxProfile";
             this.pictureBoxProfile.Size = new System.Drawing.Size(141, 141);
             this.pictureBoxProfile.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxProfile.TabIndex = 55;
             this.pictureBoxProfile.TabStop = false;
-            //
+            // 
             // labelName
-            //
+            // 
             this.labelName.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
             this.labelName.ForeColor = System.Drawing.Color.White;
             this.labelName.Location = new System.Drawing.Point(0, 185);
@@ -165,9 +165,9 @@ namespace BasicFacebookFeatures
             this.labelName.Size = new System.Drawing.Size(300, 40);
             this.labelName.TabIndex = 57;
             this.labelName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            //
+            // 
             // labelPersonalInfo
-            //
+            // 
             this.labelPersonalInfo.AutoSize = true;
             this.labelPersonalInfo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.labelPersonalInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(200)))), ((int)(((byte)(255)))));
@@ -176,17 +176,17 @@ namespace BasicFacebookFeatures
             this.labelPersonalInfo.Size = new System.Drawing.Size(130, 25);
             this.labelPersonalInfo.TabIndex = 60;
             this.labelPersonalInfo.Text = "Personal Info";
-            //
+            // 
             // panelSepProfile
-            //
+            // 
             this.panelSepProfile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(90)))), ((int)(((byte)(150)))));
             this.panelSepProfile.Location = new System.Drawing.Point(20, 277);
             this.panelSepProfile.Name = "panelSepProfile";
             this.panelSepProfile.Size = new System.Drawing.Size(260, 1);
             this.panelSepProfile.TabIndex = 61;
-            //
+            // 
             // labelBirthday
-            //
+            // 
             this.labelBirthday.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.labelBirthday.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(220)))), ((int)(((byte)(255)))));
             this.labelBirthday.Location = new System.Drawing.Point(20, 290);
