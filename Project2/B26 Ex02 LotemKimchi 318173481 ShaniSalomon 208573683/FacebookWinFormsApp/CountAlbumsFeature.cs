@@ -1,24 +1,29 @@
-﻿using FacebookWrapper.ObjectModel;
-using System;
+using FacebookWrapper.ObjectModel;
+using System.Collections.Generic;
 
 namespace BasicFacebookFeatures
 {
     public class CountAlbumsFeature : IFacebookFeature<int>
     {
+        private readonly IFacebookService r_Service;
+
+        public CountAlbumsFeature(IFacebookService i_Service)
+        {
+            r_Service = i_Service;
+        }
+
         public int Execute(User i_User)
         {
-            int albumsCount = 0;
+            int albumsCount = -1;
 
             try
             {
-                foreach (Album album in i_User.Albums)
-                {
-                    albumsCount++;
-                }
+                List<Album> albums = r_Service.GetAlbums();
+                albumsCount = albums.Count;
             }
-            catch (Exception)
+            catch
             {
-                albumsCount = -1;
+                // Return -1 to signal permission error
             }
 
             return albumsCount;

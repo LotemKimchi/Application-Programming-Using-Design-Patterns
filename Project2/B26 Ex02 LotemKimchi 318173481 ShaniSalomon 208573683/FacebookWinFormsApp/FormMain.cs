@@ -68,6 +68,11 @@ namespace BasicFacebookFeatures
         private Album m_CurrentSelectedAlbum;
         private readonly List<Album> r_LoadedAlbums = new List<Album>();
 
+        // Two-Way Data Binding: BindingList notifies the DataGridView of any
+        // property change on AlbumViewModel (INotifyPropertyChanged) automatically.
+        private readonly BindingList<AlbumViewModel> m_AlbumBindingList =
+            new BindingList<AlbumViewModel>();
+
         public FormMain()
         {
             InitializeComponent();
@@ -306,24 +311,46 @@ namespace BasicFacebookFeatures
         }
 
         // Uses the Factory Method pattern: creator.RunAnalysis() calls CreateFeature().Execute()
+        // Multi-threading: the analysis iterates many albums/photos via the API —
+        // running it on a background thread keeps the UI responsive.
         private void runPhotoAnalysis(PhotoFeatureCreator i_Creator)
         {
             m_PictureBoxPhotoResult.ImageLocation = null;
             m_LabelPhotoResultDetails.Text = "Analyzing...";
             m_LabelPhotoResultTitle.Text = m_ComboPhotoStrategy.SelectedItem.ToString();
-            Application.DoEvents();
+            m_ButtonAnalyzePhoto.Enabled = false;
 
             User user = r_FacebookService.LoggedInUser;
-            Photo photo = i_Creator.RunAnalysis(user);
+            BackgroundWorker worker = new BackgroundWorker();
 
-            if (photo == null)
+            worker.DoWork += (s, e) =>
             {
-                m_LabelPhotoResultDetails.Text = "No photo found for this strategy.";
-            }
-            else
+                e.Result = i_Creator.RunAnalysis(user);
+            };
+
+            worker.RunWorkerCompleted += (s, e) =>
             {
-                displayPhotoResult(photo);
-            }
+                m_ButtonAnalyzePhoto.Enabled = true;
+
+                if (e.Error != null)
+                {
+                    m_LabelPhotoResultDetails.Text = "Error during analysis.";
+                    return;
+                }
+
+                Photo photo = e.Result as Photo;
+
+                if (photo == null)
+                {
+                    m_LabelPhotoResultDetails.Text = "No photo found for this strategy.";
+                }
+                else
+                {
+                    displayPhotoResult(photo);
+                }
+            };
+
+            worker.RunWorkerAsync();
         }
 
         private void displayPhotoResult(Photo i_Photo)
@@ -557,20 +584,43 @@ namespace BasicFacebookFeatures
         private void loadRecentPosts()
         {
             m_FlowRecentPosts.Controls.Clear();
+            showEmptyPostsMessage("Loading posts...");
 
-            List<Post> posts = r_FacebookService.GetRecentPosts(15);
+            // Multi-threading: GetRecentPosts() calls the Facebook API — run it in the
+            // background so the UI thread stays responsive.
+            BackgroundWorker worker = new BackgroundWorker();
 
-            if (posts.Count == 0)
+            worker.DoWork += (s, e) =>
             {
-                showEmptyPostsMessage("No posts to display");
-            }
-            else
+                e.Result = r_FacebookService.GetRecentPosts(15);
+            };
+
+            worker.RunWorkerCompleted += (s, e) =>
             {
-                foreach (Post post in posts)
+                m_FlowRecentPosts.Controls.Clear();
+
+                if (e.Error != null)
                 {
-                    m_FlowRecentPosts.Controls.Add(createPostCard(post));
+                    showEmptyPostsMessage("Error loading posts");
+                    return;
                 }
-            }
+
+                List<Post> posts = e.Result as List<Post>;
+
+                if (posts.Count == 0)
+                {
+                    showEmptyPostsMessage("No posts to display");
+                }
+                else
+                {
+                    foreach (Post post in posts)
+                    {
+                        m_FlowRecentPosts.Controls.Add(createPostCard(post));
+                    }
+                }
+            };
+
+            worker.RunWorkerAsync();
         }
 
         private void showEmptyPostsMessage(string i_Text)
@@ -639,10 +689,31 @@ namespace BasicFacebookFeatures
             m_DataGridAlbums.DefaultCellStyle.SelectionBackColor = Color.FromArgb(24, 119, 242);
             m_DataGridAlbums.DefaultCellStyle.SelectionForeColor = Color.White;
             m_DataGridAlbums.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(25, 50, 110);
-            m_DataGridAlbums.Columns.Add("AlbumName", "Album Name");
-            m_DataGridAlbums.Columns.Add("PhotoCount", "Photos");
-            m_DataGridAlbums.Columns["PhotoCount"].Width = 70;
-            m_DataGridAlbums.Columns["PhotoCount"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            // Two-Way Data Binding: columns are bound by property name to AlbumViewModel.
+            // Any change to a ViewModel property (e.g. PhotoCount after upload) is
+            // propagated to the grid automatically via INotifyPropertyChanged.
+            m_DataGridAlbums.AutoGenerateColumns = false;
+
+            var colName = new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Album Name",
+                DataPropertyName = "Name",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            };
+            var colCount = new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Photos",
+                DataPropertyName = "PhotoCount",
+                Width = 70,
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+            };
+            m_DataGridAlbums.Columns.Add(colName);
+            m_DataGridAlbums.Columns.Add(colCount);
+
+            // Bind the grid to the BindingList — changes to the list or its items
+            // automatically refresh the grid (Two-Way Data Binding).
+            m_DataGridAlbums.DataSource = m_AlbumBindingList;
+
             m_DataGridAlbums.SelectionChanged += dataGridAlbums_SelectionChanged;
             tabPage2.Controls.Add(m_DataGridAlbums);
 
@@ -727,27 +798,58 @@ namespace BasicFacebookFeatures
         private void loadAlbumsIntoGrid()
         {
             r_LoadedAlbums.Clear();
-            m_DataGridAlbums.Rows.Clear();
+            m_AlbumBindingList.Clear();
             m_LabelSelectedAlbum.Text = "Loading...";
-            Application.DoEvents();
+            m_ButtonLoadAlbums.Enabled = false;
 
-            List<Album> albums = r_FacebookService.GetAlbums();
+            // Multi-threading: fetch albums + photo counts on a background thread
+            // so the UI stays responsive during the (slow) Facebook API calls.
+            BackgroundWorker worker = new BackgroundWorker();
 
-            foreach (Album album in albums)
+            worker.DoWork += (s, e) =>
             {
-                r_LoadedAlbums.Add(album);
-                int photoCount = r_FacebookService.GetPhotosFromAlbum(album).Count;
-                m_DataGridAlbums.Rows.Add(album.Name, photoCount);
-            }
+                List<Album> albums = r_FacebookService.GetAlbums();
+                var results = new List<Tuple<Album, int>>();
 
-            if (r_LoadedAlbums.Count == 0)
+                foreach (Album album in albums)
+                {
+                    int photoCount = r_FacebookService.GetPhotosFromAlbum(album).Count;
+                    results.Add(Tuple.Create(album, photoCount));
+                }
+
+                e.Result = results;
+            };
+
+            worker.RunWorkerCompleted += (s, e) =>
             {
-                m_LabelSelectedAlbum.Text = "No albums found";
-            }
-            else
-            {
-                m_LabelSelectedAlbum.Text = $"Found {r_LoadedAlbums.Count} albums — click a row to inspect";
-            }
+                m_ButtonLoadAlbums.Enabled = true;
+
+                if (e.Error != null)
+                {
+                    m_LabelSelectedAlbum.Text = "Error loading albums";
+                    return;
+                }
+
+                var results = e.Result as List<Tuple<Album, int>>;
+
+                foreach (Tuple<Album, int> pair in results)
+                {
+                    r_LoadedAlbums.Add(pair.Item1);
+
+                    // Two-Way Binding: adding to BindingList updates the grid automatically
+                    m_AlbumBindingList.Add(new AlbumViewModel
+                    {
+                        Name       = pair.Item1.Name,
+                        PhotoCount = pair.Item2
+                    });
+                }
+
+                m_LabelSelectedAlbum.Text = r_LoadedAlbums.Count == 0
+                    ? "No albums found"
+                    : $"Found {r_LoadedAlbums.Count} albums — click a row to inspect";
+            };
+
+            worker.RunWorkerAsync();
         }
 
         private void dataGridAlbums_SelectionChanged(object sender, EventArgs e)
@@ -820,7 +922,20 @@ namespace BasicFacebookFeatures
                     {
                         r_FacebookService.UploadPhotoToAlbum(i_Album, dialog.FileName);
                         MessageBox.Show("Photo uploaded successfully!", "Upload Success");
-                        loadAlbumsIntoGrid();
+
+                        // Two-Way Data Binding: instead of reloading the entire grid,
+                        // update only the affected AlbumViewModel. The BindingList
+                        // propagates the change to the DataGridView automatically via
+                        // INotifyPropertyChanged — no Rows.Clear() or re-fetch needed.
+                        int albumIndex = r_LoadedAlbums.IndexOf(i_Album);
+
+                        if (albumIndex >= 0 && albumIndex < m_AlbumBindingList.Count)
+                        {
+                            // Proxy cache was invalidated by UploadPhotoToAlbum —
+                            // this call fetches the fresh count from the API.
+                            m_AlbumBindingList[albumIndex].PhotoCount =
+                                r_FacebookService.GetPhotosFromAlbum(i_Album).Count;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -993,19 +1108,43 @@ namespace BasicFacebookFeatures
         {
             m_FlowFriends.Controls.Clear();
             r_AllFriends.Clear();
+            m_LabelFriendsCount.Text = "Loading...";
+            showFlowMessage("Loading friends...", Color.FromArgb(160, 200, 255));
 
-            List<User> friends = r_FacebookService.GetFriends();
-            r_AllFriends.AddRange(friends);
-            m_LabelFriendsCount.Text = $"{r_AllFriends.Count} friends";
+            // Multi-threading: GetFriends() hits the Facebook API — run it in the
+            // background so the UI thread stays responsive.
+            BackgroundWorker worker = new BackgroundWorker();
 
-            if (r_AllFriends.Count == 0)
+            worker.DoWork += (s, e) =>
             {
-                showFlowMessage("No friends available (Facebook API restricts this)", Color.FromArgb(160, 200, 255));
-            }
-            else
+                e.Result = r_FacebookService.GetFriends();
+            };
+
+            worker.RunWorkerCompleted += (s, e) =>
             {
-                renderFriendCards(r_AllFriends);
-            }
+                if (e.Error != null)
+                {
+                    m_LabelFriendsCount.Text = "Error loading friends";
+                    return;
+                }
+
+                List<User> friends = e.Result as List<User>;
+                r_AllFriends.AddRange(friends);
+                m_LabelFriendsCount.Text = $"{r_AllFriends.Count} friends";
+
+                m_FlowFriends.Controls.Clear();
+
+                if (r_AllFriends.Count == 0)
+                {
+                    showFlowMessage("No friends available (Facebook API restricts this)", Color.FromArgb(160, 200, 255));
+                }
+                else
+                {
+                    renderFriendCards(r_AllFriends);
+                }
+            };
+
+            worker.RunWorkerAsync();
         }
 
         private void showFlowMessage(string i_Text, Color i_Color)
@@ -1189,7 +1328,7 @@ namespace BasicFacebookFeatures
 
             // Album Analyst tab
             r_LoadedAlbums.Clear();
-            m_DataGridAlbums.Rows.Clear();
+            m_AlbumBindingList.Clear(); // grid updates automatically via Two-Way Binding
             m_LabelSelectedAlbum.Text = "Select an album from the list";
             m_LabelAlbumPhotoCount.Text = "";
             m_FlowAlbumThumbnails.Controls.Clear();
@@ -1233,7 +1372,7 @@ namespace BasicFacebookFeatures
             if (ensureLoggedIn())
             {
                 User user = r_FacebookService.LoggedInUser;
-                IFacebookFeature<Album> feature = new AlbumWithMostPhotosFeature();
+                IFacebookFeature<Album> feature = new AlbumWithMostPhotosFeature(r_FacebookService);
                 Album album = feature.Execute(user);
 
                 if (album != null)
@@ -1326,7 +1465,7 @@ namespace BasicFacebookFeatures
             if (ensureLoggedIn())
             {
                 User user = r_FacebookService.LoggedInUser;
-                IFacebookFeature<int> feature = new CountAlbumsFeature();
+                IFacebookFeature<int> feature = new CountAlbumsFeature(r_FacebookService);
                 int albumsCount = feature.Execute(user);
 
                 if (albumsCount == -1)
