@@ -1,0 +1,68 @@
+@startuml SequenceDiagram_ProxyFacade
+title Sequence Diagram — Proxy (Cache) + Facade Pattern\nGetAlbums: cache miss → cache hit → write invalidation
+
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipantBackgroundColor White
+
+actor "User" as User
+
+participant ": FormMain"             as FM
+participant ": CachingFacebookProxy" as Proxy
+participant ": FacebookManager"      as Facade
+participant ": FacebookService"      as SDK
+
+== First call — cache miss ==
+
+User  ->  FM    : buttonLoadAlbums_Click()
+activate FM
+FM    ->  Proxy : GetAlbums()
+activate Proxy
+
+note over Proxy : m_CachedAlbums == null → cache miss
+
+Proxy ->  Facade : GetAlbums()
+activate Facade
+Facade ->  SDK   : user.Albums  [Graph API call — takes time]
+activate SDK
+SDK   --> Facade : AlbumCollection
+deactivate SDK
+Facade --> Proxy  : List<Album>
+deactivate Facade
+Proxy ->  Proxy  : m_CachedAlbums = result
+Proxy --> FM     : List<Album>
+deactivate Proxy
+deactivate FM
+
+== Second call — cache hit ==
+
+User  ->  FM    : (another feature reads albums)
+activate FM
+FM    ->  Proxy : GetAlbums()
+activate Proxy
+
+note over Proxy : m_CachedAlbums != null → cache hit\nNo API call made
+
+Proxy --> FM : m_CachedAlbums
+deactivate Proxy
+deactivate FM
+
+== Write operation — cache invalidation ==
+
+User  ->  FM    : upload photo to album
+activate FM
+FM    ->  Proxy : UploadPhotoToAlbum(album, filePath)
+activate Proxy
+Proxy ->  Facade : UploadPhotoToAlbum(album, filePath)
+activate Facade
+Facade ->  SDK   : [Graph API upload — takes time]
+activate SDK
+SDK   --> Facade : success
+deactivate SDK
+Facade --> Proxy  : success
+deactivate Facade
+Proxy ->  Proxy  : r_CachedAlbumPhotos.Remove(albumId)
+Proxy ->  Proxy  : m_CachedAlbums = null
+Proxy --> FM     : success
+deactivate Proxy
+deactivate FM
+@enduml

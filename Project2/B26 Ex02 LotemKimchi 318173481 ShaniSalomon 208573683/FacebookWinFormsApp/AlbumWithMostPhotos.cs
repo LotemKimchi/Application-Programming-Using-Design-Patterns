@@ -1,4 +1,5 @@
 using FacebookWrapper.ObjectModel;
+using System;
 using System.Collections.Generic;
 
 namespace BasicFacebookFeatures
@@ -32,8 +33,9 @@ namespace BasicFacebookFeatures
                     }
                 }
             }
-            catch
+            catch (Exception)
             {
+                // Facebook API throws when user has no permission — return null to signal no result
             }
 
             return albumWithMostPhotos;

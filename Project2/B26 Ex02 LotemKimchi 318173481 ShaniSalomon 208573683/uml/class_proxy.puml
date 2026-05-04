@@ -1,0 +1,81 @@
+@startuml ClassDiagram_Proxy
+title Class Diagram — Proxy (Caching) Pattern
+
+skinparam classBackgroundColor White
+skinparam classBorderColor DarkBlue
+skinparam classArrowColor DarkBlue
+skinparam stereotypeCBackgroundColor LightYellow
+skinparam stereotypeIBackgroundColor LightBlue
+skinparam noteBackgroundColor LightYellow
+skinparam noteBorderColor DarkBlue
+
+' ── Client ────────────────────────────────────────────────────────────────────
+
+class FormMain {
+    - r_FacebookService : IFacebookService
+    --
+    - loadAlbumsIntoGrid() : void
+    - tryUploadPhotoToAlbum(i_Album : Album) : void
+}
+note top of FormMain : **Pattern role: Client**\nHolds only IFacebookService — unaware\nwhether it talks to Proxy or RealSubject.
+
+' ── Subject (interface) ───────────────────────────────────────────────────────
+
+interface IFacebookService {
+    + LoggedInUser : User <<get>>
+    + Login(i_AppId : string) : LoginResult
+    + ConnectWithToken(i_Token : string) : LoginResult
+    + Logout() : void
+    + GetFriends() : List<User>
+    + GetAlbums() : List<Album>
+    + GetRecentPosts(i_MaxCount : int) : List<Post>
+    + GetPhotosFromAlbum(i_Album : Album) : List<Photo>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+}
+note top of IFacebookService : **Pattern role: Subject (interface)**\nShared by both Proxy and RealSubject,\nallowing the client to use either\ninterchangeably.
+
+' ── Proxy ─────────────────────────────────────────────────────────────────────
+
+class CachingFacebookProxy {
+    - r_RealService : IFacebookService
+    - m_CachedFriends : List<User>
+    - m_CachedAlbums : List<Album>
+    - m_CachedPosts : List<Post>
+    - m_CachedPostsMaxCount : int
+    - r_CachedAlbumPhotos : Dictionary<string, List<Photo>>
+    --
+    + GetFriends() : List<User>
+    + GetAlbums() : List<Album>
+    + GetRecentPosts(i_MaxCount : int) : List<Post>
+    + GetPhotosFromAlbum(i_Album : Album) : List<Photo>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+    + InvalidateCache() : void
+}
+note right of CachingFacebookProxy : **Pattern role: Proxy**\nIntercepts calls to the RealSubject.\nReturns cached result on hit;\ndelegates to RealSubject on miss.\nInvalidates cache on write operations.
+
+' ── Real Subject ──────────────────────────────────────────────────────────────
+
+class FacebookManager {
+    - m_LoginResult : LoginResult
+    --
+    + GetFriends() : List<User>
+    + GetAlbums() : List<Album>
+    + GetRecentPosts(i_MaxCount : int) : List<Post>
+    + GetPhotosFromAlbum(i_Album : Album) : List<Photo>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+}
+note right of FacebookManager : **Pattern role: RealSubject**\nThe actual implementation that\nperforms the Facebook API calls.\nWrapped by the Proxy.
+
+' ── Relationships ─────────────────────────────────────────────────────────────
+
+FormMain "1" ..> "1" IFacebookService : <<uses>>
+
+CachingFacebookProxy ..|> IFacebookService
+FacebookManager ..|> IFacebookService
+
+CachingFacebookProxy "1" *-- "1" FacebookManager : r_RealService
+
+@enduml

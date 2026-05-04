@@ -1,33 +1,12 @@
-﻿using FacebookWrapper.ObjectModel;
-using System;
+using FacebookWrapper.ObjectModel;
 
 namespace BasicFacebookFeatures
 {
-    public class OldestPhotoFeature : IFacebookFeature<Photo>
+    public class OldestPhotoFeature : DateExtremePhotoFeature
     {
-        public Photo Execute(User i_User)
+        protected override bool isBetter(Photo i_Candidate, Photo i_Current)
         {
-            Photo oldestPhoto = null;
-
-            try
-            {
-                foreach (Album album in i_User.Albums)
-                {
-                    foreach (Photo photo in album.Photos)
-                    {
-                        if (oldestPhoto == null ||
-                            photo.CreatedTime < oldestPhoto.CreatedTime)
-                        {
-                            oldestPhoto = photo;
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            return oldestPhoto;
+            return i_Candidate.CreatedTime < i_Current.CreatedTime;
         }
     }
 }

@@ -1,151 +1,252 @@
 @startuml ClassDiagram
-title Class Diagram — Facebook WinForms App
+title Class Diagram — Facebook WinForms App (Ex02)
 
 skinparam classBackgroundColor White
 skinparam classBorderColor DarkBlue
 skinparam classArrowColor DarkBlue
 skinparam stereotypeCBackgroundColor LightYellow
 skinparam stereotypeIBackgroundColor LightBlue
+skinparam stereotypeABackgroundColor LightGreen
+
+' ── Interfaces ────────────────────────────────────────────────────────────────
+
+interface IFacebookService {
+    + LoggedInUser : User <<get>>
+    + Login(i_AppId : string) : LoginResult
+    + ConnectWithToken(i_Token : string) : LoginResult
+    + Logout() : void
+    + GetFriends() : List<User>
+    + GetAlbums() : List<Album>
+    + GetRecentPosts(i_MaxCount : int) : List<Post>
+    + GetPhotosFromAlbum(i_Album : Album) : List<Photo>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+    + InvalidateCache() : void
+}
 
 interface IFacebookFeature<T> {
     + Execute(i_User : User) : T
 }
 
-class FormMain {
-    - k_AppId : string
-    - k_DesignPatternsToken : string
-    - m_FacebookManager : FacebookManager
-    --
-    + FormMain()
-    - ensureLoggedIn() : bool
-    - afterLogin() : void
-    - displayUserInfo() : void
-    - connectWithSavedToken() : void
-    - buttonLogin_Click(sender : object, e : EventArgs) : void
-    - buttonLogout_Click(sender : object, e : EventArgs) : void
-    - buttonConnectAsDesig_Click_1(sender : object, e : EventArgs) : void
-    - buttonMostPhotosAlbum_Click(sender : object, e : EventArgs) : void
-    - buttonOldestPhoto_Click_1(sender : object, e : EventArgs) : void
-    - buttonMostLikedPhoto_Click_1(sender : object, e : EventArgs) : void
-    - buttonMostCommentedPhoto_Click_1(sender : object, e : EventArgs) : void
-    - buttonCountAlbums_Click(sender : object, e : EventArgs) : void
-    - clearUserData() : void
+interface INotifyPropertyChanged {
+    + PropertyChanged : PropertyChangedEventHandler
 }
+
+' ── Facade ────────────────────────────────────────────────────────────────────
 
 class FacebookManager {
     - m_LoginResult : LoginResult
     --
     + LoggedInUser : User <<get>>
     + Login(i_AppId : string) : LoginResult
-    + ConnectWithSavedToken() : LoginResult
     + ConnectWithToken(i_Token : string) : LoginResult
     + Logout() : void
+    + GetFriends() : List<User>
+    + GetAlbums() : List<Album>
+    + GetRecentPosts(i_MaxCount : int) : List<Post>
+    + GetPhotosFromAlbum(i_Album : Album) : List<Photo>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+    + InvalidateCache() : void
 }
 
-class AlbumWithMostPhotosFeature {
-    + Execute(i_User : User) : Album
+' ── Proxy ─────────────────────────────────────────────────────────────────────
+
+class CachingFacebookProxy {
+    - r_RealService : IFacebookService
+    - m_CachedFriends : List<User>
+    - m_CachedAlbums : List<Album>
+    - m_CachedPosts : List<Post>
+    - m_CachedPostsMaxCount : int
+    - r_CachedAlbumPhotos : Dictionary<string, List<Photo>>
+    --
+    + LoggedInUser : User <<get>>
+    + GetFriends() : List<User>
+    + GetAlbums() : List<Album>
+    + GetRecentPosts(i_MaxCount : int) : List<Post>
+    + GetPhotosFromAlbum(i_Album : Album) : List<Photo>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+    + InvalidateCache() : void
 }
 
-class OldestPhotoFeature {
+' ── Template Method — Feature base classes ────────────────────────────────────
+
+abstract class MaxScorePhotoFeature {
+    # {abstract} getScore(i_Photo : Photo) : int
     + Execute(i_User : User) : Photo
 }
+
+abstract class DateExtremePhotoFeature {
+    # {abstract} isBetter(i_Candidate : Photo, i_Current : Photo) : bool
+    + Execute(i_User : User) : Photo
+}
+
+' ── Concrete Photo Features ───────────────────────────────────────────────────
 
 class MostLikedPhotoFeature {
-    + Execute(i_User : User) : Photo
+    # getScore(i_Photo : Photo) : int
 }
 
 class MostCommentedPhotoFeature {
-    + Execute(i_User : User) : Photo
+    # getScore(i_Photo : Photo) : int
+}
+
+class MostTaggedPhotoFeature {
+    # getScore(i_Photo : Photo) : int
+}
+
+class OldestPhotoFeature {
+    # isBetter(i_Candidate : Photo, i_Current : Photo) : bool
+}
+
+class NewestPhotoFeature {
+    # isBetter(i_Candidate : Photo, i_Current : Photo) : bool
+}
+
+' ── Album Features ────────────────────────────────────────────────────────────
+
+class AlbumWithMostPhotosFeature {
+    - r_Service : IFacebookService
+    --
+    + Execute(i_User : User) : Album
 }
 
 class CountAlbumsFeature {
+    - r_Service : IFacebookService
+    --
     + Execute(i_User : User) : int
 }
 
+' ── Factory Method ────────────────────────────────────────────────────────────
+
+abstract class PhotoFeatureCreator {
+    + {abstract} CreateFeature() : IFacebookFeature<Photo>
+    + RunAnalysis(i_User : User) : Photo
+}
+
+class MostLikedPhotoCreator {
+    + CreateFeature() : IFacebookFeature<Photo>
+}
+
+class MostCommentedPhotoCreator {
+    + CreateFeature() : IFacebookFeature<Photo>
+}
+
+class OldestPhotoCreator {
+    + CreateFeature() : IFacebookFeature<Photo>
+}
+
+class NewestPhotoCreator {
+    + CreateFeature() : IFacebookFeature<Photo>
+}
+
+class MostTaggedPhotoCreator {
+    + CreateFeature() : IFacebookFeature<Photo>
+}
+
+' ── Data Binding ──────────────────────────────────────────────────────────────
+
+class AlbumViewModel {
+    - m_Name : string
+    - m_PhotoCount : int
+    --
+    + Name : string <<get, set>>
+    + PhotoCount : int <<get, set>>
+    + PropertyChanged : PropertyChangedEventHandler
+    - onPropertyChanged(i_PropertyName : string) : void
+}
+
+' ── FormLogin ─────────────────────────────────────────────────────────────────
+
+class FormLogin {
+    - m_MainForm : FormMain
+    - m_StarTimer : Timer
+    --
+    + ShowLoginScreen() : void
+    - buttonLoginFacebook_Click() : void
+    - buttonConnectAsDesig_Click() : void
+}
+
+' ── FormMain ──────────────────────────────────────────────────────────────────
+
+class FormMain {
+    - k_AppId : string
+    - r_FacebookService : IFacebookService
+    - r_PhotoCreators : Dictionary<string, PhotoFeatureCreator>
+    - m_AlbumBindingList : BindingList<AlbumViewModel>
+    - r_AllFriends : List<User>
+    - r_LoadedAlbums : List<Album>
+    --
+    + LoginWithFacebook() : bool
+    + LoginWithDesigAccount() : bool
+    - loadFriends() : void
+    - loadRecentPosts() : void
+    - loadAlbumsIntoGrid() : void
+    - runPhotoAnalysis(i_Creator : PhotoFeatureCreator) : void
+    - tryUploadPhotoToAlbum(i_Album : Album) : void
+    - clearUserData() : void
+}
+
+' ── External SDK (simplified) ─────────────────────────────────────────────────
+
 class FacebookService <<external>> {
     + {static} s_CollectionLimit : int
-    --
     + {static} Login(appId : string, permissions : string[]) : LoginResult
     + {static} Connect(token : string) : LoginResult
     + {static} LogoutWithUI() : void
 }
 
-class LoginResult <<external>> {
-    + AccessToken : string
-    + ErrorMessage : string
-    + LoggedInUser : User
-}
+' ── Relationships (parent classes appear above subclasses per layout) ──────────
 
-class User <<external>> {
-    + Name : string
-    + Birthday : string
-    + PictureNormalURL : string
-    + Albums : FacebookObjectCollection<Album>
-}
+' FormLogin → FormMain
+FormLogin "1" *-- "1" FormMain : m_MainForm
+FormLogin "1" ..> "1" FormMain : calls LoginWithFacebook()\n/ LoginWithDesigAccount()
 
-class Album <<external>> {
-    + Name : string
-    + Photos : FacebookObjectCollection<Photo>
-}
-
-class Photo <<external>> {
-    + PictureNormalURL : string
-    + CreatedTime : DateTime
-    + LikedBy : FacebookObjectCollection<Like>
-    + Comments : FacebookObjectCollection<Comment>
-}
-
-' ── Relationships ─────────────────────────────────────────────
-
-' FormMain owns FacebookManager (composition)
-FormMain *-- FacebookManager : composition
-
-' FormMain creates feature objects transiently (dependency)
-FormMain ..> AlbumWithMostPhotosFeature : <<creates>>
-FormMain ..> OldestPhotoFeature         : <<creates>>
-FormMain ..> MostLikedPhotoFeature      : <<creates>>
-FormMain ..> MostCommentedPhotoFeature  : <<creates>>
-FormMain ..> CountAlbumsFeature         : <<creates>>
-
-' FormMain programs to the interface (dependency)
-FormMain ..> IFacebookFeature : <<uses>>
-
-' Feature classes realize the interface (realization)
-AlbumWithMostPhotosFeature  ..|> IFacebookFeature
-OldestPhotoFeature          ..|> IFacebookFeature
-MostLikedPhotoFeature       ..|> IFacebookFeature
-MostCommentedPhotoFeature   ..|> IFacebookFeature
-CountAlbumsFeature          ..|> IFacebookFeature
-
-' FacebookManager uses FacebookService static methods (dependency)
+' Architecture chain — with multiplicity
+FormMain "1" *-- "1" CachingFacebookProxy : r_FacebookService (Proxy)
+CachingFacebookProxy "1" *-- "1" FacebookManager : r_RealService (Facade)
 FacebookManager ..> FacebookService : <<uses>>
 
-' FacebookManager holds a LoginResult (aggregation — not its creator)
-FacebookManager o-- LoginResult : aggregates
+' Interface realizations (interfaces above implementors)
+FacebookManager ..|> IFacebookService
+CachingFacebookProxy ..|> IFacebookService
 
-' LoginResult references User
-LoginResult --> User : contains
+' FormMain uses features via interface
+FormMain ..> IFacebookFeature : <<uses>>
+FormMain "1" *-- "0..*" PhotoFeatureCreator : r_PhotoCreators (Factory Method)
 
-' Domain model associations
-User    "1" --> "*" Album : has
-Album   "1" --> "*" Photo : contains
+' Factory Method hierarchy (PhotoFeatureCreator above concrete creators)
+PhotoFeatureCreator <|-- MostLikedPhotoCreator
+PhotoFeatureCreator <|-- MostCommentedPhotoCreator
+PhotoFeatureCreator <|-- OldestPhotoCreator
+PhotoFeatureCreator <|-- NewestPhotoCreator
+PhotoFeatureCreator <|-- MostTaggedPhotoCreator
 
-' Features read domain objects (dependency)
-AlbumWithMostPhotosFeature ..> User  : <<reads>>
-AlbumWithMostPhotosFeature ..> Album : <<reads>>
+' Template Method hierarchy (abstract base above concrete)
+IFacebookFeature <|.. MaxScorePhotoFeature
+IFacebookFeature <|.. DateExtremePhotoFeature
+MaxScorePhotoFeature <|-- MostLikedPhotoFeature
+MaxScorePhotoFeature <|-- MostCommentedPhotoFeature
+MaxScorePhotoFeature <|-- MostTaggedPhotoFeature
+DateExtremePhotoFeature <|-- OldestPhotoFeature
+DateExtremePhotoFeature <|-- NewestPhotoFeature
 
-OldestPhotoFeature ..> User  : <<reads>>
-OldestPhotoFeature ..> Album : <<reads>>
-OldestPhotoFeature ..> Photo : <<reads>>
+' Creator → Product
+MostLikedPhotoCreator    ..> MostLikedPhotoFeature    : <<creates>>
+MostCommentedPhotoCreator ..> MostCommentedPhotoFeature : <<creates>>
+OldestPhotoCreator       ..> OldestPhotoFeature       : <<creates>>
+NewestPhotoCreator       ..> NewestPhotoFeature        : <<creates>>
+MostTaggedPhotoCreator   ..> MostTaggedPhotoFeature    : <<creates>>
 
-MostLikedPhotoFeature ..> User  : <<reads>>
-MostLikedPhotoFeature ..> Album : <<reads>>
-MostLikedPhotoFeature ..> Photo : <<reads>>
+' Album features
+IFacebookFeature <|.. AlbumWithMostPhotosFeature
+IFacebookFeature <|.. CountAlbumsFeature
+AlbumWithMostPhotosFeature "1" ..> "1" IFacebookService : <<uses>>
+CountAlbumsFeature "1" ..> "1" IFacebookService : <<uses>>
 
-MostCommentedPhotoFeature ..> User  : <<reads>>
-MostCommentedPhotoFeature ..> Album : <<reads>>
-MostCommentedPhotoFeature ..> Photo : <<reads>>
+' Data Binding — with multiplicity
+INotifyPropertyChanged <|.. AlbumViewModel
+FormMain "1" *-- "0..*" AlbumViewModel : m_AlbumBindingList (BindingList<>)
 
-CountAlbumsFeature ..> User  : <<reads>>
-CountAlbumsFeature ..> Album : <<reads>>
 @enduml

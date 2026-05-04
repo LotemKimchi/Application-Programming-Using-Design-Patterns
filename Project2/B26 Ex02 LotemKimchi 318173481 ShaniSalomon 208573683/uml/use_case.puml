@@ -1,12 +1,12 @@
 @startuml UseCaseDiagram
 left to right direction
-scale 2200 width
+scale 2400 width
 
 skinparam backgroundColor White
 skinparam defaultFontName Arial
-skinparam defaultFontSize 13
-skinparam nodesep 50
-skinparam ranksep 150
+skinparam defaultFontSize 12
+skinparam nodesep 40
+skinparam ranksep 120
 
 skinparam actor {
     BackgroundColor White
@@ -18,7 +18,7 @@ skinparam actor {
 skinparam usecase {
     BackgroundColor White
     BorderColor Black
-    FontSize 13
+    FontSize 12
     BorderThickness 1.5
 }
 
@@ -33,42 +33,74 @@ skinparam rectangle {
 
 skinparam ArrowColor Black
 skinparam ArrowThickness 1
-skinparam ArrowFontSize 12
-skinparam ArrowFontStyle plain
+skinparam ArrowFontSize 11
 
-actor "User" as user
+actor "User"             as user
+actor "Facebook\nServers" as fb <<external>>
 
 rectangle "Facebook WinForms App" {
 
-    usecase "Login with Facebook"               as UC1
-    usecase "Login as Design Patterns"          as UC2
-    usecase "Logout"                            as UC3
-    usecase "View Profile Info"                 as UC4
-    usecase "View Albums List"                  as UC5
-    usecase "Find Album with Most Photos"       as UC6
-    usecase "Find Oldest Photo"                 as UC7
-    usecase "Find Most Liked Photo"             as UC8
-    usecase "Find Most Commented Photo"         as UC9
-    usecase "Count Albums"                      as UC10
+    usecase "View Profile Info"              as UC4
+    usecase "View Albums List"               as UC5
+
+    usecase "Browse Friends"                 as UC6
+    usecase "Search Friends by Name"         as UC7
+    usecase "View Friend Details"            as UC8
+
+    usecase "Compose and Post Status"        as UC9
+    usecase "View Recent Posts Feed"         as UC10
+
+    usecase "Analyze Photos (Strategy)"      as UC11
+    usecase "Find Most Liked Photo"          as UC12
+    usecase "Find Most Commented Photo"      as UC13
+    usecase "Find Most Tagged Photo"         as UC14
+    usecase "Find Oldest Photo"              as UC15
+    usecase "Find Newest Photo"              as UC16
+
+    usecase "Find Album With Most Photos"    as UC17
+    usecase "Count Albums"                   as UC18
+
+    usecase "Load Albums into Grid"          as UC19
+    usecase "Inspect Album Thumbnails"       as UC20
+    usecase "Upload Photo to Album"          as UC21
 }
 
-user -- UC1
-user -- UC2
-user -- UC3
+' User initiates all actions
 user -- UC4
 user -- UC5
 user -- UC6
-user -- UC7
-user -- UC8
 user -- UC9
 user -- UC10
+user -- UC11
+user -- UC17
+user -- UC18
+user -- UC19
 
-UC4  .> UC1 : <<include>>
-UC5  .> UC1 : <<include>>
-UC6  .> UC1 : <<include>>
-UC7  .> UC1 : <<include>>
-UC8  .> UC1 : <<include>>
-UC9  .> UC1 : <<include>>
-UC10 .> UC1 : <<include>>
+' Photo Strategy sub-types
+UC11 .> UC12 : <<extend>>
+UC11 .> UC13 : <<extend>>
+UC11 .> UC14 : <<extend>>
+UC11 .> UC15 : <<extend>>
+UC11 .> UC16 : <<extend>>
+
+' Friends sub-flows
+UC7 .> UC6 : <<include>>
+UC8 .> UC6 : <<include>>
+
+' Album Analyst sub-flows
+UC19 .> UC20 : <<extend>>
+UC19 .> UC21 : <<extend>>
+
+' Facebook Servers participate in all data-access use cases
+fb -- UC4
+fb -- UC5
+fb -- UC6
+fb -- UC9
+fb -- UC10
+fb -- UC11
+fb -- UC17
+fb -- UC18
+fb -- UC19
+fb -- UC21
 
 @enduml

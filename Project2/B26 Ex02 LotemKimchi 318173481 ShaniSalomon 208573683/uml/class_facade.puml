@@ -1,0 +1,82 @@
+@startuml ClassDiagram_Facade
+title Class Diagram — Facade Pattern
+
+skinparam classBackgroundColor White
+skinparam classBorderColor DarkBlue
+skinparam classArrowColor DarkBlue
+skinparam stereotypeCBackgroundColor LightYellow
+skinparam stereotypeIBackgroundColor LightBlue
+skinparam noteBackgroundColor LightYellow
+skinparam noteBorderColor DarkBlue
+
+' ── Client ────────────────────────────────────────────────────────────────────
+
+class FormMain {
+    - r_FacebookService : IFacebookService
+    --
+    - displayUserInfo() : void
+    - loadFriends() : void
+    - loadRecentPosts() : void
+    - loadAlbumsIntoGrid() : void
+}
+note top of FormMain : **Pattern role: Client**\nNever calls FacebookService (SDK) directly.\nAll access goes through IFacebookService.
+
+' ── Facade Interface ──────────────────────────────────────────────────────────
+
+interface IFacebookService {
+    + LoggedInUser : User <<get>>
+    + Login(i_AppId : string) : LoginResult
+    + ConnectWithToken(i_Token : string) : LoginResult
+    + Logout() : void
+    + GetFriends() : List<User>
+    + GetAlbums() : List<Album>
+    + GetRecentPosts(i_MaxCount : int) : List<Post>
+    + GetPhotosFromAlbum(i_Album : Album) : List<Photo>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+}
+note top of IFacebookService : **Pattern role: Facade Interface**\nSimplified contract that hides\nall SDK complexity from the client.
+
+' ── Facade ────────────────────────────────────────────────────────────────────
+
+class FacebookManager {
+    - m_LoginResult : LoginResult
+    --
+    + LoggedInUser : User <<get>>
+    + Login(i_AppId : string) : LoginResult
+    + ConnectWithToken(i_Token : string) : LoginResult
+    + Logout() : void
+    + GetFriends() : List<User>
+    + GetAlbums() : List<Album>
+    + GetRecentPosts(i_MaxCount : int) : List<Post>
+    + GetPhotosFromAlbum(i_Album : Album) : List<Photo>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+}
+note right of FacebookManager : **Pattern role: Facade**\nHides the FacebookWrapper SDK.\nTranslates simple calls into\ncomplex SDK operations.
+
+' ── Subsystem (external SDK) ──────────────────────────────────────────────────
+
+class FacebookService <<external>> {
+    + {static} s_CollectionLimit : int
+    --
+    + {static} Login(appId : string, permissions : string[]) : LoginResult
+    + {static} Connect(token : string) : LoginResult
+    + {static} LogoutWithUI() : void
+}
+
+class LoginResult <<external>> {
+    + AccessToken : string
+    + ErrorMessage : string
+    + LoggedInUser : User
+}
+note right of FacebookService : **Pattern role: Subsystem**\nComplex external SDK that the\nFacade simplifies and hides.
+
+' ── Relationships ─────────────────────────────────────────────────────────────
+
+FormMain "1" ..> "1" IFacebookService : <<uses>>
+FacebookManager ..|> IFacebookService
+FacebookManager "1" ..> "1" FacebookService : <<uses>>
+FacebookManager "1" o-- "0..1" LoginResult : aggregates
+
+@enduml

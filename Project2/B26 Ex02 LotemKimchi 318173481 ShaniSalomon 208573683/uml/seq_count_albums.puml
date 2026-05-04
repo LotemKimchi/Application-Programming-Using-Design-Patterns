@@ -1,31 +1,56 @@
 @startuml SequenceDiagram_CountAlbums
-title Sequence Diagram — Count Albums (New Use Case)\nMost Complex Scenario: User Logged In, Has Albums
+title Sequence Diagram — Count Albums\nMost Complex Scenario: User Logged In, Has Albums
 
 skinparam sequenceArrowThickness 2
 skinparam sequenceParticipantBackgroundColor White
 
-actor       "User"                  as User
-participant "FormMain"              as FM
-participant "FacebookManager"       as FBM
-participant "CountAlbumsFeature"    as CAF
-participant "FacebookService"       as FBS
+actor       "User"  as User
 
-User  ->  FM  : buttonCountAlbums_Click()
+participant ": FormMain"                as FM
+participant ": CachingFacebookProxy"    as Proxy
+participant ": FacebookManager"         as Facade
+participant ": CountAlbumsFeature"      as CAF
+participant ": FacebookService"         as SDK
 
-FM    ->  FBM : get LoggedInUser
-FBM  -->  FM  : user (not null)
+User  ->  FM    : buttonCountAlbums_Click()
+activate FM
 
-FM    ->  CAF : new CountAlbumsFeature()
-FM    ->  CAF : Execute(user)
+FM    ->  Proxy : get LoggedInUser
+activate Proxy
+Proxy --> FM    : user (not null)
+deactivate Proxy
 
-    CAF ->  FBS : user.Albums  [API call]
-    FBS --> CAF : AlbumCollection
+FM    ->  CAF   : new CountAlbumsFeature(r_FacebookService)
+activate CAF
+FM    ->  CAF   : Execute(user)
 
-    loop for each Album in AlbumCollection
-        CAF -> CAF : albumsCount++
-    end
+CAF   ->  Proxy : GetAlbums()
+activate Proxy
 
-CAF  --> FM  : int albumsCount
+alt cache miss
+    Proxy ->  Facade : GetAlbums()
+    activate Facade
+    Facade ->  SDK   : user.Albums  [Graph API call — takes time]
+    activate SDK
+    SDK  -->  Facade : AlbumCollection
+    deactivate SDK
+    Facade --> Proxy  : List<Album>
+    deactivate Facade
+    Proxy ->  Proxy  : m_CachedAlbums = result
+end
 
-FM    ->  FM  : labelAlbumsCount.Text = "Albums Count: N"
+Proxy --> CAF   : List<Album>
+deactivate Proxy
+
+CAF   ->  CAF   : albumsCount = albums.Count
+CAF  --> FM     : int albumsCount
+deactivate CAF
+
+alt albumsCount == -1
+    FM -> FM : labelAlbumsCount.Text = "No permission"
+else
+    FM -> FM : labelAlbumsCount.Text = "Albums Count: N"
+end
+
+deactivate FM
 @enduml

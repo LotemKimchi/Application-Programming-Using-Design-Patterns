@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="AlbumViewModel.cs" />
     <Compile Include="AlbumWithMostPhotos.cs" />
+    <Compile Include="PhotoFeatureBase.cs" />
     <Compile Include="CachingFacebookProxy.cs" />
     <Compile Include="IFacebookService.cs" />
     <Compile Include="PhotoFeatureCreator.cs" />
@@ -88,6 +89,10 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMain.UISetup.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.Designer.cs">

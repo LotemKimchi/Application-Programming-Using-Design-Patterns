@@ -18,6 +18,7 @@ namespace BasicFacebookFeatures
         private List<User>  m_CachedFriends;
         private List<Album> m_CachedAlbums;
         private List<Post>  m_CachedPosts;
+        private int         m_CachedPostsMaxCount = -1;
         private readonly Dictionary<string, List<Photo>> r_CachedAlbumPhotos =
             new Dictionary<string, List<Photo>>();
 
@@ -75,9 +76,10 @@ namespace BasicFacebookFeatures
 
         public List<Post> GetRecentPosts(int i_MaxCount)
         {
-            if (m_CachedPosts == null)
+            if (m_CachedPosts == null || m_CachedPostsMaxCount != i_MaxCount)
             {
                 m_CachedPosts = r_RealService.GetRecentPosts(i_MaxCount);
+                m_CachedPostsMaxCount = i_MaxCount;
             }
 
             return m_CachedPosts;
@@ -85,7 +87,7 @@ namespace BasicFacebookFeatures
 
         public List<Photo> GetPhotosFromAlbum(Album i_Album)
         {
-            string albumId = i_Album?.Id ?? string.Empty;
+            string albumId = (i_Album != null && i_Album.Id != null) ? i_Album.Id : string.Empty;
             List<Photo> photos;
 
             if (!r_CachedAlbumPhotos.TryGetValue(albumId, out photos))
@@ -110,7 +112,7 @@ namespace BasicFacebookFeatures
             r_RealService.UploadPhotoToAlbum(i_Album, i_FilePath);
 
             // Invalidate photo cache for this album (photo count changed)
-            string albumId = i_Album?.Id ?? string.Empty;
+            string albumId = (i_Album != null && i_Album.Id != null) ? i_Album.Id : string.Empty;
             r_CachedAlbumPhotos.Remove(albumId);
             m_CachedAlbums = null; // album list may reflect new photo count
         }
@@ -119,9 +121,10 @@ namespace BasicFacebookFeatures
 
         public void InvalidateCache()
         {
-            m_CachedFriends = null;
-            m_CachedAlbums  = null;
-            m_CachedPosts   = null;
+            m_CachedFriends       = null;
+            m_CachedAlbums        = null;
+            m_CachedPosts         = null;
+            m_CachedPostsMaxCount = -1;
             r_CachedAlbumPhotos.Clear();
         }
     }

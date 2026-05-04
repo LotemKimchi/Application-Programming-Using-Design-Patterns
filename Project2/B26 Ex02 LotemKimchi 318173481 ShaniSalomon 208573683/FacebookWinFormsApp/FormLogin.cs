@@ -214,8 +214,11 @@ namespace BasicFacebookFeatures
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
-            m_StarTimer?.Stop();
-            m_StarTimer?.Dispose();
+            if (m_StarTimer != null)
+            {
+                m_StarTimer.Stop();
+                m_StarTimer.Dispose();
+            }
 
             if (m_MainForm != null && !m_MainForm.IsDisposed)
             {

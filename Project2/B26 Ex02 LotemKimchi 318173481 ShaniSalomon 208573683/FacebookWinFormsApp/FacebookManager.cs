@@ -16,7 +16,7 @@ namespace BasicFacebookFeatures
 
         public User LoggedInUser
         {
-            get { return m_LoginResult?.LoggedInUser; }
+            get { return m_LoginResult != null ? m_LoginResult.LoggedInUser : null; }
         }
 
         public LoginResult Login(string i_AppId)

@@ -1,36 +1,12 @@
-﻿using FacebookWrapper.ObjectModel;
-using System;
+using FacebookWrapper.ObjectModel;
 
 namespace BasicFacebookFeatures
 {
-    public class MostCommentedPhotoFeature : IFacebookFeature<Photo>
+    public class MostCommentedPhotoFeature : MaxScorePhotoFeature
     {
-        public Photo Execute(User i_User)
+        protected override int getScore(Photo i_Photo)
         {
-            Photo mostCommentedPhoto = null;
-            int maxComment = 0;
-
-            try
-            {
-                foreach (Album album in i_User.Albums)
-                {
-                    foreach (Photo photo in album.Photos)
-                    {
-                        int commentCount = photo.Comments.Count;
-
-                        if (commentCount > maxComment)
-                        {
-                            mostCommentedPhoto = photo;
-                            maxComment = commentCount;
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            return mostCommentedPhoto;
+            return i_Photo.Comments.Count;
         }
     }
 }

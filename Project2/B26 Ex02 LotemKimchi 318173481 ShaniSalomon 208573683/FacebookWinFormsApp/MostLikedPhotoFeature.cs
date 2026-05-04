@@ -1,36 +1,12 @@
-﻿using FacebookWrapper.ObjectModel;
-using System;
+using FacebookWrapper.ObjectModel;
 
 namespace BasicFacebookFeatures
 {
-    public class MostLikedPhotoFeature : IFacebookFeature<Photo>
+    public class MostLikedPhotoFeature : MaxScorePhotoFeature
     {
-        public Photo Execute(User i_User)
+        protected override int getScore(Photo i_Photo)
         {
-            Photo mostLiked = null;
-            int maxLikes = 0;
-
-            try
-            {
-                foreach (Album album in i_User.Albums)
-                {
-                    foreach (Photo photo in album.Photos)
-                    {
-                        int liked = photo.LikedBy.Count;
-
-                        if (liked > maxLikes)
-                        {
-                            mostLiked = photo;
-                            maxLikes = liked;
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            return mostLiked;
+            return i_Photo.LikedBy.Count;
         }
     }
 }

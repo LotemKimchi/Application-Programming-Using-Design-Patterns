@@ -93,208 +93,6 @@ namespace BasicFacebookFeatures
             setupAlbumAnalystTab();
         }
 
-        private void setupFriendsSection()
-        {
-            Color darkBg = Color.FromArgb(20, 40, 90);
-            Color lightBlue = Color.FromArgb(160, 200, 255);
-
-            // Header
-            m_LabelFriendsHeader = new Label
-            {
-                Text = "Friends",
-                Font = new Font("Segoe UI", 15, FontStyle.Bold),
-                ForeColor = Color.White,
-                Location = new Point(350, 85),
-                Size = new Size(200, 30),
-                BackColor = Color.Transparent
-            };
-            tabPage1.Controls.Add(m_LabelFriendsHeader);
-
-            // Friends count label
-            m_LabelFriendsCount = new Label
-            {
-                Font = new Font("Segoe UI", 9, FontStyle.Italic),
-                ForeColor = lightBlue,
-                Location = new Point(350, 118),
-                Size = new Size(300, 20),
-                BackColor = Color.Transparent
-            };
-            tabPage1.Controls.Add(m_LabelFriendsCount);
-
-            // Search box
-            m_TextBoxSearchFriend = new TextBox
-            {
-                Location = new Point(350, 143),
-                Size = new Size(540, 30),
-                Font = new Font("Segoe UI", 10),
-                BackColor = darkBg,
-                ForeColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle
-            };
-            m_TextBoxSearchFriend.TextChanged += textBoxSearchFriend_TextChanged;
-            tabPage1.Controls.Add(m_TextBoxSearchFriend);
-
-            // Friends list (flow layout)
-            m_FlowFriends = new FlowLayoutPanel
-            {
-                Location = new Point(350, 180),
-                Size = new Size(540, 270),
-                BackColor = darkBg,
-                AutoScroll = true,
-                BorderStyle = BorderStyle.None,
-                Padding = new Padding(8),
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = true
-            };
-            tabPage1.Controls.Add(m_FlowFriends);
-
-            // Friend details panel
-            m_PanelFriendDetails = new Panel
-            {
-                Location = new Point(350, 460),
-                Size = new Size(540, 130),
-                BackColor = darkBg,
-                BorderStyle = BorderStyle.None
-            };
-            tabPage1.Controls.Add(m_PanelFriendDetails);
-
-            m_PictureBoxFriendDetail = new PictureBox
-            {
-                Location = new Point(15, 15),
-                Size = new Size(100, 100),
-                SizeMode = PictureBoxSizeMode.Zoom,
-                BackColor = Color.FromArgb(15, 32, 75)
-            };
-            var detailClip = new System.Drawing.Drawing2D.GraphicsPath();
-            detailClip.AddEllipse(0, 0, 100, 100);
-            m_PictureBoxFriendDetail.Region = new Region(detailClip);
-            m_PanelFriendDetails.Controls.Add(m_PictureBoxFriendDetail);
-
-            m_LabelFriendDetailName = new Label
-            {
-                Location = new Point(130, 25),
-                Size = new Size(395, 30),
-                Font = new Font("Segoe UI", 13, FontStyle.Bold),
-                ForeColor = Color.White,
-                Text = "Select a friend to see details"
-            };
-            m_PanelFriendDetails.Controls.Add(m_LabelFriendDetailName);
-
-            m_LabelFriendDetailInfo = new Label
-            {
-                Location = new Point(130, 60),
-                Size = new Size(395, 50),
-                Font = new Font("Segoe UI", 10),
-                ForeColor = lightBlue
-            };
-            m_PanelFriendDetails.Controls.Add(m_LabelFriendDetailInfo);
-        }
-
-        private void setupPhotosAnalystTab()
-        {
-            // Hide old hardcoded buttons and panels - we replace them with a proper Strategy chooser
-            tableLayoutPanel3.Visible = false;
-
-            Color darkBg = Color.FromArgb(20, 40, 90);
-            Color blueBtn = Color.FromArgb(24, 119, 242);
-            Color lightBlue = Color.FromArgb(160, 200, 255);
-
-            // Intro label
-            var labelIntro = new Label
-            {
-                Text = "Choose an analysis strategy:",
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                ForeColor = Color.White,
-                Location = new Point(40, 90),
-                Size = new Size(400, 28),
-                BackColor = Color.Transparent
-            };
-            tabPage3.Controls.Add(labelIntro);
-
-            // ComboBox with strategies
-            m_ComboPhotoStrategy = new ComboBox
-            {
-                Location = new Point(40, 125),
-                Size = new Size(360, 34),
-                Font = new Font("Segoe UI", 10),
-                BackColor = darkBg,
-                ForeColor = Color.White,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                FlatStyle = FlatStyle.Flat
-            };
-            m_ComboPhotoStrategy.Items.AddRange(new object[]
-            {
-                "Most Liked Photo",
-                "Most Commented Photo",
-                "Oldest Photo",
-                "Newest Photo",
-                "Most Tagged Photo"
-            });
-            m_ComboPhotoStrategy.SelectedIndex = 0;
-            tabPage3.Controls.Add(m_ComboPhotoStrategy);
-
-            // Analyze button
-            m_ButtonAnalyzePhoto = new Button
-            {
-                Text = "Analyze",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = blueBtn,
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Location = new Point(420, 124),
-                Size = new Size(160, 36),
-                Cursor = Cursors.Hand
-            };
-            m_ButtonAnalyzePhoto.FlatAppearance.BorderSize = 0;
-            m_ButtonAnalyzePhoto.FlatAppearance.MouseOverBackColor = Color.FromArgb(16, 102, 214);
-            m_ButtonAnalyzePhoto.Click += buttonAnalyzePhoto_Click;
-            tabPage3.Controls.Add(m_ButtonAnalyzePhoto);
-
-            // Result panel
-            m_PanelPhotoResult = new Panel
-            {
-                Location = new Point(40, 185),
-                Size = new Size(830, 440),
-                BackColor = darkBg,
-                BorderStyle = BorderStyle.None
-            };
-            tabPage3.Controls.Add(m_PanelPhotoResult);
-
-            // Result title
-            m_LabelPhotoResultTitle = new Label
-            {
-                Location = new Point(20, 15),
-                Size = new Size(790, 30),
-                Font = new Font("Segoe UI", 13, FontStyle.Bold),
-                ForeColor = Color.White,
-                Text = "Results will appear here",
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-            m_PanelPhotoResult.Controls.Add(m_LabelPhotoResultTitle);
-
-            // Result picture
-            m_PictureBoxPhotoResult = new PictureBox
-            {
-                Location = new Point(20, 55),
-                Size = new Size(400, 350),
-                SizeMode = PictureBoxSizeMode.Zoom,
-                BackColor = Color.FromArgb(15, 32, 75),
-                BorderStyle = BorderStyle.None
-            };
-            m_PanelPhotoResult.Controls.Add(m_PictureBoxPhotoResult);
-
-            // Result details
-            m_LabelPhotoResultDetails = new Label
-            {
-                Location = new Point(445, 55),
-                Size = new Size(365, 350),
-                Font = new Font("Segoe UI", 11),
-                ForeColor = lightBlue,
-                TextAlign = ContentAlignment.TopLeft
-            };
-            m_PanelPhotoResult.Controls.Add(m_LabelPhotoResultDetails);
-        }
-
         private void buttonAnalyzePhoto_Click(object sender, EventArgs e)
         {
             if (ensureLoggedIn())
@@ -320,12 +118,11 @@ namespace BasicFacebookFeatures
             m_LabelPhotoResultTitle.Text = m_ComboPhotoStrategy.SelectedItem.ToString();
             m_ButtonAnalyzePhoto.Enabled = false;
 
-            User user = r_FacebookService.LoggedInUser;
             BackgroundWorker worker = new BackgroundWorker();
 
             worker.DoWork += (s, e) =>
             {
-                e.Result = i_Creator.RunAnalysis(user);
+                e.Result = i_Creator.RunAnalysis(e.Argument as User);
             };
 
             worker.RunWorkerCompleted += (s, e) =>
@@ -350,7 +147,7 @@ namespace BasicFacebookFeatures
                 }
             };
 
-            worker.RunWorkerAsync();
+            worker.RunWorkerAsync(r_FacebookService.LoggedInUser);
         }
 
         private void displayPhotoResult(Photo i_Photo)
@@ -360,9 +157,9 @@ namespace BasicFacebookFeatures
             StringBuilder details = new StringBuilder();
             details.AppendLine($"Created: {i_Photo.CreatedTime}");
             details.AppendLine();
-            details.AppendLine($"Likes:    {safeCount(() => i_Photo.LikedBy?.Count)}");
-            details.AppendLine($"Comments: {safeCount(() => i_Photo.Comments?.Count)}");
-            details.AppendLine($"Tags:     {safeCount(() => i_Photo.Tags?.Count)}");
+            details.AppendLine($"Likes:    {safeCount(() => i_Photo.LikedBy != null ? (int?)i_Photo.LikedBy.Count : null)}");
+            details.AppendLine($"Comments: {safeCount(() => i_Photo.Comments != null ? (int?)i_Photo.Comments.Count : null)}");
+            details.AppendLine($"Tags:     {safeCount(() => i_Photo.Tags != null ? (int?)i_Photo.Tags.Count : null)}");
 
             string caption = safeGet(() => i_Photo.Name);
             if (!string.IsNullOrEmpty(caption))
@@ -409,123 +206,6 @@ namespace BasicFacebookFeatures
             }
 
             return result;
-        }
-
-        private void setupPostTab()
-        {
-            Color darkBg = Color.FromArgb(20, 40, 90);
-            Color tabBg = Color.FromArgb(15, 32, 75);
-            Color headerBg = Color.FromArgb(10, 25, 65);
-            Color blueBtn = Color.FromArgb(24, 119, 242);
-            Color lightBlue = Color.FromArgb(160, 200, 255);
-
-            // --- Tab page ---
-            m_TabPagePost = new TabPage
-            {
-                Text = "  Post",
-                BackColor = tabBg
-            };
-
-            // --- Header bar ---
-            var panelHeader = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 56,
-                BackColor = headerBg,
-                Padding = new Padding(18, 0, 0, 0)
-            };
-            var labelHeader = new Label
-            {
-                Dock = DockStyle.Fill,
-                Text = "Post",
-                Font = new Font("Segoe UI", 15, FontStyle.Bold),
-                ForeColor = Color.White,
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-            panelHeader.Controls.Add(labelHeader);
-            m_TabPagePost.Controls.Add(panelHeader);
-
-            // --- Left: Composer ---
-            var labelCompose = new Label
-            {
-                Text = "What's on your mind?",
-                Font = new Font("Segoe UI", 13, FontStyle.Bold),
-                ForeColor = Color.White,
-                Location = new Point(30, 85),
-                Size = new Size(400, 30),
-                BackColor = Color.Transparent
-            };
-            m_TabPagePost.Controls.Add(labelCompose);
-
-            m_TextBoxPostContent = new TextBox
-            {
-                Location = new Point(30, 125),
-                Size = new Size(420, 260),
-                Multiline = true,
-                Font = new Font("Segoe UI", 11),
-                BackColor = darkBg,
-                ForeColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle,
-                MaxLength = k_MaxPostLength,
-                ScrollBars = ScrollBars.Vertical
-            };
-            m_TextBoxPostContent.TextChanged += textBoxPostContent_TextChanged;
-            m_TabPagePost.Controls.Add(m_TextBoxPostContent);
-
-            m_LabelCharCount = new Label
-            {
-                Location = new Point(30, 395),
-                Size = new Size(420, 22),
-                Font = new Font("Segoe UI", 9, FontStyle.Italic),
-                ForeColor = lightBlue,
-                Text = $"0 / {k_MaxPostLength} characters",
-                TextAlign = ContentAlignment.MiddleRight,
-                BackColor = Color.Transparent
-            };
-            m_TabPagePost.Controls.Add(m_LabelCharCount);
-
-            m_ButtonPost = new Button
-            {
-                Text = "Post to Facebook",
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                BackColor = blueBtn,
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Location = new Point(30, 430),
-                Size = new Size(420, 48),
-                Cursor = Cursors.Hand
-            };
-            m_ButtonPost.FlatAppearance.BorderSize = 0;
-            m_ButtonPost.FlatAppearance.MouseOverBackColor = Color.FromArgb(16, 102, 214);
-            m_ButtonPost.Click += buttonPost_Click;
-            m_TabPagePost.Controls.Add(m_ButtonPost);
-
-            // --- Right: Recent posts ---
-            var labelRecent = new Label
-            {
-                Text = "Your Recent Posts",
-                Font = new Font("Segoe UI", 13, FontStyle.Bold),
-                ForeColor = Color.White,
-                Location = new Point(485, 85),
-                Size = new Size(400, 30),
-                BackColor = Color.Transparent
-            };
-            m_TabPagePost.Controls.Add(labelRecent);
-
-            m_FlowRecentPosts = new FlowLayoutPanel
-            {
-                Location = new Point(485, 125),
-                Size = new Size(405, 500),
-                BackColor = darkBg,
-                AutoScroll = true,
-                BorderStyle = BorderStyle.None,
-                Padding = new Padding(8),
-                FlowDirection = FlowDirection.TopDown,
-                WrapContents = false
-            };
-            m_TabPagePost.Controls.Add(m_FlowRecentPosts);
-
-            tabPageAnalytics.TabPages.Add(m_TabPagePost);
         }
 
         private void textBoxPostContent_TextChanged(object sender, EventArgs e)
@@ -623,170 +303,6 @@ namespace BasicFacebookFeatures
             worker.RunWorkerAsync();
         }
 
-        private void showEmptyPostsMessage(string i_Text)
-        {
-            var label = new Label
-            {
-                Text = i_Text,
-                ForeColor = Color.FromArgb(160, 200, 255),
-                Font = new Font("Segoe UI", 10, FontStyle.Italic),
-                AutoSize = true,
-                Margin = new Padding(12, 20, 0, 0)
-            };
-            m_FlowRecentPosts.Controls.Add(label);
-        }
-
-        private void setupAlbumAnalystTab()
-        {
-            Color darkBg = Color.FromArgb(20, 40, 90);
-            Color lightBlue = Color.FromArgb(160, 200, 255);
-            Color blueBtn = Color.FromArgb(24, 119, 242);
-            Color greenBtn = Color.FromArgb(66, 183, 42);
-
-            // Hide old album list (replaced by DataGridView)
-            tableLayoutPanel1.Visible = false;
-
-            // Load Albums button
-            m_ButtonLoadAlbums = new Button
-            {
-                Text = "Load Albums",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = blueBtn,
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Location = new Point(20, 68),
-                Size = new Size(160, 36),
-                Cursor = Cursors.Hand
-            };
-            m_ButtonLoadAlbums.FlatAppearance.BorderSize = 0;
-            m_ButtonLoadAlbums.Click += buttonLoadAlbums_Click;
-            tabPage2.Controls.Add(m_ButtonLoadAlbums);
-
-            // DataGridView for albums with photo count
-            m_DataGridAlbums = new DataGridView
-            {
-                Location = new Point(20, 112),
-                Size = new Size(450, 175),
-                BackgroundColor = darkBg,
-                GridColor = Color.FromArgb(40, 70, 130),
-                BorderStyle = BorderStyle.None,
-                RowHeadersVisible = false,
-                AllowUserToAddRows = false,
-                AllowUserToDeleteRows = false,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                MultiSelect = false,
-                Font = new Font("Segoe UI", 9),
-                ForeColor = Color.White,
-                ColumnHeadersHeight = 28,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
-            m_DataGridAlbums.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(10, 25, 65);
-            m_DataGridAlbums.ColumnHeadersDefaultCellStyle.ForeColor = lightBlue;
-            m_DataGridAlbums.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
-            m_DataGridAlbums.DefaultCellStyle.BackColor = darkBg;
-            m_DataGridAlbums.DefaultCellStyle.ForeColor = Color.White;
-            m_DataGridAlbums.DefaultCellStyle.SelectionBackColor = Color.FromArgb(24, 119, 242);
-            m_DataGridAlbums.DefaultCellStyle.SelectionForeColor = Color.White;
-            m_DataGridAlbums.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(25, 50, 110);
-            // Two-Way Data Binding: columns are bound by property name to AlbumViewModel.
-            // Any change to a ViewModel property (e.g. PhotoCount after upload) is
-            // propagated to the grid automatically via INotifyPropertyChanged.
-            m_DataGridAlbums.AutoGenerateColumns = false;
-
-            var colName = new DataGridViewTextBoxColumn
-            {
-                HeaderText = "Album Name",
-                DataPropertyName = "Name",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            };
-            var colCount = new DataGridViewTextBoxColumn
-            {
-                HeaderText = "Photos",
-                DataPropertyName = "PhotoCount",
-                Width = 70,
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.None
-            };
-            m_DataGridAlbums.Columns.Add(colName);
-            m_DataGridAlbums.Columns.Add(colCount);
-
-            // Bind the grid to the BindingList — changes to the list or its items
-            // automatically refresh the grid (Two-Way Data Binding).
-            m_DataGridAlbums.DataSource = m_AlbumBindingList;
-
-            m_DataGridAlbums.SelectionChanged += dataGridAlbums_SelectionChanged;
-            tabPage2.Controls.Add(m_DataGridAlbums);
-
-            // Right panel - selected album details
-            var panelAlbumDetail = new Panel
-            {
-                Location = new Point(490, 68),
-                Size = new Size(400, 222),
-                BackColor = darkBg
-            };
-            tabPage2.Controls.Add(panelAlbumDetail);
-
-            var labelDetailTitle = new Label
-            {
-                Text = "Selected Album",
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                ForeColor = lightBlue,
-                Location = new Point(12, 12),
-                Size = new Size(375, 25),
-                BackColor = Color.Transparent
-            };
-            panelAlbumDetail.Controls.Add(labelDetailTitle);
-
-            m_LabelSelectedAlbum = new Label
-            {
-                Text = "Select an album from the list",
-                Font = new Font("Segoe UI", 10),
-                ForeColor = Color.White,
-                Location = new Point(12, 40),
-                Size = new Size(375, 25),
-                BackColor = Color.Transparent
-            };
-            panelAlbumDetail.Controls.Add(m_LabelSelectedAlbum);
-
-            m_LabelAlbumPhotoCount = new Label
-            {
-                Text = "",
-                Font = new Font("Segoe UI", 9),
-                ForeColor = lightBlue,
-                Location = new Point(12, 68),
-                Size = new Size(375, 22),
-                BackColor = Color.Transparent
-            };
-            panelAlbumDetail.Controls.Add(m_LabelAlbumPhotoCount);
-
-            m_FlowAlbumThumbnails = new FlowLayoutPanel
-            {
-                Location = new Point(12, 95),
-                Size = new Size(375, 70),
-                BackColor = Color.FromArgb(15, 32, 75),
-                AutoScroll = false,
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = false
-            };
-            panelAlbumDetail.Controls.Add(m_FlowAlbumThumbnails);
-
-            m_ButtonUploadPhoto = new Button
-            {
-                Text = "Upload Photo to Album",
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                BackColor = greenBtn,
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Location = new Point(12, 174),
-                Size = new Size(220, 36),
-                Cursor = Cursors.Hand,
-                Enabled = false
-            };
-            m_ButtonUploadPhoto.FlatAppearance.BorderSize = 0;
-            m_ButtonUploadPhoto.Click += buttonUploadPhoto_Click;
-            panelAlbumDetail.Controls.Add(m_ButtonUploadPhoto);
-        }
-
         private void buttonLoadAlbums_Click(object sender, EventArgs e)
         {
             if (ensureLoggedIn())
@@ -839,7 +355,7 @@ namespace BasicFacebookFeatures
                     // Two-Way Binding: adding to BindingList updates the grid automatically
                     m_AlbumBindingList.Add(new AlbumViewModel
                     {
-                        Name       = pair.Item1.Name,
+                        Name = pair.Item1.Name,
                         PhotoCount = pair.Item2
                     });
                 }
@@ -869,7 +385,7 @@ namespace BasicFacebookFeatures
 
         private void showSelectedAlbum(Album i_Album)
         {
-            m_LabelSelectedAlbum.Text = i_Album.Name ?? "(unnamed)";
+            m_LabelSelectedAlbum.Text = i_Album.Name != null ? i_Album.Name : "(unnamed)";
 
             List<Photo> photos = r_FacebookService.GetPhotosFromAlbum(i_Album);
             m_LabelAlbumPhotoCount.Text = $"{photos.Count} photos";
@@ -945,55 +461,6 @@ namespace BasicFacebookFeatures
                     }
                 }
             }
-        }
-
-        private Panel createPostCard(Post i_Post)
-        {
-            var card = new Panel
-            {
-                Size = new Size(365, 110),
-                BackColor = Color.FromArgb(25, 50, 110),
-                Margin = new Padding(3, 3, 3, 8),
-                BorderStyle = BorderStyle.None
-            };
-
-            string dateText = safeGet(() => i_Post.CreatedTime.HasValue ? i_Post.CreatedTime.Value.ToString("MMM dd, yyyy") : "");
-            var labelDate = new Label
-            {
-                Text = dateText,
-                Font = new Font("Segoe UI", 8, FontStyle.Italic),
-                ForeColor = Color.FromArgb(160, 200, 255),
-                Location = new Point(10, 8),
-                Size = new Size(345, 18),
-                BackColor = Color.Transparent
-            };
-            card.Controls.Add(labelDate);
-
-            string message = safeGet(() => i_Post.Message) ?? safeGet(() => i_Post.Description) ?? "(no text)";
-            var labelMessage = new Label
-            {
-                Text = message.Length > 150 ? message.Substring(0, 147) + "..." : message,
-                Font = new Font("Segoe UI", 9),
-                ForeColor = Color.White,
-                Location = new Point(10, 28),
-                Size = new Size(345, 55),
-                BackColor = Color.Transparent
-            };
-            card.Controls.Add(labelMessage);
-
-            string likesText = $"Likes: {safeCount(() => i_Post.LikedBy?.Count)}   Comments: {safeCount(() => i_Post.Comments?.Count)}";
-            var labelStats = new Label
-            {
-                Text = likesText,
-                Font = new Font("Segoe UI", 8, FontStyle.Bold),
-                ForeColor = Color.FromArgb(160, 200, 255),
-                Location = new Point(10, 85),
-                Size = new Size(345, 18),
-                BackColor = Color.Transparent
-            };
-            card.Controls.Add(labelStats);
-
-            return card;
         }
 
         private bool ensureLoggedIn()
@@ -1147,19 +614,6 @@ namespace BasicFacebookFeatures
             worker.RunWorkerAsync();
         }
 
-        private void showFlowMessage(string i_Text, Color i_Color)
-        {
-            Label label = new Label
-            {
-                Text = i_Text,
-                ForeColor = i_Color,
-                Font = new Font("Segoe UI", 10, FontStyle.Italic),
-                AutoSize = true,
-                Margin = new Padding(12, 20, 0, 0)
-            };
-            m_FlowFriends.Controls.Add(label);
-        }
-
         private void renderFriendCards(IEnumerable<User> i_Friends)
         {
             m_FlowFriends.SuspendLayout();
@@ -1178,57 +632,10 @@ namespace BasicFacebookFeatures
             m_FlowFriends.ResumeLayout();
         }
 
-        private Panel createFriendCard(User i_Friend)
-        {
-            var card = new Panel
-            {
-                Size = new Size(95, 125),
-                BackColor = Color.FromArgb(25, 50, 110),
-                Margin = new Padding(6),
-                Cursor = Cursors.Hand,
-                Tag = i_Friend
-            };
-
-            var pic = new PictureBox
-            {
-                Size = new Size(80, 80),
-                Location = new Point(7, 7),
-                SizeMode = PictureBoxSizeMode.Zoom,
-                ImageLocation = i_Friend.PictureNormalURL,
-                BackColor = Color.FromArgb(15, 32, 75),
-                Cursor = Cursors.Hand,
-                Tag = i_Friend
-            };
-            var picClip = new System.Drawing.Drawing2D.GraphicsPath();
-            picClip.AddEllipse(0, 0, 80, 80);
-            pic.Region = new Region(picClip);
-
-            var nameLabel = new Label
-            {
-                Text = i_Friend.Name,
-                Font = new Font("Segoe UI", 8, FontStyle.Bold),
-                ForeColor = Color.White,
-                Location = new Point(0, 90),
-                Size = new Size(95, 32),
-                TextAlign = ContentAlignment.TopCenter,
-                Cursor = Cursors.Hand,
-                Tag = i_Friend
-            };
-
-            card.Controls.Add(pic);
-            card.Controls.Add(nameLabel);
-
-            card.Click += friendCard_Click;
-            pic.Click += friendCard_Click;
-            nameLabel.Click += friendCard_Click;
-
-            return card;
-        }
-
         private void friendCard_Click(object sender, EventArgs e)
         {
             Control ctrl = sender as Control;
-            User friend = ctrl?.Tag as User;
+            User friend = ctrl != null ? ctrl.Tag as User : null;
 
             if (friend != null)
             {

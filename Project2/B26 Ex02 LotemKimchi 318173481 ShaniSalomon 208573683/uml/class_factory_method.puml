@@ -1,0 +1,122 @@
+@startuml ClassDiagram_FactoryMethod
+title Class Diagram — Factory Method Pattern
+
+skinparam classBackgroundColor White
+skinparam classBorderColor DarkBlue
+skinparam classArrowColor DarkBlue
+skinparam stereotypeCBackgroundColor LightYellow
+skinparam stereotypeIBackgroundColor LightBlue
+skinparam stereotypeABackgroundColor LightGreen
+skinparam noteBackgroundColor LightYellow
+skinparam noteBorderColor DarkBlue
+
+' ── Client ────────────────────────────────────────────────────────────────────
+
+class FormMain {
+    - r_PhotoCreators : Dictionary<string, PhotoFeatureCreator>
+    --
+    - buttonAnalyzePhoto_Click() : void
+    - runPhotoAnalysis(i_Creator : PhotoFeatureCreator) : void
+}
+note top of FormMain : **Pattern role: Client**\nHolds a dictionary of Creators;\ncalls RunAnalysis() without knowing\nwhich concrete feature is created.
+
+' ── Creator (abstract) ────────────────────────────────────────────────────────
+
+abstract class PhotoFeatureCreator {
+    + {abstract} CreateFeature() : IFacebookFeature<Photo>
+    + RunAnalysis(i_User : User) : Photo
+}
+note top of PhotoFeatureCreator : **Pattern role: Creator (abstract)**\nDeclares the factory method CreateFeature().\nRunAnalysis() is the template that uses it.
+
+' ── Concrete Creators ─────────────────────────────────────────────────────────
+
+class MostLikedPhotoCreator {
+    + CreateFeature() : IFacebookFeature<Photo>
+}
+
+class MostCommentedPhotoCreator {
+    + CreateFeature() : IFacebookFeature<Photo>
+}
+
+class OldestPhotoCreator {
+    + CreateFeature() : IFacebookFeature<Photo>
+}
+
+class NewestPhotoCreator {
+    + CreateFeature() : IFacebookFeature<Photo>
+}
+
+class MostTaggedPhotoCreator {
+    + CreateFeature() : IFacebookFeature<Photo>
+}
+note right of MostLikedPhotoCreator : **Pattern role: ConcreteCreator**\n(same role for all 5 Creator classes)\nOverrides CreateFeature() and returns\nthe matching ConcreteProduct.
+
+' ── Product (interface) ───────────────────────────────────────────────────────
+
+interface IFacebookFeature<T> {
+    + Execute(i_User : User) : T
+}
+note top of IFacebookFeature : **Pattern role: Product (interface)**\nDefines the interface all concrete\nfeatures must implement.
+
+' ── Abstract base products (Template Method) ─────────────────────────────────
+
+abstract class MaxScorePhotoFeature {
+    # {abstract} getScore(i_Photo : Photo) : int
+    + Execute(i_User : User) : Photo
+}
+
+abstract class DateExtremePhotoFeature {
+    # {abstract} isBetter(i_Candidate : Photo, i_Current : Photo) : bool
+    + Execute(i_User : User) : Photo
+}
+
+' ── Concrete Products ─────────────────────────────────────────────────────────
+
+class MostLikedPhotoFeature {
+    # getScore(i_Photo : Photo) : int
+}
+
+class MostCommentedPhotoFeature {
+    # getScore(i_Photo : Photo) : int
+}
+
+class MostTaggedPhotoFeature {
+    # getScore(i_Photo : Photo) : int
+}
+
+class OldestPhotoFeature {
+    # isBetter(i_Candidate : Photo, i_Current : Photo) : bool
+}
+
+class NewestPhotoFeature {
+    # isBetter(i_Candidate : Photo, i_Current : Photo) : bool
+}
+note right of MostLikedPhotoFeature : **Pattern role: ConcreteProduct**\n(same role for all 5 Feature classes)\nImplements Execute() — the actual\nanalysis logic returned by the Creator.
+
+' ── Relationships ─────────────────────────────────────────────────────────────
+
+FormMain "1" *-- "0..*" PhotoFeatureCreator : r_PhotoCreators
+
+PhotoFeatureCreator <|-- MostLikedPhotoCreator
+PhotoFeatureCreator <|-- MostCommentedPhotoCreator
+PhotoFeatureCreator <|-- OldestPhotoCreator
+PhotoFeatureCreator <|-- NewestPhotoCreator
+PhotoFeatureCreator <|-- MostTaggedPhotoCreator
+
+IFacebookFeature <|.. MaxScorePhotoFeature
+IFacebookFeature <|.. DateExtremePhotoFeature
+
+MaxScorePhotoFeature <|-- MostLikedPhotoFeature
+MaxScorePhotoFeature <|-- MostCommentedPhotoFeature
+MaxScorePhotoFeature <|-- MostTaggedPhotoFeature
+
+DateExtremePhotoFeature <|-- OldestPhotoFeature
+DateExtremePhotoFeature <|-- NewestPhotoFeature
+
+MostLikedPhotoCreator    ..> MostLikedPhotoFeature     : "1" <<creates>>
+MostCommentedPhotoCreator ..> MostCommentedPhotoFeature : "1" <<creates>>
+OldestPhotoCreator        ..> OldestPhotoFeature        : "1" <<creates>>
+NewestPhotoCreator        ..> NewestPhotoFeature         : "1" <<creates>>
+MostTaggedPhotoCreator    ..> MostTaggedPhotoFeature     : "1" <<creates>>
+
+@enduml

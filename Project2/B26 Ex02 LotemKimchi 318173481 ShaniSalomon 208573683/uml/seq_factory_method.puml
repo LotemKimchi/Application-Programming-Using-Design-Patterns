@@ -1,0 +1,59 @@
+@startuml SequenceDiagram_FactoryMethod
+title Sequence Diagram — Factory Method Pattern\nUser selects analysis strategy and clicks Analyze
+
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipantBackgroundColor White
+
+actor "User" as User
+
+participant ": FormMain"                        as FM
+participant "creator : PhotoFeatureCreator"     as PFC
+participant "feature : MostLikedPhotoFeature"   as MLPF
+participant ": CachingFacebookProxy"            as Proxy
+participant ": FacebookService"                 as SDK
+
+User  ->  FM   : selects "Most Liked Photo" in ComboBox
+User  ->  FM   : buttonAnalyzePhoto_Click()
+activate FM
+
+note over FM
+  r_PhotoCreators.TryGetValue(selectedName, out creator)
+  Returns MostLikedPhotoCreator from dictionary
+end note
+
+FM    ->  PFC  : RunAnalysis(user)
+activate PFC
+
+note over PFC
+  RunAnalysis() calls CreateFeature() — Factory Method.
+  MostLikedPhotoCreator.CreateFeature() returns
+  new MostLikedPhotoFeature()
+end note
+
+PFC   ->  MLPF : feature.Execute(user)
+activate MLPF
+
+loop for each Album in user.Albums
+    MLPF ->  Proxy : GetPhotosFromAlbum(album)
+    activate Proxy
+    Proxy ->  SDK  : album.Photos  [Graph API call — takes time]
+    activate SDK
+    SDK  --> Proxy : PhotoCollection
+    deactivate SDK
+    Proxy --> MLPF : List<Photo>
+    deactivate Proxy
+
+    loop for each Photo in photos
+        MLPF -> MLPF : getScore(photo)\nreturns photo.LikedBy.Count
+    end
+end
+
+MLPF --> PFC  : Photo (most liked)
+deactivate MLPF
+
+PFC  --> FM   : Photo
+deactivate PFC
+
+FM    ->  FM  : displayPhotoResult(photo)
+deactivate FM
+@enduml

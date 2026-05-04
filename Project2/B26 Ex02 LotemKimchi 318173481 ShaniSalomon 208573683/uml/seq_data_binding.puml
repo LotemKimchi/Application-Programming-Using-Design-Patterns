@@ -1,0 +1,76 @@
+@startuml SequenceDiagram_DataBinding
+title Sequence Diagram — Two-Way Data Binding\nUpload photo → INotifyPropertyChanged → DataGridView auto-update
+
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipantBackgroundColor White
+
+actor "User" as User
+
+participant ": FormMain"                              as FM
+participant ": CachingFacebookProxy"                  as Proxy
+participant "vm : AlbumViewModel"                     as VM
+participant "m_AlbumBindingList : BindingList<AlbumViewModel>" as BL
+participant ": DataGridView"                          as Grid
+participant ": FacebookService"                       as SDK
+
+note over BL, Grid
+  Setup (once at startup):
+  DataGridView.DataSource = m_AlbumBindingList
+  Columns bound via DataPropertyName = "Name" / "PhotoCount"
+end note
+
+== Load albums (BackgroundWorker — background thread) ==
+
+User  ->  FM  : buttonLoadAlbums_Click()
+activate FM
+
+loop for each album
+    FM ->  VM  : new AlbumViewModel { Name, PhotoCount }
+    activate VM
+    FM ->  BL  : m_AlbumBindingList.Add(vm)
+    activate BL
+    BL --> Grid : ListChanged event → row added automatically
+    deactivate BL
+    deactivate VM
+end
+
+deactivate FM
+
+== Upload photo → targeted single-cell update ==
+
+User  ->  FM   : buttonUploadPhoto_Click()
+activate FM
+FM    ->  Proxy : UploadPhotoToAlbum(album, filePath)
+activate Proxy
+Proxy ->  SDK   : [Graph API upload — takes time]
+activate SDK
+SDK  --> Proxy  : success
+deactivate SDK
+Proxy ->  Proxy : r_CachedAlbumPhotos.Remove(albumId)
+Proxy --> FM    : success
+deactivate Proxy
+
+FM    ->  Proxy : GetPhotosFromAlbum(album)
+activate Proxy
+Proxy -->  FM   : List<Photo> (fresh — cache was cleared)
+deactivate Proxy
+
+FM    ->  VM   : m_AlbumBindingList[index].PhotoCount = newCount
+activate VM
+
+note over VM
+  PhotoCount setter fires:
+  onPropertyChanged("PhotoCount")
+  → PropertyChanged event raised
+end note
+
+VM    ->  BL   : PropertyChanged event
+activate BL
+BL    ->  Grid : notify: cell [index, "PhotoCount"] changed
+activate Grid
+Grid --> User  : single cell updated in-place\n(no full reload)
+deactivate Grid
+deactivate BL
+deactivate VM
+deactivate FM
+@enduml

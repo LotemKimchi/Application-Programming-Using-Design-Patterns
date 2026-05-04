@@ -1,0 +1,74 @@
+@startuml SequenceDiagram_Multithreading
+title Sequence Diagram — Multi-threading with BackgroundWorker\nloadAlbumsIntoGrid: UI stays responsive during API call
+
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipantBackgroundColor White
+
+actor "User" as User
+
+participant ": FormMain\n(UI Thread)"      as FM
+participant "worker : BackgroundWorker"    as BW
+participant ": CachingFacebookProxy"       as Proxy
+participant ": FacebookService"            as SDK
+
+User  ->  FM  : buttonLoadAlbums_Click()
+activate FM
+FM    ->  FM  : m_ButtonLoadAlbums.Enabled = false\nm_LabelSelectedAlbum.Text = "Loading..."
+FM    ->  BW  : new BackgroundWorker()
+activate BW
+FM    ->  BW  : DoWork += lambda
+FM    ->  BW  : RunWorkerCompleted += lambda
+FM    ->  BW  : RunWorkerAsync()
+
+note over FM
+  UI Thread is now FREE.
+  User can interact with
+  other tabs while loading.
+end note
+
+deactivate FM
+
+== Background Thread (DoWork) ==
+
+BW    ->  Proxy : GetAlbums()
+activate Proxy
+Proxy ->  SDK   : user.Albums  [Graph API call — takes time]
+activate SDK
+SDK  --> Proxy  : AlbumCollection
+deactivate SDK
+Proxy --> BW    : List<Album>
+deactivate Proxy
+
+loop for each Album
+    BW  ->  Proxy : GetPhotosFromAlbum(album)
+    activate Proxy
+    Proxy ->  SDK  : album.Photos  [Graph API call — takes time]
+    activate SDK
+    SDK  --> Proxy : PhotoCollection
+    deactivate SDK
+    Proxy --> BW   : List<Photo>
+    deactivate Proxy
+    BW  ->  BW     : results.Add(Tuple(album, count))
+end
+
+BW    ->  BW  : e.Result = results
+
+== UI Thread (RunWorkerCompleted — auto marshal back) ==
+
+note over BW, FM
+  RunWorkerCompleted always fires on the UI Thread.
+  No Invoke() needed to update controls.
+end note
+
+BW    ->  FM  : RunWorkerCompleted(e)
+activate FM
+
+loop for each (album, photoCount) in results
+    FM  ->  FM  : m_AlbumBindingList.Add(new AlbumViewModel)
+end
+
+FM    ->  FM  : m_ButtonLoadAlbums.Enabled = true
+FM    ->  FM  : m_LabelSelectedAlbum.Text = "Found N albums"
+deactivate FM
+deactivate BW
+@enduml
