@@ -1,0 +1,81 @@
+@startuml SequenceDiagram_Facade
+title Sequence Diagram — Facade Pattern\nFormMain calls simple GetAlbums(); FacebookManager hides all SDK complexity
+
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipantBackgroundColor White
+
+actor "User" as User
+
+participant ": FormMain"          as FM
+participant ": FacebookManager"   as Facade
+participant ": FacebookService"   as SDK
+participant "loginResult : LoginResult" as LR
+participant "user : User"         as U
+
+note over FM, U
+  FormMain never calls FacebookService, LoginResult,
+  or user.Albums directly — it only calls FacebookManager.
+  All SDK complexity is hidden behind simple method names.
+end note
+
+== Simple call: Login ==
+
+User  ->  FM     : buttonConnectAsDesig_Click()
+activate FM
+
+FM    ->  Facade : ConnectWithToken(i_Token)
+activate Facade
+
+note over Facade
+  Facade hides:
+  - FacebookService.Connect()
+  - null checks on LoginResult
+  - token persistence (File.WriteAllText)
+  - storing m_LoginResult
+end note
+
+Facade ->  SDK   : FacebookService.Connect(i_Token)
+activate SDK
+SDK   --> Facade : LoginResult
+deactivate SDK
+
+Facade ->  LR    : check AccessToken != null
+activate LR
+LR    --> Facade : valid
+deactivate LR
+
+Facade ->  Facade : m_LoginResult = loginResult\nFile.WriteAllText("token.txt", token)
+Facade --> FM     : LoginResult
+deactivate Facade
+
+FM    ->  FM     : afterLogin()\ndisplayUserInfo()
+deactivate FM
+
+== Simple call: GetAlbums ==
+
+User  ->  FM     : (after login — displayUserInfo)
+activate FM
+
+FM    ->  Facade : GetAlbums()
+activate Facade
+
+note over Facade
+  Facade hides:
+  - getting LoggedInUser from m_LoginResult
+  - iterating user.Albums (SDK collection)
+  - handling permission exceptions
+  - converting to List<Album>
+end note
+
+Facade ->  Facade : user = LoggedInUser\n(from m_LoginResult)
+Facade ->  U      : foreach album in user.Albums  [Graph API]
+activate U
+U     --> Facade  : Album objects
+deactivate U
+
+Facade --> FM     : List<Album>
+deactivate Facade
+
+FM    ->  FM     : listBoxAlbums.Items.Add(album.Name)
+deactivate FM
+@enduml
