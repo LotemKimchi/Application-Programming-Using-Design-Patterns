@@ -1,5 +1,5 @@
 @startuml SequenceDiagram_CountAlbums
-title Sequence Diagram — Count Albums\nMost Complex Scenario: User Logged In, Has Albums
+title Sequence Diagram — Count Albums Feature\nProxy intercepts GetAlbums(): cache miss delegates to Facade, cache hit returns immediately
 
 skinparam sequenceArrowThickness 2
 skinparam sequenceParticipantBackgroundColor White

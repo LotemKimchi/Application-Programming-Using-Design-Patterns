@@ -1,5 +1,5 @@
 @startuml SequenceDiagram_MostCommentedPhoto
-title Sequence Diagram — Most Commented Photo (New Use Case)\nMost Complex Scenario: User Logged In, Albums With Commented Photos
+title Sequence Diagram — Most Commented Photo Feature\nMost Complex Scenario: iterates all albums and photos, finds max comment count
 
 skinparam sequenceArrowThickness 2
 skinparam sequenceParticipantBackgroundColor White

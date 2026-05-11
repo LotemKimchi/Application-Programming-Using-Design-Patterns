@@ -1,5 +1,5 @@
 @startuml SequenceDiagram_ProxyFacade
-title Sequence Diagram — Proxy (Cache) + Facade Pattern\nGetAlbums: cache miss → cache hit → write invalidation
+title Sequence Diagram — Proxy (Caching) Pattern\nGetAlbums: cache miss → cache hit → write invalidation after upload
 
 skinparam sequenceArrowThickness 2
 skinparam sequenceParticipantBackgroundColor White
