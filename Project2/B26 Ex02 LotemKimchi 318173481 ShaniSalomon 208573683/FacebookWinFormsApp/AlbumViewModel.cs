@@ -2,10 +2,7 @@ using System.ComponentModel;
 
 namespace BasicFacebookFeatures
 {
-    // Two-Way Data Binding support:
-    // Implements INotifyPropertyChanged so that when PhotoCount is updated
-    // (e.g. after an upload), the DataGridView reflects the new value automatically
-    // without a full grid reload.
+    // Two-Way Data Binding support:PhotoCount updated
     public class AlbumViewModel : INotifyPropertyChanged
     {
         private string m_Name;

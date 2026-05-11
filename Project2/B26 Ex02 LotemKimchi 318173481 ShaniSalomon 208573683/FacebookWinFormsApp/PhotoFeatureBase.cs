@@ -3,11 +3,6 @@ using System;
 
 namespace BasicFacebookFeatures
 {
-    // Template Method Pattern — applied at the Feature level
-    // Eliminates the duplicated double-loop across all photo feature classes.
-    // Subclasses override a single abstract method to define their selection logic;
-    // the loop structure lives here once and is never repeated.
-
     public abstract class MaxScorePhotoFeature : IFacebookFeature<Photo>
     {
         protected abstract int getScore(Photo i_Photo);
@@ -35,7 +30,7 @@ namespace BasicFacebookFeatures
             }
             catch (Exception)
             {
-                // Facebook API throws when user has no permission — return null to signal no result
+                //Facebook API throws when user has no permission — return null
             }
 
             return bestPhoto;
@@ -65,7 +60,7 @@ namespace BasicFacebookFeatures
             }
             catch (Exception)
             {
-                // Facebook API throws when user has no permission — return null to signal no result
+                //Facebook API throws when user has no permission — return null
             }
 
             return result;

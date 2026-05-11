@@ -35,7 +35,7 @@ namespace BasicFacebookFeatures
             }
             catch (Exception)
             {
-                // Facebook API throws when user has no permission — return null to signal no result
+                // Facebook API throws when user has no permission
             }
 
             return albumWithMostPhotos;

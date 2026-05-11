@@ -5,15 +5,12 @@ using System.IO;
 
 namespace BasicFacebookFeatures
 {
-    // Facade Pattern
-    // Role: provides a single, simplified interface to the complex FacebookWrapper API.
-    // FormMain (and the Proxy) never call FacebookWrapper directly — they go through here.
+    //Facade Pattern
     public class FacebookManager : IFacebookService
     {
         private LoginResult m_LoginResult;
 
-        // ── Session ──────────────────────────────────────────────────────────────
-
+        //Session
         public User LoggedInUser
         {
             get { return m_LoginResult != null ? m_LoginResult.LoggedInUser : null; }
@@ -61,7 +58,7 @@ namespace BasicFacebookFeatures
             m_LoginResult = null;
         }
 
-        // ── Facade methods: hide the Facebook Graph API complexity ────────────
+        //Facade methods
 
         public List<User> GetFriends()
         {
@@ -79,7 +76,7 @@ namespace BasicFacebookFeatures
                 }
                 catch
                 {
-                    // Return empty list on permission failure
+                    //Return empty list on permission failure
                 }
             }
 
@@ -102,7 +99,7 @@ namespace BasicFacebookFeatures
                 }
                 catch
                 {
-                    // Return empty list on permission failure
+                    //Return empty list on permission failure
                 }
             }
 
@@ -133,7 +130,7 @@ namespace BasicFacebookFeatures
                 }
                 catch
                 {
-                    // Return empty list on permission failure
+                    //Return empty list on permission failure
                 }
             }
 
@@ -155,7 +152,7 @@ namespace BasicFacebookFeatures
                 }
                 catch
                 {
-                    // Return empty list on permission failure
+                    //Return empty list on permission failure
                 }
             }
 

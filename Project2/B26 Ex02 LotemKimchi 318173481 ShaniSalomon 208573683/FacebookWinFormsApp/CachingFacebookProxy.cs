@@ -106,7 +106,7 @@ namespace BasicFacebookFeatures
             m_CachedAlbums = null; 
         }
 
-        // Cache management
+        //Cache management
 
         public void InvalidateCache()
         {
