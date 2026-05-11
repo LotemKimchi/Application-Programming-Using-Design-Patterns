@@ -4,21 +4,16 @@ using System.Collections.Generic;
 
 namespace BasicFacebookFeatures
 {
-    // Proxy Pattern
-    // Role: intercepts every call to IFacebookService and returns a cached result when
-    //       the same data was already fetched.  This avoids repeated round-trips to the
-    //       Facebook Graph API (which are slow and rate-limited).
-    //
-    // Architecture:  FormMain  →  CachingFacebookProxy  →  FacebookManager (Facade)
+    // Proxy Pattern: FormMain -> CachingFacebookProxy -> FacebookManager (Facade)
     public class CachingFacebookProxy : IFacebookService
     {
         private readonly IFacebookService r_RealService;
 
-        // ── Cache fields ─────────────────────────────────────────────────────────
+        // Cache fields
         private List<User>  m_CachedFriends;
         private List<Album> m_CachedAlbums;
         private List<Post>  m_CachedPosts;
-        private int         m_CachedPostsMaxCount = -1;
+        private int      m_CachedPostsMaxCount = -1;
         private readonly Dictionary<string, List<Photo>> r_CachedAlbumPhotos =
             new Dictionary<string, List<Photo>>();
 
@@ -26,8 +21,6 @@ namespace BasicFacebookFeatures
         {
             r_RealService = i_RealService;
         }
-
-        // ── Session: always delegate; invalidate cache on login/logout ───────────
 
         public User LoggedInUser
         {
@@ -51,8 +44,6 @@ namespace BasicFacebookFeatures
             r_RealService.Logout();
             InvalidateCache();
         }
-
-        // ── Cached data access ───────────────────────────────────────────────────
 
         public List<User> GetFriends()
         {
@@ -99,31 +90,29 @@ namespace BasicFacebookFeatures
             return photos;
         }
 
-        // ── Write operations: delegate + selectively invalidate related cache ───
-
+        // Write operations
         public void PostStatus(string i_Content)
         {
             r_RealService.PostStatus(i_Content);
-            m_CachedPosts = null; // posts list is now stale
+            m_CachedPosts = null;
         }
 
         public void UploadPhotoToAlbum(Album i_Album, string i_FilePath)
         {
             r_RealService.UploadPhotoToAlbum(i_Album, i_FilePath);
 
-            // Invalidate photo cache for this album (photo count changed)
             string albumId = (i_Album != null && i_Album.Id != null) ? i_Album.Id : string.Empty;
             r_CachedAlbumPhotos.Remove(albumId);
-            m_CachedAlbums = null; // album list may reflect new photo count
+            m_CachedAlbums = null; 
         }
 
-        // ── Cache management ─────────────────────────────────────────────────────
+        // Cache management
 
         public void InvalidateCache()
         {
-            m_CachedFriends       = null;
-            m_CachedAlbums        = null;
-            m_CachedPosts         = null;
+            m_CachedFriends = null;
+            m_CachedAlbums = null;
+            m_CachedPosts = null;
             m_CachedPostsMaxCount = -1;
             r_CachedAlbumPhotos.Clear();
         }

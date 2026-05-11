@@ -16,19 +16,19 @@ namespace BasicFacebookFeatures
         private const string k_AppId = "1783124789311728";
         private const string k_DesignPatternsToken = "EAAUm6cZC4eUEBQ89SIPgqvUNRPYwshVbzNFtykREi0CbEUsssHsY0ceBnLKHx9uOtmH5ClGksE6EzWZBRylGglQToWaaqV2QWsOcus79byyncz93TDesQvzX2pv2kllZA8mEg5iDMiYktoptWXySLSrS4Y2ATeDyEEFsJLZBmyshcy464jImETOhjyGYYKxJDZBWhxzRWLsRZApkMmJiEG742LGjEq486o9RgdhFrkuTLT0xup5efuMsJNL8ENsJqZC";
 
-        // UI → Proxy (cache) → Facade (FacebookManager) → FacebookWrapper
+        // Proxy (cache), Facade (FacebookManager) 
         private readonly IFacebookService r_FacebookService =
             new CachingFacebookProxy(new FacebookManager());
 
-        // Factory Method: maps ComboBox label → ConcreteCreator
+        // Factory Method: maps ComboBox label
         private readonly Dictionary<string, PhotoFeatureCreator> r_PhotoCreators =
             new Dictionary<string, PhotoFeatureCreator>
             {
-                { "Most Liked Photo",     new MostLikedPhotoCreator()     },
+                { "Most Liked Photo", new MostLikedPhotoCreator() },
                 { "Most Commented Photo", new MostCommentedPhotoCreator() },
-                { "Oldest Photo",         new OldestPhotoCreator()         },
-                { "Newest Photo",         new NewestPhotoCreator()         },
-                { "Most Tagged Photo",    new MostTaggedPhotoCreator()     }
+                { "Oldest Photo", new OldestPhotoCreator() },
+                { "Newest Photo", new NewestPhotoCreator() },
+                { "Most Tagged Photo", new MostTaggedPhotoCreator() }
             };
 
         // Friends section
@@ -68,8 +68,7 @@ namespace BasicFacebookFeatures
         private Album m_CurrentSelectedAlbum;
         private readonly List<Album> r_LoadedAlbums = new List<Album>();
 
-        // Two-Way Data Binding: BindingList notifies the DataGridView of any
-        // property change on AlbumViewModel (INotifyPropertyChanged) automatically.
+        // Two-Way Data Binding
         private readonly BindingList<AlbumViewModel> m_AlbumBindingList =
             new BindingList<AlbumViewModel>();
 
@@ -97,7 +96,7 @@ namespace BasicFacebookFeatures
         {
             if (ensureLoggedIn())
             {
-                // === Factory Method Pattern: look up the ConcreteCreator for the selected name ===
+                // Factory Method Pattern
                 string selectedName = m_ComboPhotoStrategy.SelectedItem as string;
                 PhotoFeatureCreator creator;
 
@@ -108,9 +107,7 @@ namespace BasicFacebookFeatures
             }
         }
 
-        // Uses the Factory Method pattern: creator.RunAnalysis() calls CreateFeature().Execute()
-        // Multi-threading: the analysis iterates many albums/photos via the API —
-        // running it on a background thread keeps the UI responsive.
+        // Uses the Factory Method pattern and Multi-threading
         private void runPhotoAnalysis(PhotoFeatureCreator i_Creator)
         {
             m_PictureBoxPhotoResult.ImageLocation = null;
@@ -157,9 +154,9 @@ namespace BasicFacebookFeatures
             StringBuilder details = new StringBuilder();
             details.AppendLine($"Created: {i_Photo.CreatedTime}");
             details.AppendLine();
-            details.AppendLine($"Likes:    {safeCount(() => i_Photo.LikedBy != null ? (int?)i_Photo.LikedBy.Count : null)}");
+            details.AppendLine($"Likes: {safeCount(() => i_Photo.LikedBy != null ? (int?)i_Photo.LikedBy.Count : null)}");
             details.AppendLine($"Comments: {safeCount(() => i_Photo.Comments != null ? (int?)i_Photo.Comments.Count : null)}");
-            details.AppendLine($"Tags:     {safeCount(() => i_Photo.Tags != null ? (int?)i_Photo.Tags.Count : null)}");
+            details.AppendLine($"Tags: {safeCount(() => i_Photo.Tags != null ? (int?)i_Photo.Tags.Count : null)}");
 
             string caption = safeGet(() => i_Photo.Name);
             if (!string.IsNullOrEmpty(caption))
@@ -256,7 +253,7 @@ namespace BasicFacebookFeatures
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Failed to post to Facebook.\n\nReason: {ex.Message}\n\n(Publishing via API was restricted by Facebook - this feature may not work for all accounts.)",
+                    $"Failed to post to Facebook.\n\nPublishing via API was restricted by Facebook - this feature may not work for all accounts.",
                     "Post Failed");
             }
         }
@@ -266,8 +263,7 @@ namespace BasicFacebookFeatures
             m_FlowRecentPosts.Controls.Clear();
             showEmptyPostsMessage("Loading posts...");
 
-            // Multi-threading: GetRecentPosts() calls the Facebook API — run it in the
-            // background so the UI thread stays responsive.
+            // Multi-threading
             BackgroundWorker worker = new BackgroundWorker();
 
             worker.DoWork += (s, e) =>
@@ -318,8 +314,7 @@ namespace BasicFacebookFeatures
             m_LabelSelectedAlbum.Text = "Loading...";
             m_ButtonLoadAlbums.Enabled = false;
 
-            // Multi-threading: fetch albums + photo counts on a background thread
-            // so the UI stays responsive during the (slow) Facebook API calls.
+            // Multi-threading
             BackgroundWorker worker = new BackgroundWorker();
 
             worker.DoWork += (s, e) =>
@@ -352,7 +347,7 @@ namespace BasicFacebookFeatures
                 {
                     r_LoadedAlbums.Add(pair.Item1);
 
-                    // Two-Way Binding: adding to BindingList updates the grid automatically
+                    // Two-Way Binding
                     m_AlbumBindingList.Add(new AlbumViewModel
                     {
                         Name = pair.Item1.Name,
@@ -439,16 +434,11 @@ namespace BasicFacebookFeatures
                         r_FacebookService.UploadPhotoToAlbum(i_Album, dialog.FileName);
                         MessageBox.Show("Photo uploaded successfully!", "Upload Success");
 
-                        // Two-Way Data Binding: instead of reloading the entire grid,
-                        // update only the affected AlbumViewModel. The BindingList
-                        // propagates the change to the DataGridView automatically via
-                        // INotifyPropertyChanged — no Rows.Clear() or re-fetch needed.
+                        // Two-Way Data Binding
                         int albumIndex = r_LoadedAlbums.IndexOf(i_Album);
 
                         if (albumIndex >= 0 && albumIndex < m_AlbumBindingList.Count)
                         {
-                            // Proxy cache was invalidated by UploadPhotoToAlbum —
-                            // this call fetches the fresh count from the API.
                             m_AlbumBindingList[albumIndex].PhotoCount =
                                 r_FacebookService.GetPhotosFromAlbum(i_Album).Count;
                         }
@@ -456,7 +446,7 @@ namespace BasicFacebookFeatures
                     catch (Exception ex)
                     {
                         MessageBox.Show(
-                            $"Failed to upload photo.\n\nReason: {ex.Message}\n\n(Uploading via API may not be available for all accounts.)",
+                            $"Failed to upload photo.\n\nUploading via API may not be available for all accounts.",
                             "Upload Failed");
                     }
                 }
@@ -578,8 +568,7 @@ namespace BasicFacebookFeatures
             m_LabelFriendsCount.Text = "Loading...";
             showFlowMessage("Loading friends...", Color.FromArgb(160, 200, 255));
 
-            // Multi-threading: GetFriends() hits the Facebook API — run it in the
-            // background so the UI thread stays responsive.
+            // Multi-threading: GetFriends() 
             BackgroundWorker worker = new BackgroundWorker();
 
             worker.DoWork += (s, e) =>
@@ -764,9 +753,7 @@ namespace BasicFacebookFeatures
         {
             base.OnFormClosed(e);
 
-            // When the user closes the main window (X button), exit the whole
-            // application. Logout path never reaches here because it Hide()s
-            // the form instead of closing it.
+            // Closes the main window (X button), exit the whole application
             Application.Exit();
         }
 
