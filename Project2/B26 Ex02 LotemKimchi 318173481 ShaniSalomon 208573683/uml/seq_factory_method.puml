@@ -27,13 +27,19 @@ activate PFC
 note over PFC
   RunAnalysis() calls CreateFeature() — Factory Method.
   MostLikedPhotoCreator.CreateFeature() returns
-  new MostLikedPhotoFeature()
+  new MostLikedPhotoFeature(r_Service)
 end note
 
 PFC   ->  MLPF : feature.Execute(user)
 activate MLPF
 
-loop for each Album in user.Albums
+MLPF  ->  Proxy : GetAlbums()
+activate Proxy
+note over Proxy : cache hit or miss
+Proxy -->  MLPF : List<Album>
+deactivate Proxy
+
+loop for each Album in albums
     MLPF ->  Proxy : GetPhotosFromAlbum(album)
     activate Proxy
     Proxy ->  SDK  : album.Photos  [Graph API call — takes time]

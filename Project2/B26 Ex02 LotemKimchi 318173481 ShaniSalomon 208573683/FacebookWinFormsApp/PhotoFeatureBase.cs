@@ -1,10 +1,18 @@
 using FacebookWrapper.ObjectModel;
 using System;
+using System.Collections.Generic;
 
 namespace BasicFacebookFeatures
 {
     public abstract class MaxScorePhotoFeature : IFacebookFeature<Photo>
     {
+        private readonly IFacebookService r_Service;
+
+        protected MaxScorePhotoFeature(IFacebookService i_Service)
+        {
+            r_Service = i_Service;
+        }
+
         protected abstract int getScore(Photo i_Photo);
 
         public Photo Execute(User i_User)
@@ -14,9 +22,13 @@ namespace BasicFacebookFeatures
 
             try
             {
-                foreach (Album album in i_User.Albums)
+                List<Album> albums = r_Service.GetAlbums();
+
+                foreach (Album album in albums)
                 {
-                    foreach (Photo photo in album.Photos)
+                    List<Photo> photos = r_Service.GetPhotosFromAlbum(album);
+
+                    foreach (Photo photo in photos)
                     {
                         int score = getScore(photo);
 
@@ -30,7 +42,7 @@ namespace BasicFacebookFeatures
             }
             catch (Exception)
             {
-                //Facebook API throws when user has no permission — return null
+                // Facebook API throws when user has no permission — return null
             }
 
             return bestPhoto;
@@ -39,6 +51,13 @@ namespace BasicFacebookFeatures
 
     public abstract class DateExtremePhotoFeature : IFacebookFeature<Photo>
     {
+        private readonly IFacebookService r_Service;
+
+        protected DateExtremePhotoFeature(IFacebookService i_Service)
+        {
+            r_Service = i_Service;
+        }
+
         protected abstract bool isBetter(Photo i_Candidate, Photo i_Current);
 
         public Photo Execute(User i_User)
@@ -47,9 +66,13 @@ namespace BasicFacebookFeatures
 
             try
             {
-                foreach (Album album in i_User.Albums)
+                List<Album> albums = r_Service.GetAlbums();
+
+                foreach (Album album in albums)
                 {
-                    foreach (Photo photo in album.Photos)
+                    List<Photo> photos = r_Service.GetPhotosFromAlbum(album);
+
+                    foreach (Photo photo in photos)
                     {
                         if (result == null || isBetter(photo, result))
                         {
@@ -60,7 +83,7 @@ namespace BasicFacebookFeatures
             }
             catch (Exception)
             {
-                //Facebook API throws when user has no permission — return null
+                // Facebook API throws when user has no permission — return null
             }
 
             return result;

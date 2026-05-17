@@ -20,16 +20,9 @@ namespace BasicFacebookFeatures
         private readonly IFacebookService r_FacebookService =
             new CachingFacebookProxy(new FacebookManager());
 
-        // Factory Method: maps ComboBox label
-        private readonly Dictionary<string, PhotoFeatureCreator> r_PhotoCreators =
-            new Dictionary<string, PhotoFeatureCreator>
-            {
-                { "Most Liked Photo", new MostLikedPhotoCreator() },
-                { "Most Commented Photo", new MostCommentedPhotoCreator() },
-                { "Oldest Photo", new OldestPhotoCreator() },
-                { "Newest Photo", new NewestPhotoCreator() },
-                { "Most Tagged Photo", new MostTaggedPhotoCreator() }
-            };
+        // Factory Method: maps ComboBox label → ConcreteCreator
+        // Initialized in constructor (not inline) so r_FacebookService is available
+        private readonly Dictionary<string, PhotoFeatureCreator> r_PhotoCreators;
 
         // Friends section
         private Label m_LabelFriendsHeader;
@@ -74,6 +67,15 @@ namespace BasicFacebookFeatures
 
         public FormMain()
         {
+            r_PhotoCreators = new Dictionary<string, PhotoFeatureCreator>
+            {
+                { "Most Liked Photo",     new MostLikedPhotoCreator(r_FacebookService)     },
+                { "Most Commented Photo", new MostCommentedPhotoCreator(r_FacebookService) },
+                { "Oldest Photo",         new OldestPhotoCreator(r_FacebookService)         },
+                { "Newest Photo",         new NewestPhotoCreator(r_FacebookService)         },
+                { "Most Tagged Photo",    new MostTaggedPhotoCreator(r_FacebookService)     }
+            };
+
             InitializeComponent();
             this.DoubleBuffered = true;
             FacebookWrapper.FacebookService.s_CollectionLimit = 25;
@@ -785,7 +787,7 @@ namespace BasicFacebookFeatures
             if (ensureLoggedIn())
             {
                 User user = r_FacebookService.LoggedInUser;
-                IFacebookFeature<Photo> feature = new OldestPhotoFeature();
+                IFacebookFeature<Photo> feature = new OldestPhotoFeature(r_FacebookService);
 
                 pictureBoxOldestPhoto.ImageLocation = null;
                 labelOldestPhotoDate.Text = "";
@@ -809,7 +811,7 @@ namespace BasicFacebookFeatures
             if (ensureLoggedIn())
             {
                 User user = r_FacebookService.LoggedInUser;
-                IFacebookFeature<Photo> feature = new MostLikedPhotoFeature();
+                IFacebookFeature<Photo> feature = new MostLikedPhotoFeature(r_FacebookService);
 
                 labelMostLikedStatus.Visible = false;
                 pictureBoxMostLikePhoto.ImageLocation = null;
@@ -833,7 +835,7 @@ namespace BasicFacebookFeatures
             if (ensureLoggedIn())
             {
                 User user = r_FacebookService.LoggedInUser;
-                IFacebookFeature<Photo> feature = new MostCommentedPhotoFeature();
+                IFacebookFeature<Photo> feature = new MostCommentedPhotoFeature(r_FacebookService);
 
                 labelMostCommentedStatus.Visible = false;
                 pictureBoxMostCommentedPhoto.ImageLocation = null;

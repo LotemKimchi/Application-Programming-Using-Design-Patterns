@@ -69,6 +69,29 @@ class FacebookManager {
 }
 note right of FacebookManager : **Pattern role: RealSubject**\nThe actual implementation that\nperforms the Facebook API calls.\nWrapped by the Proxy.
 
+' ── External domain classes (used in method signatures) ─────────────────────
+
+class User <<external>> {
+    + Name : string
+    + PictureNormalURL : string
+}
+
+class Album <<external>> {
+    + Name : string
+    + Id : string
+}
+
+class Photo <<external>> {
+    + PictureNormalURL : string
+    + CreatedTime : DateTime
+}
+
+class FacebookService <<external>> {
+    + {static} Login(appId : string, permissions : string[]) : LoginResult
+    + {static} Connect(token : string) : LoginResult
+    + {static} LogoutWithUI() : void
+}
+
 ' ── Relationships ─────────────────────────────────────────────────────────────
 
 FormMain "1" ..> "1" IFacebookService : <<uses>>
@@ -77,5 +100,10 @@ CachingFacebookProxy ..|> IFacebookService
 FacebookManager ..|> IFacebookService
 
 CachingFacebookProxy "1" *-- "1" FacebookManager : r_RealService
+FacebookManager "1" ..> "1" FacebookService : <<uses>>
+
+IFacebookService ..> User   : returns
+IFacebookService ..> Album  : uses
+IFacebookService ..> Photo  : uses
 
 @enduml

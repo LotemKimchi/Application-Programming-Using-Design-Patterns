@@ -188,13 +188,51 @@ class FormMain {
     - clearUserData() : void
 }
 
-' ── External SDK (simplified) ─────────────────────────────────────────────────
+' ── External SDK classes ──────────────────────────────────────────────────────
 
 class FacebookService <<external>> {
     + {static} s_CollectionLimit : int
     + {static} Login(appId : string, permissions : string[]) : LoginResult
     + {static} Connect(token : string) : LoginResult
     + {static} LogoutWithUI() : void
+}
+
+class LoginResult <<external>> {
+    + AccessToken : string
+    + ErrorMessage : string
+    + LoggedInUser : User
+}
+
+class User <<external>> {
+    + Name : string
+    + Birthday : string
+    + PictureNormalURL : string
+    + Albums : FacebookObjectCollection<Album>
+    + Friends : FacebookObjectCollection<User>
+    + Posts : FacebookObjectCollection<Post>
+}
+
+class Album <<external>> {
+    + Name : string
+    + Id : string
+    + Photos : FacebookObjectCollection<Photo>
+}
+
+class Photo <<external>> {
+    + PictureNormalURL : string
+    + CreatedTime : DateTime
+    + Name : string
+    + LikedBy : FacebookObjectCollection<Like>
+    + Comments : FacebookObjectCollection<Comment>
+    + Tags : FacebookObjectCollection<Tag>
+}
+
+class Post <<external>> {
+    + Message : string
+    + Description : string
+    + CreatedTime : DateTime
+    + LikedBy : FacebookObjectCollection<Like>
+    + Comments : FacebookObjectCollection<Comment>
 }
 
 ' ── Relationships (parent classes appear above subclasses per layout) ──────────
@@ -248,5 +286,13 @@ CountAlbumsFeature "1" ..> "1" IFacebookService : <<uses>>
 ' Data Binding — with multiplicity
 INotifyPropertyChanged <|.. AlbumViewModel
 FormMain "1" *-- "0..*" AlbumViewModel : m_AlbumBindingList (BindingList<>)
+
+' External SDK relationships
+FacebookManager "1" o-- "0..1" LoginResult : aggregates
+FacebookService ..> LoginResult : returns
+LoginResult --> User : contains
+User "1" --> "0..*" Album : Albums
+User "1" --> "0..*" Post  : Posts
+Album "1" --> "0..*" Photo : Photos
 
 @enduml
