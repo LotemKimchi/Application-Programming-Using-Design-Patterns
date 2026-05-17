@@ -10,6 +10,7 @@ participant ": FormMain"                        as FM
 participant "creator : PhotoFeatureCreator"     as PFC
 participant "feature : MostLikedPhotoFeature"   as MLPF
 participant ": CachingFacebookProxy"            as Proxy
+participant ": FacebookManager"                 as Facade
 participant ": FacebookService"                 as SDK
 
 User  ->  FM   : selects "Most Liked Photo" in ComboBox
@@ -40,13 +41,17 @@ Proxy -->  MLPF : List<Album>
 deactivate Proxy
 
 loop for each Album in albums
-    MLPF ->  Proxy : GetPhotosFromAlbum(album)
+    MLPF   ->  Proxy  : GetPhotosFromAlbum(album)
     activate Proxy
-    Proxy ->  SDK  : album.Photos  [Graph API call — takes time]
+    Proxy  ->  Facade : GetPhotosFromAlbum(album)
+    activate Facade
+    Facade ->  SDK    : album.Photos  [Graph API call — takes time]
     activate SDK
-    SDK  --> Proxy : PhotoCollection
+    SDK    --> Facade : PhotoCollection
     deactivate SDK
-    Proxy --> MLPF : List<Photo>
+    Facade --> Proxy  : List<Photo>
+    deactivate Facade
+    Proxy  --> MLPF   : List<Photo>
     deactivate Proxy
 
     loop for each Photo in photos
