@@ -4,16 +4,16 @@ using System.Collections.Generic;
 
 namespace BasicFacebookFeatures
 {
-    // Proxy Pattern: FormMain -> CachingFacebookProxy -> FacebookManager (Facade)
+    //Proxy Pattern: FormMain -> CachingFacebookProxy -> FacebookManager (Facade)
     public class CachingFacebookProxy : IFacebookService
     {
         private readonly IFacebookService r_RealService;
 
-        // Cache fields
-        private List<User>  m_CachedFriends;
+        //Cache fields
+        private List<User> m_CachedFriends;
         private List<Album> m_CachedAlbums;
-        private List<Post>  m_CachedPosts;
-        private int      m_CachedPostsMaxCount = -1;
+        private List<Post> m_CachedPosts;
+        private int m_CachedPostsMaxCount = -1;
         private readonly Dictionary<string, List<Photo>> r_CachedAlbumPhotos =
             new Dictionary<string, List<Photo>>();
 
@@ -90,7 +90,7 @@ namespace BasicFacebookFeatures
             return photos;
         }
 
-        // Write operations
+        //Write operations
         public void PostStatus(string i_Content)
         {
             r_RealService.PostStatus(i_Content);

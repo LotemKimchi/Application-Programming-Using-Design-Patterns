@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace BasicFacebookFeatures
 {
-    // Two-Way Data Binding support:PhotoCount updated
+    //Data Binding support:PhotoCount updated
     public class AlbumViewModel : INotifyPropertyChanged
     {
         private string m_Name;

@@ -105,14 +105,12 @@ namespace BasicFacebookFeatures
 
         private void setupPhotosAnalystTab()
         {
-            // Hide old hardcoded buttons and panels - we replace them with a proper Strategy chooser
             tableLayoutPanel3.Visible = false;
 
             Color darkBg = Color.FromArgb(20, 40, 90);
             Color blueBtn = Color.FromArgb(24, 119, 242);
             Color lightBlue = Color.FromArgb(160, 200, 255);
 
-            // Intro label
             var labelIntro = new Label
             {
                 Text = "Choose an analysis strategy:",
@@ -124,7 +122,6 @@ namespace BasicFacebookFeatures
             };
             tabPage3.Controls.Add(labelIntro);
 
-            // ComboBox with strategies
             m_ComboPhotoStrategy = new ComboBox
             {
                 Location = new Point(40, 125),
@@ -146,7 +143,6 @@ namespace BasicFacebookFeatures
             m_ComboPhotoStrategy.SelectedIndex = 0;
             tabPage3.Controls.Add(m_ComboPhotoStrategy);
 
-            // Analyze button
             m_ButtonAnalyzePhoto = new Button
             {
                 Text = "Analyze",
@@ -216,14 +212,12 @@ namespace BasicFacebookFeatures
             Color blueBtn = Color.FromArgb(24, 119, 242);
             Color lightBlue = Color.FromArgb(160, 200, 255);
 
-            // --- Tab page ---
             m_TabPagePost = new TabPage
             {
                 Text = "  Post",
                 BackColor = tabBg
             };
 
-            // --- Header bar ---
             var panelHeader = new Panel
             {
                 Dock = DockStyle.Top,
@@ -242,7 +236,6 @@ namespace BasicFacebookFeatures
             panelHeader.Controls.Add(labelHeader);
             m_TabPagePost.Controls.Add(panelHeader);
 
-            // --- Left: Composer ---
             var labelCompose = new Label
             {
                 Text = "What's on your mind?",
@@ -297,7 +290,6 @@ namespace BasicFacebookFeatures
             m_ButtonPost.Click += buttonPost_Click;
             m_TabPagePost.Controls.Add(m_ButtonPost);
 
-            // --- Right: Recent posts ---
             var labelRecent = new Label
             {
                 Text = "Your Recent Posts",
@@ -332,7 +324,6 @@ namespace BasicFacebookFeatures
             Color blueBtn = Color.FromArgb(24, 119, 242);
             Color greenBtn = Color.FromArgb(66, 183, 42);
 
-            // Hide old album list (replaced by DataGridView)
             tableLayoutPanel1.Visible = false;
 
             // Load Albums button
@@ -351,7 +342,6 @@ namespace BasicFacebookFeatures
             m_ButtonLoadAlbums.Click += buttonLoadAlbums_Click;
             tabPage2.Controls.Add(m_ButtonLoadAlbums);
 
-            // DataGridView for albums with photo count
             m_DataGridAlbums = new DataGridView
             {
                 Location = new Point(20, 112),
@@ -379,9 +369,6 @@ namespace BasicFacebookFeatures
             m_DataGridAlbums.DefaultCellStyle.SelectionForeColor = Color.White;
             m_DataGridAlbums.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(25, 50, 110);
 
-            // Two-Way Data Binding: columns are bound by property name to AlbumViewModel.
-            // Any change to a ViewModel property (e.g. PhotoCount after upload) is
-            // propagated to the grid automatically via INotifyPropertyChanged.
             m_DataGridAlbums.AutoGenerateColumns = false;
 
             var colName = new DataGridViewTextBoxColumn
@@ -399,9 +386,7 @@ namespace BasicFacebookFeatures
             };
             m_DataGridAlbums.Columns.Add(colName);
             m_DataGridAlbums.Columns.Add(colCount);
-
-            // Bind the grid to the BindingList — changes to the list or its items
-            // automatically refresh the grid (Two-Way Data Binding).
+      
             m_DataGridAlbums.DataSource = m_AlbumBindingList;
 
             m_DataGridAlbums.SelectionChanged += dataGridAlbums_SelectionChanged;
@@ -477,7 +462,7 @@ namespace BasicFacebookFeatures
             panelAlbumDetail.Controls.Add(m_ButtonUploadPhoto);
         }
 
-        // ── Card / message factory helpers ───────────────────────────────────────
+        // Card / message factory helpers 
 
         private Panel createFriendCard(User i_Friend)
         {

@@ -16,15 +16,14 @@ namespace BasicFacebookFeatures
         private const string k_AppId = "1783124789311728";
         private const string k_DesignPatternsToken = "EAAUm6cZC4eUEBQ89SIPgqvUNRPYwshVbzNFtykREi0CbEUsssHsY0ceBnLKHx9uOtmH5ClGksE6EzWZBRylGglQToWaaqV2QWsOcus79byyncz93TDesQvzX2pv2kllZA8mEg5iDMiYktoptWXySLSrS4Y2ATeDyEEFsJLZBmyshcy464jImETOhjyGYYKxJDZBWhxzRWLsRZApkMmJiEG742LGjEq486o9RgdhFrkuTLT0xup5efuMsJNL8ENsJqZC";
 
-        // Proxy (cache), Facade (FacebookManager) 
+        //Proxy (cache), Facade (FacebookManager) 
         private readonly IFacebookService r_FacebookService =
             new CachingFacebookProxy(new FacebookManager());
 
-        // Factory Method: maps ComboBox label → ConcreteCreator
-        // Initialized in constructor (not inline) so r_FacebookService is available
+        //Factory Method
         private readonly Dictionary<string, PhotoFeatureCreator> r_PhotoCreators;
 
-        // Friends section
+        //Friends section
         private Label m_LabelFriendsHeader;
         private TextBox m_TextBoxSearchFriend;
         private FlowLayoutPanel m_FlowFriends;
@@ -35,7 +34,7 @@ namespace BasicFacebookFeatures
         private Label m_LabelFriendsCount;
         private readonly List<User> r_AllFriends = new List<User>();
 
-        // Photos Analyst section (Strategy pattern via ComboBox)
+        //Photos Analyst section (Strategy pattern via ComboBox)
         private ComboBox m_ComboPhotoStrategy;
         private Button m_ButtonAnalyzePhoto;
         private Panel m_PanelPhotoResult;
@@ -43,7 +42,7 @@ namespace BasicFacebookFeatures
         private Label m_LabelPhotoResultTitle;
         private Label m_LabelPhotoResultDetails;
 
-        // Post Composer section
+        //Post Composer section
         private TabPage m_TabPagePost;
         private TextBox m_TextBoxPostContent;
         private Label m_LabelCharCount;
@@ -51,7 +50,7 @@ namespace BasicFacebookFeatures
         private FlowLayoutPanel m_FlowRecentPosts;
         private const int k_MaxPostLength = 500;
 
-        // Album Analyst section (enhanced)
+        //Album Analyst section (enhanced)
         private DataGridView m_DataGridAlbums;
         private Label m_LabelSelectedAlbum;
         private Label m_LabelAlbumPhotoCount;
@@ -61,7 +60,7 @@ namespace BasicFacebookFeatures
         private Album m_CurrentSelectedAlbum;
         private readonly List<Album> r_LoadedAlbums = new List<Album>();
 
-        // Two-Way Data Binding
+        //Data Binding
         private readonly BindingList<AlbumViewModel> m_AlbumBindingList =
             new BindingList<AlbumViewModel>();
 
@@ -69,11 +68,11 @@ namespace BasicFacebookFeatures
         {
             r_PhotoCreators = new Dictionary<string, PhotoFeatureCreator>
             {
-                { "Most Liked Photo",     new MostLikedPhotoCreator(r_FacebookService)     },
-                { "Most Commented Photo", new MostCommentedPhotoCreator(r_FacebookService) },
-                { "Oldest Photo",         new OldestPhotoCreator(r_FacebookService)         },
-                { "Newest Photo",         new NewestPhotoCreator(r_FacebookService)         },
-                { "Most Tagged Photo",    new MostTaggedPhotoCreator(r_FacebookService)     }
+                { "Most Liked Photo",new MostLikedPhotoCreator(r_FacebookService)},
+                { "Most Commented Photo", new MostCommentedPhotoCreator(r_FacebookService)},
+                { "Oldest Photo",new OldestPhotoCreator(r_FacebookService)},
+                { "Newest Photo",new NewestPhotoCreator(r_FacebookService)},
+                { "Most Tagged Photo",new MostTaggedPhotoCreator(r_FacebookService)}
             };
 
             InitializeComponent();
