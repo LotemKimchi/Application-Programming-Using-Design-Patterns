@@ -1,0 +1,79 @@
+@startuml
+title Sequence Diagram — Decorator Pattern\nSafe mode ON: Feature -> SafeDecorator -> TimingDecorator
+
+actor User
+participant ": FormMain" as Form
+participant "creator : MostLikedPhotoCreator" as Creator
+participant "timedFeature : FeatureTimingDecorator<Photo>" as TimeDec
+participant "safeFeature : SafeFeatureDecorator<Photo>" as SafeDec
+participant "feature : MostLikedPhotoFeature" as Feature
+participant ": CachingFacebookProxy" as Proxy
+participant ": FacebookService" as FB
+
+User -> Form : buttonAnalyzePhoto_Click()
+
+Form -> Creator : CreateFeature()
+Creator --> Form : MostLikedPhotoFeature
+
+note over Form
+  ** Decorator Pattern: build chain **
+  (safe mode checkbox is checked)
+end note
+
+Form -> SafeDec ** : new SafeFeatureDecorator<Photo>(feature)
+Form -> TimeDec ** : new FeatureTimingDecorator<Photo>(safeFeature)
+
+Form -> Form : BackgroundWorker.RunWorkerAsync(user)
+
+note over Form, TimeDec : BackgroundWorker.DoWork (background thread)
+
+Form -> TimeDec : Execute(user)
+TimeDec -> TimeDec : Stopwatch.StartNew()
+
+TimeDec -> SafeDec : Execute(user)
+note right
+  TimingDecorator delegates to
+  SafeDecorator — same interface
+end note
+
+SafeDec -> Feature : Execute(user)
+note right
+  SafeDecorator delegates to
+  actual Feature — same interface
+end note
+
+loop [for each Album -> for each Photo]
+    Feature -> Proxy : GetPhotosFromAlbum(album)
+    Proxy ->/ FB : album.Photos [Graph API - takes time]
+    FB -->\ Proxy : PhotoCollection
+    Proxy --> Feature : List<Photo>
+    Feature -> Feature : getScore(photo)
+end
+
+alt [success — no exception]
+    Feature --> SafeDec : Photo (most liked)
+    SafeDec --> TimeDec : Photo
+else [Facebook API throws exception]
+    Feature --> SafeDec : throws Exception
+    SafeDec -> SafeDec : HadError = true\nLastError = ex.Message
+    SafeDec --> TimeDec : null (default)
+end
+
+TimeDec -> TimeDec : stopwatch.Stop()\nLastElapsed = elapsed
+TimeDec --> Form : Photo (or null)
+
+note over Form : BackgroundWorker.RunWorkerCompleted (UI thread)
+
+Form -> Form : m_LabelAnalysisTime.Text = "Analysis time: X.XXs"
+
+alt [safeFeature.HadError == true]
+    Form -> Form : m_LabelPhotoResultDetails.Text =\n"Analysis blocked: " + safeFeature.LastError
+else [photo != null]
+    Form -> Form : displayPhotoResult(photo)
+else [photo == null]
+    Form -> Form : m_LabelPhotoResultDetails.Text =\n"No photo found"
+end
+
+Form --> User : result displayed
+
+@enduml

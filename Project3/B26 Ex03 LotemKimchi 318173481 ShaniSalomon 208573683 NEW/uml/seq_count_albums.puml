@@ -1,0 +1,56 @@
+@startuml SequenceDiagram_CountAlbums
+title Sequence Diagram — Count Albums Feature\nProxy intercepts GetAlbums(): cache miss delegates to Facade, cache hit returns immediately
+
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipantBackgroundColor White
+
+actor       "User"  as User
+
+participant ": FormMain"                as FM
+participant ": CachingFacebookProxy"    as Proxy
+participant ": FacebookManager"         as Facade
+participant ": CountAlbumsFeature"      as CAF
+participant ": FacebookService"         as SDK
+
+User  ->  FM    : buttonCountAlbums_Click()
+activate FM
+
+FM    ->  Proxy : get LoggedInUser
+activate Proxy
+Proxy --> FM    : user (not null)
+deactivate Proxy
+
+FM    ->  CAF   : new CountAlbumsFeature(r_FacebookService)
+activate CAF
+FM    ->  CAF   : Execute(user)
+
+CAF   ->  Proxy : GetAlbums()
+activate Proxy
+
+alt cache miss
+    Proxy ->  Facade : GetAlbums()
+    activate Facade
+    Facade ->  SDK   : user.Albums  [Graph API call — takes time]
+    activate SDK
+    SDK  -->  Facade : AlbumCollection
+    deactivate SDK
+    Facade --> Proxy  : List<Album>
+    deactivate Facade
+    Proxy ->  Proxy  : m_CachedAlbums = result
+end
+
+Proxy --> CAF   : List<Album>
+deactivate Proxy
+
+CAF   ->  CAF   : albumsCount = albums.Count
+CAF  --> FM     : int albumsCount
+deactivate CAF
+
+alt albumsCount == -1
+    FM -> FM : labelAlbumsCount.Text = "No permission"
+else
+    FM -> FM : labelAlbumsCount.Text = "Albums Count: N"
+end
+
+deactivate FM
+@enduml

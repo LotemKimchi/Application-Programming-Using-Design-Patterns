@@ -1,0 +1,111 @@
+@startuml
+title Class Diagram — Decorator Pattern
+
+skinparam classAttributeIconSize 0
+top to bottom direction
+
+interface "IFacebookFeature<T>" as IFeat {
+    + Execute(i_User : User) : T
+}
+note top of IFeat
+  Pattern role: Component
+  Shared interface for ConcreteComponent
+  and all Decorators
+end note
+
+abstract class MaxScorePhotoFeature {
+    - r_Service : IFacebookService
+    ..
+    + MaxScorePhotoFeature(i_Service : IFacebookService)
+    + Execute(i_User : User) : Photo
+    # {abstract} getScore(i_Photo : Photo) : int
+}
+note right of MaxScorePhotoFeature
+  Pattern role: ConcreteComponent
+  Pure algorithm — no error handling,
+  no timing. (same for all 5 features)
+end note
+
+class MostLikedPhotoFeature {
+    + MostLikedPhotoFeature(i_Service : IFacebookService)
+    # getScore(i_Photo : Photo) : int
+}
+
+class "SafeFeatureDecorator<T>" as SafeDec {
+    - r_WrappedFeature : IFacebookFeature<T>
+    + HadError : bool <<get>>
+    + LastError : string <<get>>
+    ..
+    + SafeFeatureDecorator(i_Feature : IFacebookFeature<T>)
+    + Execute(i_User : User) : T
+}
+note right of SafeDec
+  Pattern role: ConcreteDecorator 1
+  Catches Facebook API exceptions —
+  returns null instead of crashing.
+  Sets HadError / LastError.
+end note
+
+class "FeatureTimingDecorator<T>" as TimeDec {
+    - r_WrappedFeature : IFacebookFeature<T>
+    + LastElapsed : TimeSpan <<get>>
+    ..
+    + FeatureTimingDecorator(i_Feature : IFacebookFeature<T>)
+    + Execute(i_User : User) : T
+}
+note right of TimeDec
+  Pattern role: ConcreteDecorator 2
+  Measures execution time with Stopwatch.
+  Stores result in LastElapsed.
+end note
+
+class FormMain {
+    - r_PhotoCreators : Dictionary<string, PhotoFeatureCreator>
+    - m_CheckBoxSafeMode : CheckBox
+    - m_LabelAnalysisTime : Label
+    ..
+    - runPhotoAnalysis(i_Creator : PhotoFeatureCreator) : void
+    - displayPhotoResult(i_Photo : Photo) : void
+}
+note top of FormMain
+  Pattern role: Client
+  Builds the decorator chain:
+  Feature -> SafeDec -> TimingDec
+  (Safe mode only when checkbox checked)
+end note
+
+abstract class PhotoFeatureCreator {
+    # r_Service : IFacebookService
+    ..
+    + {abstract} CreateFeature() : IFacebookFeature<Photo>
+    + RunAnalysis(i_User : User) : Photo
+}
+
+class User <<external>> {
+    + Name : string
+    + PictureNormalURL : string
+}
+
+class Photo <<external>> {
+    + PictureNormalURL : string
+    + CreatedTime : DateTime
+    + LikedBy : FacebookObjectCollection<Like>
+    + Comments : FacebookObjectCollection<Comment>
+}
+
+IFeat <|.. MaxScorePhotoFeature : implements
+IFeat <|.. SafeDec : implements
+IFeat <|.. TimeDec : implements
+MaxScorePhotoFeature <|-- MostLikedPhotoFeature
+
+SafeDec --> IFeat : r_WrappedFeature <<wraps>>
+TimeDec --> IFeat : r_WrappedFeature <<wraps>>
+
+FormMain --> PhotoFeatureCreator : r_PhotoCreators
+PhotoFeatureCreator ..> IFeat : CreateFeature() returns
+FormMain ..> SafeDec : creates (if safe mode)
+FormMain ..> TimeDec : creates (always)
+TimeDec ..> User : Execute(User)
+TimeDec ..> Photo : returns
+
+@enduml

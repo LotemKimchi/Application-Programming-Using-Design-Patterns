@@ -1,0 +1,128 @@
+@startuml
+title Class Diagram — Observer Pattern
+
+skinparam classAttributeIconSize 0
+top to bottom direction
+
+enum eFacebookDataChangeType {
+    PostPublished
+    PhotoUploaded
+    LoggedOut
+}
+
+interface IFacebookDataObserver {
+    + OnFacebookDataChanged(i_ChangeType : eFacebookDataChangeType) : void
+}
+note top of IFacebookDataObserver
+  Pattern role: Observer
+end note
+
+interface IFacebookService {
+    + LoggedInUser : User <<get>>
+    + Login(i_AppId : string) : LoginResult
+    + ConnectWithToken(i_Token : string) : LoginResult
+    + Logout() : void
+    + GetFriends() : List<User>
+    + GetAlbums() : List<Album>
+    + GetRecentPosts(i_MaxCount : int) : List<Post>
+    + GetPhotosFromAlbum(i_Album : Album) : List<Photo>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+}
+note top of IFacebookService
+  Pattern role: Subject Interface
+end note
+
+class FacebookDataSubject {
+    - r_RealService : IFacebookService
+    - r_Observers : List<IFacebookDataObserver>
+    ..
+    + FacebookDataSubject(i_RealService : IFacebookService)
+    + RegisterObserver(i_Observer : IFacebookDataObserver) : void
+    + RemoveObserver(i_Observer : IFacebookDataObserver) : void
+    - notifyObservers(i_ChangeType : eFacebookDataChangeType) : void
+    + LoggedInUser : User <<get>>
+    + Login(i_AppId : string) : LoginResult
+    + ConnectWithToken(i_Token : string) : LoginResult
+    + Logout() : void
+    + GetFriends() : List<User>
+    + GetAlbums() : List<Album>
+    + GetRecentPosts(i_MaxCount : int) : List<Post>
+    + GetPhotosFromAlbum(i_Album : Album) : List<Photo>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+}
+note top of FacebookDataSubject
+  Pattern role: ConcreteSubject
+  Wraps IFacebookService and
+  notifies observers on write ops
+end note
+
+class FormMain {
+    - r_FacebookService : FacebookDataSubject
+    - m_FlowRecentPosts : FlowLayoutPanel
+    - m_AlbumBindingList : BindingList<AlbumViewModel>
+    - m_CurrentSelectedAlbum : Album
+    ..
+    + OnFacebookDataChanged(i_ChangeType : eFacebookDataChangeType) : void
+    - loadRecentPosts() : void
+    - clearUserData() : void
+    - tryPostStatus(i_Content : string) : void
+}
+note top of FormMain
+  Pattern role: ConcreteObserver
+  Registers itself at startup
+end note
+
+class CachingFacebookProxy <<external>> {
+    - r_RealService : IFacebookService
+    - m_CachedAlbums : List<Album>
+    - m_CachedFriends : List<User>
+    - m_CachedPosts : List<Post>
+    ..
+    + GetAlbums() : List<Album>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+}
+note bottom of CachingFacebookProxy
+  Pattern role: RealSubject (wrapped)
+end note
+
+class FacebookService <<external>> {
+    + s_CollectionLimit : int
+    + Login(i_AppId : string, i_Permissions : string[]) : LoginResult
+    + ConnectWithToken(i_Token : string) : LoginResult
+    + LogoutWithResult() : void
+}
+
+class User <<external>> {
+    + Name : string
+    + PictureNormalURL : string
+    + Birthday : string
+}
+
+class Post <<external>> {
+    + Message : string
+    + CreatedTime : DateTime?
+    + LikedBy : FacebookObjectCollection<Like>
+    + Comments : FacebookObjectCollection<Comment>
+}
+
+class Album <<external>> {
+    + Name : string
+    + Id : string
+}
+
+IFacebookService <|.. FacebookDataSubject : implements
+IFacebookService <|.. CachingFacebookProxy : implements
+IFacebookDataObserver <|.. FormMain : implements
+
+FacebookDataSubject "1" o-- "0..*" IFacebookDataObserver : r_Observers
+FacebookDataSubject --> IFacebookService : r_RealService
+FormMain --> FacebookDataSubject : r_FacebookService
+
+CachingFacebookProxy ..> FacebookService : uses
+FacebookDataSubject ..> eFacebookDataChangeType : notifies with
+FormMain ..> eFacebookDataChangeType : receives
+
+@enduml

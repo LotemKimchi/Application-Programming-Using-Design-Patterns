@@ -1,0 +1,51 @@
+@startuml
+title Sequence Diagram — Template Method Pattern\nUser selects "Most Liked Photo" and clicks Analyze
+
+actor User
+participant ": FormMain" as Form
+participant "creator : MostLikedPhotoCreator" as Creator
+participant "feature : MostLikedPhotoFeature" as Feature
+participant ": CachingFacebookProxy" as Proxy
+participant ": FacebookService" as FB
+
+User -> Form : buttonAnalyzePhoto_Click()
+Form -> Creator : RunAnalysis(user)
+
+Creator -> Creator : CreateFeature()
+note right
+  Factory Method —
+  creates MostLikedPhotoFeature
+end note
+
+Creator -> Feature : Execute(user)
+note right
+  ** Template Method **
+  Algorithm is fixed here:
+  loop albums -> loop photos -> getScore()
+end note
+
+Feature -> Proxy : GetAlbums()
+Proxy --> Feature : List<Album>
+
+loop [for each Album in albums]
+    Feature -> Proxy : GetPhotosFromAlbum(album)
+    Proxy ->/ FB : album.Photos [Graph API - takes time]
+    FB -->\ Proxy : PhotoCollection
+    Proxy --> Feature : List<Photo>
+
+    loop [for each Photo in photos]
+        Feature -> Feature : getScore(photo)
+        note right
+          ** Primitive Operation **
+          Overridden in subclass:
+          returns photo.LikedBy.Count
+        end note
+    end
+end
+
+Feature --> Creator : Photo (most liked)
+Creator --> Form : Photo
+Form -> Form : displayPhotoResult(photo)
+Form --> User : photo displayed
+
+@enduml

@@ -1,0 +1,48 @@
+@startuml SequenceDiagram_TemplateMethod
+title Sequence Diagram — Template Method Pattern\nMaxScorePhotoFeature defines the loop; subclass defines getScore()
+
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipantBackgroundColor White
+
+participant "creator : PhotoFeatureCreator"          as PFC
+participant "feature : MaxScorePhotoFeature"         as Base
+participant "self : MostLikedPhotoFeature"           as Sub
+participant ": CachingFacebookProxy"                 as Proxy
+participant ": FacebookService"                      as SDK
+
+PFC  ->  Base : feature.Execute(user)
+activate Base
+
+note over Base
+  Execute() is the Template Method.
+  Invariant: loop over albums and photos,
+  track maximum score.
+  Hook: getScore() — defined by subclass.
+end note
+
+loop for each Album in user.Albums
+    Base ->  Proxy : GetPhotosFromAlbum(album)
+    activate Proxy
+    Proxy ->  SDK  : album.Photos  [Graph API call — takes time]
+    activate SDK
+    SDK  --> Proxy : PhotoCollection
+    deactivate SDK
+    Proxy --> Base  : List<Photo>
+    deactivate Proxy
+
+    loop for each Photo in photos
+        Base ->  Sub  : getScore(photo)
+        activate Sub
+        note over Sub : return photo.LikedBy.Count
+        Sub --> Base  : int score
+        deactivate Sub
+
+        alt score > maxScore
+            Base -> Base : bestPhoto = photo\nmaxScore = score
+        end
+    end
+end
+
+Base --> PFC : Photo (bestPhoto)
+deactivate Base
+@enduml

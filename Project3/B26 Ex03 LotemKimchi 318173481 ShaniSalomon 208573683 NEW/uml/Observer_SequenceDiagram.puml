@@ -1,0 +1,50 @@
+@startuml
+title Sequence Diagram — Observer Pattern\nUser posts a status; Subject notifies Observer automatically
+
+actor User
+participant ": FormMain" as Form
+participant ": FacebookDataSubject" as Subject
+participant ": CachingFacebookProxy" as Proxy
+participant ": FacebookService" as FB
+
+note over Form, Subject
+  FormMain registered itself as Observer
+  in the constructor: r_FacebookService.RegisterObserver(this)
+end note
+
+User -> Form : buttonPost_Click()
+Form -> Form : tryPostStatus(content)
+Form -> Subject : PostStatus(content)
+
+Subject -> Proxy : PostStatus(content)
+Proxy -> Proxy : invalidate cached posts
+Proxy ->/ FB : PostStatus(content) [Graph API - takes time]
+FB -->\ Proxy : success
+Proxy --> Subject : success
+
+note over Subject
+  Write operation succeeded —
+  notify all registered observers
+end note
+
+Subject -> Subject : notifyObservers(PostPublished)
+Subject -> Form : OnFacebookDataChanged(PostPublished)
+
+note over Form
+  ** Observer Pattern **
+  FormMain reacts automatically —
+  not called directly by tryPostStatus()
+end note
+
+Form -> Form : loadRecentPosts()
+
+Form -> Subject : GetRecentPosts(15)
+Subject -> Proxy : GetRecentPosts(15)
+Proxy ->/ FB : user.Posts [Graph API - takes time]
+FB -->\ Proxy : PostCollection
+Proxy --> Subject : List<Post>
+Subject --> Form : List<Post>
+Form -> Form : render updated post cards
+Form --> User : recent posts refreshed
+
+@enduml

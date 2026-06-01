@@ -1,0 +1,133 @@
+@startuml
+title Class Diagram — Template Method Pattern
+
+skinparam classAttributeIconSize 0
+top to bottom direction
+
+interface "IFacebookFeature<Photo>" as IFeat {
+    + Execute(i_User : User) : Photo
+}
+
+abstract class MaxScorePhotoFeature {
+    - r_Service : IFacebookService
+    ..
+    + MaxScorePhotoFeature(i_Service : IFacebookService)
+    + Execute(i_User : User) : Photo
+    # {abstract} getScore(i_Photo : Photo) : int
+}
+note top of MaxScorePhotoFeature
+  Pattern role: AbstractClass
+  Execute() = Template Method (fixed)
+  getScore() = Primitive Operation (abstract)
+end note
+
+abstract class DateExtremePhotoFeature {
+    - r_Service : IFacebookService
+    ..
+    + DateExtremePhotoFeature(i_Service : IFacebookService)
+    + Execute(i_User : User) : Photo
+    # {abstract} isBetter(i_Candidate : Photo, i_Current : Photo) : bool
+}
+note top of DateExtremePhotoFeature
+  Pattern role: AbstractClass
+  Execute() = Template Method (fixed)
+  isBetter() = Primitive Operation (abstract)
+end note
+
+class MostLikedPhotoFeature {
+    + MostLikedPhotoFeature(i_Service : IFacebookService)
+    # getScore(i_Photo : Photo) : int
+}
+note bottom of MostLikedPhotoFeature
+  Pattern role: ConcreteClass
+  returns photo.LikedBy.Count
+end note
+
+class MostCommentedPhotoFeature {
+    + MostCommentedPhotoFeature(i_Service : IFacebookService)
+    # getScore(i_Photo : Photo) : int
+}
+note bottom of MostCommentedPhotoFeature
+  Pattern role: ConcreteClass
+  returns photo.Comments.Count
+end note
+
+class MostTaggedPhotoFeature {
+    + MostTaggedPhotoFeature(i_Service : IFacebookService)
+    # getScore(i_Photo : Photo) : int
+}
+note bottom of MostTaggedPhotoFeature
+  Pattern role: ConcreteClass
+  returns photo.Tags.Count
+end note
+
+class OldestPhotoFeature {
+    + OldestPhotoFeature(i_Service : IFacebookService)
+    # isBetter(i_Candidate : Photo, i_Current : Photo) : bool
+}
+note bottom of OldestPhotoFeature
+  Pattern role: ConcreteClass
+  candidate.CreatedTime < current.CreatedTime
+end note
+
+class NewestPhotoFeature {
+    + NewestPhotoFeature(i_Service : IFacebookService)
+    # isBetter(i_Candidate : Photo, i_Current : Photo) : bool
+}
+note bottom of NewestPhotoFeature
+  Pattern role: ConcreteClass
+  candidate.CreatedTime > current.CreatedTime
+end note
+
+interface IFacebookService {
+    + LoggedInUser : User <<get>>
+    + Login(i_AppId : string) : LoginResult
+    + ConnectWithToken(i_Token : string) : LoginResult
+    + Logout() : void
+    + GetFriends() : List<User>
+    + GetAlbums() : List<Album>
+    + GetRecentPosts(i_MaxCount : int) : List<Post>
+    + GetPhotosFromAlbum(i_Album : Album) : List<Photo>
+    + PostStatus(i_Content : string) : void
+    + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
+}
+
+class User <<external>> {
+    + Name : string
+    + PictureNormalURL : string
+    + Birthday : string
+    + Albums : FacebookObjectCollection<Album>
+}
+
+class Photo <<external>> {
+    + PictureNormalURL : string
+    + CreatedTime : DateTime
+    + LikedBy : FacebookObjectCollection<Like>
+    + Comments : FacebookObjectCollection<Comment>
+    + Tags : FacebookObjectCollection<Tag>
+}
+
+class Album <<external>> {
+    + Name : string
+    + Id : string
+    + Photos : FacebookObjectCollection<Photo>
+}
+
+IFeat <|.. MaxScorePhotoFeature : implements
+IFeat <|.. DateExtremePhotoFeature : implements
+
+MaxScorePhotoFeature <|-- MostLikedPhotoFeature
+MaxScorePhotoFeature <|-- MostCommentedPhotoFeature
+MaxScorePhotoFeature <|-- MostTaggedPhotoFeature
+
+DateExtremePhotoFeature <|-- OldestPhotoFeature
+DateExtremePhotoFeature <|-- NewestPhotoFeature
+
+MaxScorePhotoFeature --> IFacebookService : uses
+DateExtremePhotoFeature --> IFacebookService : uses
+
+IFacebookService ..> Album : returns
+IFacebookService ..> Photo : returns
+Album "1" *-- "0..*" Photo : Photos
+
+@enduml
