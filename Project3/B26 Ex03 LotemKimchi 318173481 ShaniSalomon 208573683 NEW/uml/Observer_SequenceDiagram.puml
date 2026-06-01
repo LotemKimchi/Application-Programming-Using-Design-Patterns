@@ -30,6 +30,7 @@ end note
 
 Subject -> Subject : notifyObservers(PostPublished)
 Subject -> Form : OnFacebookDataChanged(PostPublished)
+note right : solid arrow — method call,\nnot a return value
 
 note over Form
   ** Observer Pattern **

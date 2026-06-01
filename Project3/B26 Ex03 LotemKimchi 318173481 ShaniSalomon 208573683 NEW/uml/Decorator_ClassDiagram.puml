@@ -69,9 +69,8 @@ class FormMain {
 }
 note top of FormMain
   Pattern role: Client
-  Builds the decorator chain:
-  Feature -> SafeDec -> TimingDec
-  (Safe mode only when checkbox checked)
+  SafeFeatureDecorator is always applied.
+  Chain: Feature -> SafeDec -> TimingDec
 end note
 
 abstract class PhotoFeatureCreator {

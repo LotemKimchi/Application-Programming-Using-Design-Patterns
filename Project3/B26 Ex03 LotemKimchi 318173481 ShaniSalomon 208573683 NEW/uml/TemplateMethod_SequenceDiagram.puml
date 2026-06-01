@@ -13,8 +13,8 @@ Form -> Creator : RunAnalysis(user)
 
 Creator -> Creator : CreateFeature()
 note right
-  Factory Method —
-  creates MostLikedPhotoFeature
+  Existing creator creates
+  the selected feature
 end note
 
 Creator -> Feature : Execute(user)

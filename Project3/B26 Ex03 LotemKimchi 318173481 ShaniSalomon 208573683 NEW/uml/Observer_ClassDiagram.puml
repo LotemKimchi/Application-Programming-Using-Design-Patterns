@@ -30,7 +30,7 @@ interface IFacebookService {
     + UploadPhotoToAlbum(i_Album : Album, i_FilePath : string) : void
 }
 note top of IFacebookService
-  Pattern role: Subject Interface
+  Service Interface used by the Subject
 end note
 
 class FacebookDataSubject {
