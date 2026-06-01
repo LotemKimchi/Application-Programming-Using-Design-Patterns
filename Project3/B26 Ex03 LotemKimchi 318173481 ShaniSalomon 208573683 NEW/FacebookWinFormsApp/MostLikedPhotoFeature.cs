@@ -8,7 +8,7 @@ namespace BasicFacebookFeatures
 
         protected override int getScore(Photo i_Photo)
         {
-            return i_Photo.LikedBy.Count;
+            return i_Photo.LikedBy != null ? i_Photo.LikedBy.Count : 0;
         }
     }
 }

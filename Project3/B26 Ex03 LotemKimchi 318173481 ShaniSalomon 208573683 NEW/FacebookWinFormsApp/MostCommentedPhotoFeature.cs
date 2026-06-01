@@ -8,7 +8,7 @@ namespace BasicFacebookFeatures
 
         protected override int getScore(Photo i_Photo)
         {
-            return i_Photo.Comments.Count;
+            return i_Photo.Comments != null ? i_Photo.Comments.Count : 0;
         }
     }
 }

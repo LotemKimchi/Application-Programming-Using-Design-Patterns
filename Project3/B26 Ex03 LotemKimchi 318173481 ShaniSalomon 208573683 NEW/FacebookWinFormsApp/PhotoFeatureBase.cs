@@ -18,7 +18,7 @@ namespace BasicFacebookFeatures
         public Photo Execute(User i_User)
         {
             Photo bestPhoto = null;
-            int maxScore = 0;
+            int maxScore = -1;
 
             try
             {
