@@ -159,19 +159,6 @@ namespace BasicFacebookFeatures
             m_ButtonAnalyzePhoto.Click += buttonAnalyzePhoto_Click;
             tabPage3.Controls.Add(m_ButtonAnalyzePhoto);
 
-            // Decorator — SafeFeatureDecorator toggle
-            m_CheckBoxSafeMode = new CheckBox
-            {
-                Text = "Safe mode (catch API errors)",
-                Font = new Font("Segoe UI", 9),
-                ForeColor = lightBlue,
-                Location = new Point(598, 130),
-                Size = new Size(220, 24),
-                BackColor = Color.Transparent,
-                Checked = true
-            };
-            tabPage3.Controls.Add(m_CheckBoxSafeMode);
-
             // Decorator — analysis time label (populated by FeatureTimingDecorator)
             m_LabelAnalysisTime = new Label
             {

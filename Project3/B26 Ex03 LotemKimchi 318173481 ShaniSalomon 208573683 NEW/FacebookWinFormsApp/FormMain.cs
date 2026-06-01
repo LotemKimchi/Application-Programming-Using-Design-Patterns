@@ -38,7 +38,6 @@ namespace BasicFacebookFeatures
         //Photos Analyst section (Strategy pattern via ComboBox)
         private ComboBox m_ComboPhotoStrategy;
         private Button m_ButtonAnalyzePhoto;
-        private CheckBox m_CheckBoxSafeMode;
         private Label m_LabelAnalysisTime;
         private Panel m_PanelPhotoResult;
         private PictureBox m_PictureBoxPhotoResult;
@@ -116,15 +115,8 @@ namespace BasicFacebookFeatures
         private void runPhotoAnalysis(PhotoFeatureCreator i_Creator)
         {
             IFacebookFeature<Photo> feature = i_Creator.CreateFeature();
-            SafeFeatureDecorator<Photo> safeFeature = null;
-
-            if (m_CheckBoxSafeMode.Checked)
-            {
-                safeFeature = new SafeFeatureDecorator<Photo>(feature);
-                feature = safeFeature;
-            }
-
-            FeatureTimingDecorator<Photo> timedFeature = new FeatureTimingDecorator<Photo>(feature);
+            SafeFeatureDecorator<Photo> safeFeature = new SafeFeatureDecorator<Photo>(feature);
+            FeatureTimingDecorator<Photo> timedFeature = new FeatureTimingDecorator<Photo>(safeFeature);
 
             m_PictureBoxPhotoResult.ImageLocation = null;
             m_LabelPhotoResultDetails.Text = "Analyzing...";

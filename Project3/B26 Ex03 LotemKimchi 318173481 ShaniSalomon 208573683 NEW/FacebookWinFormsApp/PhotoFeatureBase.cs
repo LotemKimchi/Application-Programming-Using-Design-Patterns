@@ -1,3 +1,4 @@
+using Facebook;
 using FacebookWrapper.ObjectModel;
 using System.Collections.Generic;
 
@@ -18,22 +19,30 @@ namespace BasicFacebookFeatures
         {
             Photo bestPhoto = null;
             int maxScore = 0;
-            List<Album> albums = r_Service.GetAlbums();
 
-            foreach (Album album in albums)
+            try
             {
-                List<Photo> photos = r_Service.GetPhotosFromAlbum(album);
+                List<Album> albums = r_Service.GetAlbums();
 
-                foreach (Photo photo in photos)
+                foreach (Album album in albums)
                 {
-                    int score = getScore(photo);
+                    List<Photo> photos = r_Service.GetPhotosFromAlbum(album);
 
-                    if (score > maxScore)
+                    foreach (Photo photo in photos)
                     {
-                        bestPhoto = photo;
-                        maxScore = score;
+                        int score = getScore(photo);
+
+                        if (score > maxScore)
+                        {
+                            bestPhoto = photo;
+                            maxScore = score;
+                        }
                     }
                 }
+            }
+            catch (FacebookOAuthException)
+            {
+                // Facebook API restricts access — return best photo found so far
             }
 
             return bestPhoto;
@@ -54,19 +63,27 @@ namespace BasicFacebookFeatures
         public Photo Execute(User i_User)
         {
             Photo result = null;
-            List<Album> albums = r_Service.GetAlbums();
 
-            foreach (Album album in albums)
+            try
             {
-                List<Photo> photos = r_Service.GetPhotosFromAlbum(album);
+                List<Album> albums = r_Service.GetAlbums();
 
-                foreach (Photo photo in photos)
+                foreach (Album album in albums)
                 {
-                    if (result == null || isBetter(photo, result))
+                    List<Photo> photos = r_Service.GetPhotosFromAlbum(album);
+
+                    foreach (Photo photo in photos)
                     {
-                        result = photo;
+                        if (result == null || isBetter(photo, result))
+                        {
+                            result = photo;
+                        }
                     }
                 }
+            }
+            catch (FacebookOAuthException)
+            {
+                // Facebook API restricts access — return best photo found so far
             }
 
             return result;

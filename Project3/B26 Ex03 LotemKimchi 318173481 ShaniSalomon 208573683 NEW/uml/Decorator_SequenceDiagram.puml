@@ -1,5 +1,5 @@
 @startuml
-title Sequence Diagram — Decorator Pattern\nSafe mode ON: Feature -> SafeDecorator -> TimingDecorator
+title Sequence Diagram — Decorator Pattern\nSafe mode always ON: Feature -> SafeDecorator -> TimingDecorator
 
 actor User
 participant ": FormMain" as Form
@@ -17,7 +17,7 @@ Creator --> Form : MostLikedPhotoFeature
 
 note over Form
   ** Decorator Pattern: build chain **
-  (safe mode checkbox is checked)
+  always applied — safe mode is always ON
 end note
 
 Form -> SafeDec ** : new SafeFeatureDecorator<Photo>(feature)
@@ -25,7 +25,7 @@ Form -> TimeDec ** : new FeatureTimingDecorator<Photo>(safeFeature)
 
 Form -> Form : BackgroundWorker.RunWorkerAsync(user)
 
-note over Form, TimeDec : BackgroundWorker.DoWork (background thread)
+note over Form, TimeDec : BackgroundWorker.DoWork — background thread
 
 Form -> TimeDec : Execute(user)
 TimeDec -> TimeDec : Stopwatch.StartNew()
@@ -44,16 +44,17 @@ end note
 
 loop [for each Album -> for each Photo]
     Feature -> Proxy : GetPhotosFromAlbum(album)
-    Proxy ->/ FB : album.Photos [Graph API - takes time]
-    FB -->\ Proxy : PhotoCollection
+    Proxy -> FB : album.Photos
+    note right of FB : Graph API call\n(takes time)
+    FB --> Proxy : PhotoCollection
     Proxy --> Feature : List<Photo>
     Feature -> Feature : getScore(photo)
 end
 
-alt [success — no exception]
+alt success — no exception
     Feature --> SafeDec : Photo (most liked)
     SafeDec --> TimeDec : Photo
-else [Facebook API throws exception]
+else unexpected exception
     Feature --> SafeDec : throws Exception
     SafeDec -> SafeDec : HadError = true\nLastError = ex.Message
     SafeDec --> TimeDec : null (default)
@@ -62,16 +63,16 @@ end
 TimeDec -> TimeDec : stopwatch.Stop()\nLastElapsed = elapsed
 TimeDec --> Form : Photo (or null)
 
-note over Form : BackgroundWorker.RunWorkerCompleted (UI thread)
+note over Form : BackgroundWorker.RunWorkerCompleted — UI thread
 
 Form -> Form : m_LabelAnalysisTime.Text = "Analysis time: X.XXs"
 
-alt [safeFeature.HadError == true]
-    Form -> Form : m_LabelPhotoResultDetails.Text =\n"Analysis blocked: " + safeFeature.LastError
-else [photo != null]
+alt safeFeature.HadError == true
+    Form -> Form : show "Analysis blocked: " + LastError
+else photo found
     Form -> Form : displayPhotoResult(photo)
-else [photo == null]
-    Form -> Form : m_LabelPhotoResultDetails.Text =\n"No photo found"
+else no photo
+    Form -> Form : show "No photo found"
 end
 
 Form --> User : result displayed

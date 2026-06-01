@@ -18,8 +18,9 @@ Form -> Subject : PostStatus(content)
 
 Subject -> Proxy : PostStatus(content)
 Proxy -> Proxy : invalidate cached posts
-Proxy ->/ FB : PostStatus(content) [Graph API - takes time]
-FB -->\ Proxy : success
+Proxy -> FB : PostStatus(content)
+note right of FB : Graph API call\n(takes time)
+FB --> Proxy : success
 Proxy --> Subject : success
 
 note over Subject
@@ -40,8 +41,9 @@ Form -> Form : loadRecentPosts()
 
 Form -> Subject : GetRecentPosts(15)
 Subject -> Proxy : GetRecentPosts(15)
-Proxy ->/ FB : user.Posts [Graph API - takes time]
-FB -->\ Proxy : PostCollection
+Proxy -> FB : user.Posts
+note right of FB : Graph API call\n(takes time)
+FB --> Proxy : PostCollection
 Proxy --> Subject : List<Post>
 Subject --> Form : List<Post>
 Form -> Form : render updated post cards

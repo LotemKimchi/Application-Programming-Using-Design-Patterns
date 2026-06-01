@@ -29,8 +29,9 @@ Proxy --> Feature : List<Album>
 
 loop [for each Album in albums]
     Feature -> Proxy : GetPhotosFromAlbum(album)
-    Proxy ->/ FB : album.Photos [Graph API - takes time]
-    FB -->\ Proxy : PhotoCollection
+    Proxy -> FB : album.Photos
+    note right of FB : Graph API call\n(takes time)
+    FB --> Proxy : PhotoCollection
     Proxy --> Feature : List<Photo>
 
     loop [for each Photo in photos]
