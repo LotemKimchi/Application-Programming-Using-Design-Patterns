@@ -102,8 +102,8 @@ TimeDec --> IFeat : r_WrappedFeature <<wraps>>
 
 FormMain --> PhotoFeatureCreator : r_PhotoCreators
 PhotoFeatureCreator ..> IFeat : CreateFeature() returns
-FormMain ..> SafeDec : creates (if safe mode)
-FormMain ..> TimeDec : creates (always)
+FormMain ..> SafeDec : creates SafeFeatureDecorator
+FormMain ..> TimeDec : creates FeatureTimingDecorator
 TimeDec ..> User : Execute(User)
 TimeDec ..> Photo : returns
 
