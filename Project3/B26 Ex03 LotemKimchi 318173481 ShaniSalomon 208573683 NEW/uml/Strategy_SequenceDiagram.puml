@@ -1,0 +1,58 @@
+@startuml
+title Sequence Diagram — Strategy Pattern\nUser selects "Most Liked Photo" and clicks Analyze
+
+actor User
+participant ": FormMain" as Form
+participant "r_StrategyProvider : PhotoAnalysisStrategyProvider" as Provider
+participant "strategy : MostLikedPhotoFeature" as Strategy
+participant ": CachingFacebookProxy" as Proxy
+participant ": FacebookService" as FB
+
+User -> Form : buttonAnalyzePhoto_Click()
+
+Form -> Provider : GetStrategy("Most Liked Photo")
+note right
+  Strategy Pattern —
+  provider returns the
+  pre-configured strategy
+  for the selected name
+end note
+Provider --> Form : MostLikedPhotoFeature
+
+note over Form
+  FormMain holds only IFacebookFeature<Photo> —
+  no knowledge of concrete class
+end note
+
+Form -> Form : runPhotoAnalysis(strategy)
+note right : wraps in SafeDec + TimingDec\nthen calls Execute(user)
+
+Form -> Strategy : Execute(user)
+note right
+  ** Template Method inside Strategy **
+  Algorithm fixed: loop albums
+  -> loop photos -> getScore()
+end note
+
+Strategy -> Proxy : GetAlbums()
+Proxy --> Strategy : List<Album>
+
+loop [for each Album in albums]
+    Strategy -> Proxy : GetPhotosFromAlbum(album)
+    Proxy -> FB : album.Photos
+    note right of FB : Graph API call\n(takes time)
+    FB --> Proxy : PhotoCollection
+    Proxy --> Strategy : List<Photo>
+
+    loop [for each Photo in photos]
+        Strategy -> Strategy : getScore(photo)
+        note right : returns photo.LikedBy.Count
+    end
+end
+
+Strategy --> Form : Photo (most liked)
+Form -> Form : displayPhotoResult(photo)
+Form -> Form : m_LabelAnalysisTime.Text = "Analysis time: X.XXs"
+Form --> User : photo + timing displayed
+
+@enduml

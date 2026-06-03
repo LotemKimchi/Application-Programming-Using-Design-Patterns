@@ -3,21 +3,19 @@ title Sequence Diagram — Template Method Pattern\nUser selects "Most Liked Pho
 
 actor User
 participant ": FormMain" as Form
-participant "creator : MostLikedPhotoCreator" as Creator
+participant "r_StrategyProvider : PhotoAnalysisStrategyProvider" as Provider
 participant "feature : MostLikedPhotoFeature" as Feature
 participant ": CachingFacebookProxy" as Proxy
 participant ": FacebookService" as FB
 
 User -> Form : buttonAnalyzePhoto_Click()
-Form -> Creator : RunAnalysis(user)
+Form -> Provider : GetStrategy("Most Liked Photo")
+Provider --> Form : MostLikedPhotoFeature
 
-Creator -> Creator : CreateFeature()
-note right
-  Existing creator creates
-  the selected feature
-end note
+Form -> Form : runPhotoAnalysis(feature)
+note right : wraps in Decorators\nthen calls Execute(user)
 
-Creator -> Feature : Execute(user)
+Form -> Feature : Execute(user)
 note right
   ** Template Method **
   Algorithm is fixed here:

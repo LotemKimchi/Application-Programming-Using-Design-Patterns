@@ -84,7 +84,7 @@
     <Compile Include="IFacebookService.cs" />
     <Compile Include="IFacebookDataObserver.cs" />
     <Compile Include="FacebookDataSubject.cs" />
-    <Compile Include="PhotoFeatureCreator.cs" />
+    <Compile Include="PhotoAnalysisStrategyProvider.cs" />
     <Compile Include="FeatureTimingDecorator.cs" />
     <Compile Include="SafeFeatureDecorator.cs" />
     <Compile Include="CountAlbumsFeature.cs" />

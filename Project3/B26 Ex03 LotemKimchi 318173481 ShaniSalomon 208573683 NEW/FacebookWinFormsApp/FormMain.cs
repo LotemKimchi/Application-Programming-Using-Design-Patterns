@@ -21,8 +21,8 @@ namespace BasicFacebookFeatures
         private readonly FacebookDataSubject r_FacebookService =
             new FacebookDataSubject(new CachingFacebookProxy(new FacebookManager()));
 
-        //Factory Method
-        private readonly Dictionary<string, PhotoFeatureCreator> r_PhotoCreators;
+        //Strategy Pattern
+        private readonly PhotoAnalysisStrategyProvider r_StrategyProvider;
 
         //Friends section
         private Label m_LabelFriendsHeader;
@@ -68,14 +68,7 @@ namespace BasicFacebookFeatures
 
         public FormMain()
         {
-            r_PhotoCreators = new Dictionary<string, PhotoFeatureCreator>
-            {
-                { "Most Liked Photo",     new MostLikedPhotoCreator(r_FacebookService) },
-                { "Most Commented Photo", new MostCommentedPhotoCreator(r_FacebookService) },
-                { "Oldest Photo",         new OldestPhotoCreator(r_FacebookService) },
-                { "Newest Photo",         new NewestPhotoCreator(r_FacebookService) },
-                { "Most Tagged Photo",    new MostTaggedPhotoCreator(r_FacebookService) }
-            };
+            r_StrategyProvider = new PhotoAnalysisStrategyProvider(r_FacebookService);
             r_FacebookService.RegisterObserver(this);
 
             InitializeComponent();
@@ -100,22 +93,21 @@ namespace BasicFacebookFeatures
         {
             if (ensureLoggedIn())
             {
-                // Factory Method Pattern
+                // Strategy Pattern
                 string selectedName = m_ComboPhotoStrategy.SelectedItem as string;
-                PhotoFeatureCreator creator;
+                IFacebookFeature<Photo> strategy = r_StrategyProvider.GetStrategy(selectedName);
 
-                if (r_PhotoCreators.TryGetValue(selectedName, out creator))
+                if (strategy != null)
                 {
-                    runPhotoAnalysis(creator);
+                    runPhotoAnalysis(strategy);
                 }
             }
         }
 
-        // Uses the Factory Method + Decorator patterns (SafeFeatureDecorator + FeatureTimingDecorator) and Multi-threading
-        private void runPhotoAnalysis(PhotoFeatureCreator i_Creator)
+        // Uses the Strategy + Decorator patterns (SafeFeatureDecorator + FeatureTimingDecorator) and Multi-threading
+        private void runPhotoAnalysis(IFacebookFeature<Photo> i_Strategy)
         {
-            IFacebookFeature<Photo> feature = i_Creator.CreateFeature();
-            SafeFeatureDecorator<Photo> safeFeature = new SafeFeatureDecorator<Photo>(feature);
+            SafeFeatureDecorator<Photo> safeFeature = new SafeFeatureDecorator<Photo>(i_Strategy);
             FeatureTimingDecorator<Photo> timedFeature = new FeatureTimingDecorator<Photo>(safeFeature);
 
             m_PictureBoxPhotoResult.ImageLocation = null;

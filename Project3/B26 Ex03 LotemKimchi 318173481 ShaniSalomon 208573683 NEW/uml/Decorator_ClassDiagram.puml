@@ -73,12 +73,17 @@ note top of FormMain
   Chain: Feature -> SafeDec -> TimingDec
 end note
 
-abstract class PhotoFeatureCreator {
-    # r_Service : IFacebookService
+class PhotoAnalysisStrategyProvider {
+    - r_Strategies : Dictionary<string, IFacebookFeature<Photo>>
     ..
-    + {abstract} CreateFeature() : IFacebookFeature<Photo>
-    + RunAnalysis(i_User : User) : Photo
+    + PhotoAnalysisStrategyProvider(i_Service : IFacebookService)
+    + GetStrategy(i_StrategyName : string) : IFacebookFeature<Photo>
 }
+note top of PhotoAnalysisStrategyProvider
+  Strategy Provider —
+  centralizes strategy creation
+  outside FormMain
+end note
 
 class User <<external>> {
     + Name : string
@@ -100,8 +105,8 @@ MaxScorePhotoFeature <|-- MostLikedPhotoFeature
 SafeDec --> IFeat : r_WrappedFeature <<wraps>>
 TimeDec --> IFeat : r_WrappedFeature <<wraps>>
 
-FormMain --> PhotoFeatureCreator : r_PhotoCreators
-PhotoFeatureCreator ..> IFeat : CreateFeature() returns
+FormMain --> PhotoAnalysisStrategyProvider : r_StrategyProvider
+PhotoAnalysisStrategyProvider ..> IFeat : GetStrategy() returns
 FormMain ..> SafeDec : creates SafeFeatureDecorator
 FormMain ..> TimeDec : creates FeatureTimingDecorator
 TimeDec ..> User : Execute(User)

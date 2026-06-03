@@ -1,0 +1,111 @@
+@startuml
+title Class Diagram — Strategy Pattern
+
+skinparam classAttributeIconSize 0
+top to bottom direction
+
+interface "IFacebookFeature<Photo>" as IStrat {
+    + Execute(i_User : User) : Photo
+}
+note top of IStrat
+  Pattern role: Strategy Interface
+  Common interface for all
+  concrete analysis strategies
+end note
+
+class PhotoAnalysisStrategyProvider {
+    - r_Strategies : Dictionary<string, IFacebookFeature<Photo>>
+    ..
+    + PhotoAnalysisStrategyProvider(i_Service : IFacebookService)
+    + GetStrategy(i_StrategyName : string) : IFacebookFeature<Photo>
+}
+note top of PhotoAnalysisStrategyProvider
+  Pattern role: Strategy Provider
+  Centralizes strategy creation
+  outside FormMain — no new in Client
+end note
+
+class FormMain {
+    - r_StrategyProvider : PhotoAnalysisStrategyProvider
+    - m_ComboPhotoStrategy : ComboBox
+    ..
+    - buttonAnalyzePhoto_Click(sender : object, e : EventArgs) : void
+    - runPhotoAnalysis(i_Strategy : IFacebookFeature<Photo>) : void
+}
+note top of FormMain
+  Pattern role: Context
+  Asks provider for strategy by name,
+  then delegates to it via Execute()
+end note
+
+class MostLikedPhotoFeature {
+    + MostLikedPhotoFeature(i_Service : IFacebookService)
+    # getScore(i_Photo : Photo) : int
+}
+note bottom of MostLikedPhotoFeature
+  Pattern role: ConcreteStrategy
+  returns photo.LikedBy.Count
+end note
+
+class MostCommentedPhotoFeature {
+    + MostCommentedPhotoFeature(i_Service : IFacebookService)
+    # getScore(i_Photo : Photo) : int
+}
+note bottom of MostCommentedPhotoFeature
+  Pattern role: ConcreteStrategy
+  returns photo.Comments.Count
+end note
+
+class MostTaggedPhotoFeature {
+    + MostTaggedPhotoFeature(i_Service : IFacebookService)
+    # getScore(i_Photo : Photo) : int
+}
+note bottom of MostTaggedPhotoFeature
+  Pattern role: ConcreteStrategy
+  returns photo.Tags.Count
+end note
+
+class OldestPhotoFeature {
+    + OldestPhotoFeature(i_Service : IFacebookService)
+    # isBetter(i_Candidate : Photo, i_Current : Photo) : bool
+}
+note bottom of OldestPhotoFeature
+  Pattern role: ConcreteStrategy
+  candidate.CreatedTime < current.CreatedTime
+end note
+
+class NewestPhotoFeature {
+    + NewestPhotoFeature(i_Service : IFacebookService)
+    # isBetter(i_Candidate : Photo, i_Current : Photo) : bool
+}
+note bottom of NewestPhotoFeature
+  Pattern role: ConcreteStrategy
+  candidate.CreatedTime > current.CreatedTime
+end note
+
+class User <<external>> {
+    + Name : string
+    + PictureNormalURL : string
+}
+
+class Photo <<external>> {
+    + PictureNormalURL : string
+    + CreatedTime : DateTime
+    + LikedBy : FacebookObjectCollection<Like>
+    + Comments : FacebookObjectCollection<Comment>
+    + Tags : FacebookObjectCollection<Tag>
+}
+
+IStrat <|.. MostLikedPhotoFeature
+IStrat <|.. MostCommentedPhotoFeature
+IStrat <|.. MostTaggedPhotoFeature
+IStrat <|.. OldestPhotoFeature
+IStrat <|.. NewestPhotoFeature
+
+PhotoAnalysisStrategyProvider "1" *-- "5" IStrat : r_Strategies
+FormMain --> PhotoAnalysisStrategyProvider : r_StrategyProvider
+FormMain ..> IStrat : delegates to via Execute()
+IStrat ..> User : Execute(User)
+IStrat ..> Photo : returns
+
+@enduml

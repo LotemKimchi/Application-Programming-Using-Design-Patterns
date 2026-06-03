@@ -1,9 +1,9 @@
 @startuml
-title Sequence Diagram — Decorator Pattern\nSafe mode always ON: Feature -> SafeDecorator -> TimingDecorator
+title Sequence Diagram — Decorator Pattern\nFeature -> SafeDecorator -> TimingDecorator
 
 actor User
 participant ": FormMain" as Form
-participant "creator : MostLikedPhotoCreator" as Creator
+participant "r_StrategyProvider : PhotoAnalysisStrategyProvider" as Provider
 participant "timedFeature : FeatureTimingDecorator<Photo>" as TimeDec
 participant "safeFeature : SafeFeatureDecorator<Photo>" as SafeDec
 participant "feature : MostLikedPhotoFeature" as Feature
@@ -12,12 +12,13 @@ participant ": FacebookService" as FB
 
 User -> Form : buttonAnalyzePhoto_Click()
 
-Form -> Creator : CreateFeature()
-Creator --> Form : MostLikedPhotoFeature
+Form -> Provider : GetStrategy("Most Liked Photo")
+note right : Strategy Pattern
+Provider --> Form : MostLikedPhotoFeature
 
 note over Form
   ** Decorator Pattern: build chain **
-  always applied — safe mode is always ON
+  SafeFeatureDecorator is always applied
 end note
 
 Form -> SafeDec ** : new SafeFeatureDecorator<Photo>(feature)
@@ -25,7 +26,7 @@ Form -> TimeDec ** : new FeatureTimingDecorator<Photo>(safeFeature)
 
 Form -> Form : BackgroundWorker.RunWorkerAsync(user)
 
-note over Form, TimeDec : BackgroundWorker.DoWork — background thread
+note over Form, TimeDec : BackgroundWorker.DoWork - background thread
 
 Form -> TimeDec : Execute(user)
 TimeDec -> TimeDec : Stopwatch.StartNew()
@@ -33,13 +34,13 @@ TimeDec -> TimeDec : Stopwatch.StartNew()
 TimeDec -> SafeDec : Execute(user)
 note right
   TimingDecorator delegates to
-  SafeDecorator — same interface
+  SafeDecorator - same interface
 end note
 
 SafeDec -> Feature : Execute(user)
 note right
   SafeDecorator delegates to
-  actual Feature — same interface
+  actual Feature - same interface
 end note
 
 loop [for each Album -> for each Photo]
@@ -51,7 +52,7 @@ loop [for each Album -> for each Photo]
     Feature -> Feature : getScore(photo)
 end
 
-alt success — no exception
+alt success - no exception
     Feature --> SafeDec : Photo (most liked)
     SafeDec --> TimeDec : Photo
 else unexpected exception
@@ -63,7 +64,7 @@ end
 TimeDec -> TimeDec : stopwatch.Stop()\nLastElapsed = elapsed
 TimeDec --> Form : Photo (or null)
 
-note over Form : BackgroundWorker.RunWorkerCompleted — UI thread
+note over Form : BackgroundWorker.RunWorkerCompleted - UI thread
 
 Form -> Form : m_LabelAnalysisTime.Text = "Analysis time: X.XXs"
 
