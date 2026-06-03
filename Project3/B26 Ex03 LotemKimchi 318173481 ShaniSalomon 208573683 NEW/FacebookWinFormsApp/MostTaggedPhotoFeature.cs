@@ -8,7 +8,7 @@ namespace BasicFacebookFeatures
 
         protected override int getScore(Photo i_Photo)
         {
-            return i_Photo.Tags != null ? i_Photo.Tags.Count : 0;
+            return i_Photo.Tags != null ? i_Photo.Tags.Count : -1;
         }
     }
 }
