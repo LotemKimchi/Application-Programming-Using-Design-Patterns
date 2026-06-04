@@ -42,8 +42,7 @@ loop [for each Album in albums]
     end
 end
 
-Feature --> Creator : Photo (most liked)
-Creator --> Form : Photo
+Feature --> Form : Photo (most liked)
 Form -> Form : displayPhotoResult(photo)
 Form --> User : photo displayed
 

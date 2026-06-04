@@ -60,11 +60,10 @@ note right of TimeDec
 end note
 
 class FormMain {
-    - r_PhotoCreators : Dictionary<string, PhotoFeatureCreator>
-    - m_CheckBoxSafeMode : CheckBox
+    - r_StrategyProvider : PhotoAnalysisStrategyProvider
     - m_LabelAnalysisTime : Label
     ..
-    - runPhotoAnalysis(i_Creator : PhotoFeatureCreator) : void
+    - runPhotoAnalysis(i_Strategy : IFacebookFeature<Photo>) : void
     - displayPhotoResult(i_Photo : Photo) : void
 }
 note top of FormMain
