@@ -1,15 +1,21 @@
 @startuml
-title Sequence Diagram — Template Method Pattern\nUser selects "Most Liked Photo" and clicks Analyze
+title Sequence Diagram — Template Method after Strategy Selection\nUser selects "Most Liked Photo" and clicks Analyze
 
 actor User
 participant ": FormMain" as Form
 participant "r_StrategyProvider : PhotoAnalysisStrategyProvider" as Provider
-participant "feature : MostLikedPhotoFeature" as Feature
+participant "feature : MaxScorePhotoFeature\n(MostLikedPhotoFeature)" as Feature
 participant ": CachingFacebookProxy" as Proxy
 participant ": FacebookService" as FB
 
 User -> Form : buttonAnalyzePhoto_Click()
 Form -> Provider : GetStrategy("Most Liked Photo")
+note right
+  ** Strategy Pattern step **
+  Selects the concrete feature.
+  Template Method starts when
+  Execute(user) is called.
+end note
 Provider --> Form : MostLikedPhotoFeature
 
 Form -> Form : runPhotoAnalysis(feature)
@@ -18,6 +24,7 @@ note right : wraps in Decorators\nthen calls Execute(user)
 Form -> Feature : Execute(user)
 note right
   ** Template Method **
+  Execute() is defined in MaxScorePhotoFeature.
   Algorithm is fixed here:
   loop albums -> loop photos -> getScore()
 end note
@@ -36,7 +43,7 @@ loop [for each Album in albums]
         Feature -> Feature : getScore(photo)
         note right
           ** Primitive Operation **
-          Overridden in subclass:
+          Overridden in MostLikedPhotoFeature:
           returns photo.LikedBy.Count
         end note
     end
