@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BasicFacebookFeatures
 {
-    //Proxy Pattern: FormMain -> CachingFacebookProxy -> FacebookManager (Facade)
+    //Proxy Pattern: FormMain -> CachingFacebookProxy -> FacebookManager (Facade).
     public class CachingFacebookProxy : IFacebookService
     {
         private readonly IFacebookService r_RealService;
